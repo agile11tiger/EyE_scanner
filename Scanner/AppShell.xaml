@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Shell xmlns="http://xamarin.com/schemas/2014/forms" 
+       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+       xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+       mc:Ignorable="d"
+       xmlns:local="clr-namespace:Scanner"
+       xmlns:viewModels="clr-namespace:Scanner.ViewModels"
+       xmlns:extensions="clr-namespace:Scanner.Extensions" 
+       xmlns:magic="clr-namespace:MagicGradients;assembly=MagicGradients"
+       x:Class="Scanner.AppShell"
+       FlyoutBackgroundColor="LightGray"
+       Title="Scanner">
+
+    
+    <Shell.Resources>
+        <ResourceDictionary>
+            <Color x:Key="NavigationPrimary">#2196F3</Color>
+            <Style x:Key="BaseStyle" TargetType="Element">
+                <Setter Property="Shell.BackgroundColor" Value="{StaticResource NavigationPrimary}" />
+                <Setter Property="Shell.ForegroundColor" Value="White" />
+                <Setter Property="Shell.TitleColor" Value="White" />
+                <Setter Property="Shell.DisabledColor" Value="#B4FFFFFF" />
+                <Setter Property="Shell.UnselectedColor" Value="#95FFFFFF" />
+                <Setter Property="Shell.TabBarBackgroundColor" Value="{StaticResource NavigationPrimary}" />
+                <Setter Property="Shell.TabBarForegroundColor" Value="White"/>
+                <Setter Property="Shell.TabBarUnselectedColor" Value="#95FFFFFF"/>
+                <Setter Property="Shell.TabBarTitleColor" Value="White"/>
+            </Style>
+            <Style TargetType="TabBar" BasedOn="{StaticResource BaseStyle}" />
+
+            <Style x:Key="notVisible" TargetType="Button">
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding UserAccount.IsAuthorization}" Value="True" TargetType="Button">
+                        <Setter Property="IsEnabled" Value="False" />
+                        <Setter Property="IsVisible" Value="False" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding UserAccount.IsAuthorization}" Value="False" TargetType="Button">
+                        <Setter Property="IsEnabled" Value="True" />
+                        <Setter Property="IsVisible" Value="True" />
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </ResourceDictionary>
+    </Shell.Resources>
+
+    <Shell.FlyoutHeaderTemplate>
+        <DataTemplate>
+            <ContentView>
+                <Grid HeightRequest="110" x:DataType="viewModels:AppShellViewModel">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="2.3*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <magic:GradientView Grid.ColumnSpan="2">
+                        <magic:GradientView.GradientSource>
+                            <magic:CssGradientSource Stylesheet="{StaticResource FlyoutHeaderGradient}"/>
+                        </magic:GradientView.GradientSource>
+                    </magic:GradientView>
+                    
+                    <Button Grid.ColumnSpan="2" 
+                            Text="{Binding UserAccount.TextAuthorizationButton}"
+                            VerticalOptions="Fill"
+                            HorizontalOptions="Fill"
+                            BackgroundColor="Transparent"
+                            Command="{Binding UserAccount.AuthorizationCommand}"
+                            CommandParameter="{StaticResource False}"
+                            Style="{StaticResource notVisible}"/>
+
+                    <ImageButton Grid.Column="0"
+                                 Source="{Binding UserAccount.UserImage}"
+                                 Margin="10"
+                                 Aspect="AspectFill"
+                                 CornerRadius="5"
+                                 HeightRequest="85"
+                                 WidthRequest="65"
+                                 Command="{Binding SetUserImageCommand}"
+                                 IsEnabled="{Binding UserAccount.IsAuthorization}"
+                                 IsVisible="{Binding UserAccount.IsAuthorization}"/>
+                    
+                    <StackLayout Grid.Column="1" VerticalOptions="Center">
+                        <Label Text="{Binding UserAccount.Name}"
+                               TextColor="White"
+                               FontAttributes="Bold"
+                               IsVisible="{Binding UserAccount.IsAuthorization}"/>
+                        <Label Text="{Binding UserAccount.Phone}"
+                               TextColor="White"
+                               FontAttributes="Bold"
+                               IsVisible="{Binding UserAccount.IsAuthorization}"/>
+                    </StackLayout>
+                </Grid>
+            </ContentView>
+        </DataTemplate>
+    </Shell.FlyoutHeaderTemplate>
+
+    <!--Не понимаю к какому контексту по умолчанию привязан DataTemplate, поэтому x:DataType="local:AppShellViewModel"
+    устанавливается для каждого, вместо того чтобы установить его для всей стараницы.-->
+    
+    <Shell.ItemTemplate>
+        <DataTemplate>
+            <ContentView>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="0.2*" />
+                        <ColumnDefinition Width="0.8*" />
+                    </Grid.ColumnDefinitions>
+                    
+                    <Image Source="{Binding FlyoutIcon}"
+                           Margin="5"
+                           HeightRequest="45" />
+                    <Label Grid.Column="1"
+                           Text="{Binding Title}"
+                           FontAttributes="Italic"
+                           VerticalTextAlignment="Center" />
+                </Grid>
+            </ContentView>
+        </DataTemplate>
+    </Shell.ItemTemplate>
+
+    <Shell.MenuItemTemplate>
+        <DataTemplate>
+            <ContentView>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="0.2*"/>
+                        <ColumnDefinition Width="0.8*"/>
+                    </Grid.ColumnDefinitions>
+                   
+                    <Image Source="{Binding Icon}"
+                           Margin="5"
+                           HeightRequest="45"/>
+                    <Label Grid.Column="1"
+                           Text="{Binding Text}"
+                           FontAttributes="Italic"
+                           VerticalTextAlignment="Center" />
+                </Grid>
+            </ContentView>
+        </DataTemplate>
+    </Shell.MenuItemTemplate>
+
+    <FlyoutItem Title="EyE" FlyoutIcon="{extensions:ImageResource Source={x:Static local:AppConstants.SettingsPng}}" Route="mainPage">
+        <ShellContent x:Name="mainPage"/>
+    </FlyoutItem>
+
+    <MenuItem Text="Список друзей"
+              x:DataType="viewModels:AppShellViewModel"
+              IconImageSource="{extensions:ImageResource Source={x:Static local:AppConstants.SettingsPng}}"
+              Command="{Binding ToFriendsCommand}"/>
+    <MenuItem Text="Генерация кодов"
+              x:DataType="viewModels:AppShellViewModel"
+              IconImageSource="{extensions:ImageResource Source={x:Static local:AppConstants.SettingsPng}}"
+              Command="{Binding ToCodeGenerationCommand}"/>
+    <MenuItem Text="Настройки сканера"
+              x:DataType="viewModels:AppShellViewModel"
+              IconImageSource="{extensions:ImageResource Source={x:Static local:AppConstants.SettingsPng}}"
+              Command="{Binding ToSettingsCommand}"/>
+    <MenuItem Text="Реавторизоваться"
+              x:DataType="viewModels:AppShellViewModel"
+              IconImageSource="{extensions:ImageResource Source={x:Static local:AppConstants.SettingsPng}}"
+              Command="{Binding UserAccount.AuthorizationCommand}"
+              CommandParameter="{StaticResource False}"/>
+
+</Shell>

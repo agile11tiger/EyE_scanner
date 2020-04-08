@@ -1,0 +1,95 @@
+﻿using Scanner.Models;
+
+namespace Scanner.ViewModels.Authorization
+{
+    /// <summary>
+    /// Класс, взаимодействующий со страницей авторизации пользователя
+    /// </summary>
+    public class SignViewModel : BaseViewModel
+    {
+        public SignViewModel(Sign sign) : base()
+        {
+            Sign = sign;
+        }
+
+        public Sign Sign { get; set; }
+
+        public bool IsAuthorization
+        {
+            get => Sign.IsAuthorization;
+            set
+            {
+                if (Sign.IsAuthorization != value)
+                {
+                    Sign.IsAuthorization = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public string FailMessage
+        {
+            get => Sign.FailMessage;
+            set
+            {
+                if (Sign.FailMessage != value)
+                {
+                    Sign.FailMessage = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public string Name
+        {
+            get => Sign.Name;
+            set
+            {
+                if (Sign.Name != value)
+                {
+                    Sign.Name = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public string Email
+        {
+            get => Sign.Email;
+            set
+            {
+                if (Sign.Email != value)
+                {
+                    Sign.Email = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public string Phone
+        {
+            get => Sign.Phone;
+            set
+            {
+                if (Sign.Phone != value)
+                {
+                    Sign.Phone = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public string Password
+        {
+            get => Sign.Password;
+            set
+            {
+                if (Sign.Password != value)
+                {
+                    Sign.Password = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+    }
+}

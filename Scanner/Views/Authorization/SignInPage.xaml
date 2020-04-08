@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             xmlns:behaviors="clr-namespace:Scanner.Behaviors"
+             xmlns:local="clr-namespace:Scanner.ViewModels.Authorization"
+             xmlns:magic="clr-namespace:MagicGradients;assembly=MagicGradients"
+             x:DataType="local:SignInViewModel"
+             x:Class="Scanner.Views.Authorization.SignInPage"
+             Title="Вход">
+
+    <ContentPage.Content>
+        <Grid>
+            <magic:GradientView>
+                <magic:GradientView.GradientSource>
+                    <magic:CssGradientSource Stylesheet="{StaticResource PageGradient}"/>
+                </magic:GradientView.GradientSource>
+            </magic:GradientView>
+            
+            <ScrollView>
+                <FlexLayout>
+                    <Image Style="{StaticResource AuthorizationImage}"/>
+
+                    <Label x:Name="warningLabel" 
+                           Text="{Binding FailMessage}" 
+                           TextColor="Red"
+                           LineBreakMode="CharacterWrap"
+                           FlexLayout.AlignSelf="Center"/>
+
+                    <Entry x:Name="phoneEntry"
+                           Text="{Binding Phone}"
+                           Keyboard="Telephone"
+                           ReturnType="Next"
+                           Placeholder="Номер телефона без +7">
+                        <Entry.Behaviors>
+                            <behaviors:MaskedBehavior Mask="+7(XXX)XXX-XX-XX" />
+                        </Entry.Behaviors>
+                    </Entry>
+
+                    <StackLayout>
+                        <Entry x:Name="passwordEntry" 
+                               Text="{Binding Password}"
+                               IsPassword="True" 
+                               Keyboard="Numeric"
+                               ReturnType="Done" 
+                               Placeholder="Пароль"/>
+                        <Label x:Name="forgotPasswordLabel"
+                               Text="Забыли пароль?" 
+                               FontSize="Small" 
+                               TextColor="Blue" 
+                               HorizontalOptions="EndAndExpand">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding ForgotPasswordCommand}"/>
+                            </Label.GestureRecognizers>
+                        </Label>
+                    </StackLayout>
+
+                    <Button x:Name="signIn" 
+                            Text="Войти в ФНС"
+                            Command="{Binding SignInCommand}"/>
+                </FlexLayout>
+            </ScrollView>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

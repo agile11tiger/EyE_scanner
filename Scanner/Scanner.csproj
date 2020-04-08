@@ -1,0 +1,184 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <ProduceReferenceAssembly>true</ProduceReferenceAssembly>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="VerificationCheck\**" />
+    <Compile Remove="ViewModels\OLD\**" />
+    <Compile Remove="Views\OLD\**" />
+    <EmbeddedResource Remove="VerificationCheck\**" />
+    <EmbeddedResource Remove="ViewModels\OLD\**" />
+    <EmbeddedResource Remove="Views\OLD\**" />
+    <None Remove="VerificationCheck\**" />
+    <None Remove="ViewModels\OLD\**" />
+    <None Remove="Views\OLD\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Services\IQRCode.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Resources\Audio\camera_shutter_release.mp3" />
+    <None Remove="Resources\Images\animate_line.png" />
+    <None Remove="Resources\Images\back.png" />
+    <None Remove="Resources\Images\close.png" />
+    <None Remove="Resources\Images\filka.jpg" />
+    <None Remove="Resources\Images\left_bottom.png" />
+    <None Remove="Resources\Images\left_top.png" />
+    <None Remove="Resources\Images\moon.png" />
+    <None Remove="Resources\Images\qrCode.jpg" />
+    <None Remove="Resources\Images\question.png" />
+    <None Remove="Resources\Images\refresh.png" />
+    <None Remove="Resources\Images\remove.png" />
+    <None Remove="Resources\Images\right_bottom.png" />
+    <None Remove="Resources\Images\right_top.png" />
+    <None Remove="Resources\Images\scan.png" />
+    <None Remove="Resources\Images\Scanner\animate_line.png" />
+    <None Remove="Resources\Images\Scanner\back.png" />
+    <None Remove="Resources\Images\Scanner\camera.png" />
+    <None Remove="Resources\Images\Scanner\checkbox.png" />
+    <None Remove="Resources\Images\Scanner\checks.png" />
+    <None Remove="Resources\Images\Scanner\checks1.png" />
+    <None Remove="Resources\Images\Scanner\clipboard.png" />
+    <None Remove="Resources\Images\Scanner\edit.png" />
+    <None Remove="Resources\Images\Scanner\emptyCheckbox.png" />
+    <None Remove="Resources\Images\Scanner\emptyMarkBox.png" />
+    <None Remove="Resources\Images\Scanner\frame.png" />
+    <None Remove="Resources\Images\Scanner\gallery.png" />
+    <None Remove="Resources\Images\Scanner\left_bottom.png" />
+    <None Remove="Resources\Images\Scanner\left_top.png" />
+    <None Remove="Resources\Images\Scanner\markBox.png" />
+    <None Remove="Resources\Images\Scanner\qrCode.jpg" />
+    <None Remove="Resources\Images\Scanner\qrCode.png" />
+    <None Remove="Resources\Images\Scanner\right_bottom.png" />
+    <None Remove="Resources\Images\Scanner\right_top.png" />
+    <None Remove="Resources\Images\Scanner\scan.png" />
+    <None Remove="Resources\Images\Scanner\scanner_frame.png" />
+    <None Remove="Resources\Images\Scanner\settings.png" />
+    <None Remove="Resources\Images\Scanner\tab_newtask.png" />
+    <None Remove="Resources\Images\Scanner\torch_off.png" />
+    <None Remove="Resources\Images\Scanner\torch_on.png" />
+    <None Remove="Resources\Images\Scanner\waitingChecks.png" />
+    <None Remove="Resources\Images\scan_line.png" />
+    <None Remove="Resources\Images\settings.png" />
+    <None Remove="Resources\Images\tab_about.png" />
+    <None Remove="Resources\Images\tab_feed.png" />
+    <None Remove="Resources\Images\torch_off.png" />
+    <None Remove="Resources\Images\torch_off_64.png" />
+    <None Remove="Resources\Images\torch_off_96.png" />
+    <None Remove="Resources\Images\torch_off_light.png" />
+    <None Remove="Resources\Images\torch_on.png" />
+    <None Remove="Resources\Images\user.png" />
+    <None Remove="Resources\Images\xamarin_logo.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MagicGradients" Version="1.0.0" />
+    <PackageReference Include="Ninject" Version="3.3.4" />
+    <PackageReference Include="SkiaSharp.Views.Forms" Version="1.68.1.1" />
+    <PackageReference Include="Xam.Plugin.Media" Version="4.0.1.5" />
+    <PackageReference Include="Xam.Plugin.SimpleAudioPlayer" Version="1.4.0" />
+    <PackageReference Include="Xamarin.Forms" Version="4.4.0.991537" />  
+    <PackageReference Include="Xamarin.Essentials" Version="1.3.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="ZXing.Net.Mobile.Forms" Version="2.4.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Views\MainPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Scanner\Checks\ChecksTabbedPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Scanner\Checks\CheckTabbedPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Scanner\Checks\WaitingChecksPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Scanner\Friends\FriendPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Scanner\Friends\FriendsPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Scanner\QRCodes\ManualScanPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Scanner\ScannerPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Scanner\ScannerSettingsPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Scanner\СodeGenerationPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Audio\camera_shutter_release.mp3" />
+    <EmbeddedResource Include="Resources\Images\back.png" />
+    <EmbeddedResource Include="Resources\Images\filka.jpg" />
+    <EmbeddedResource Include="Resources\Images\moon.png" />
+    <EmbeddedResource Include="Resources\Images\question.png" />
+    <EmbeddedResource Include="Resources\Images\remove.png" />
+    <EmbeddedResource Include="Resources\Images\Scanner\animate_line.png" />
+    <EmbeddedResource Include="Resources\Images\Scanner\camera.png" />
+    <EmbeddedResource Include="Resources\Images\Scanner\checks.png" />
+    <EmbeddedResource Include="Resources\Images\Scanner\checks1.png" />
+    <EmbeddedResource Include="Resources\Images\Scanner\clipboard.png" />
+    <EmbeddedResource Include="Resources\Images\Scanner\emptyMarkBox.png" />
+    <EmbeddedResource Include="Resources\Images\Scanner\frame.png" />
+    <EmbeddedResource Include="Resources\Images\Scanner\gallery.png" />
+    <EmbeddedResource Include="Resources\Images\Scanner\markBox.png" />
+    <EmbeddedResource Include="Resources\Images\Scanner\qrCode.png" />
+    <EmbeddedResource Include="Resources\Images\Scanner\scan.png" />
+    <EmbeddedResource Include="Resources\Images\Scanner\settings.png" />
+    <EmbeddedResource Include="Resources\Images\Scanner\torch_off.png" />
+    <EmbeddedResource Include="Resources\Images\Scanner\torch_on.png" />
+    <EmbeddedResource Include="Resources\Images\Scanner\waitingChecks.png" />
+    <EmbeddedResource Include="Resources\Images\user.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Views\Authorization\AuthorizationPage.xaml.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Authorization\ForgotPasswordPage.xaml.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Authorization\SignInPage.xaml.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Authorization\SignUpPage.xaml.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Scanner\Checks\ChecksTabbedPage.xaml.cs">
+      <DependentUpon>ChecksTabbedPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Scanner\Checks\WaitingChecksPage.xaml.cs">
+      <DependentUpon>WaitingChecksPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Scanner\ScannerPage.xaml.cs">
+      <DependentUpon>ScannerPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Scanner\ScannerSettingsPage.xaml.cs">
+      <DependentUpon>ScannerSettingsPage.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Utilities\" />
+    <Folder Include="ViewModels\Interfaces\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\VerificationCheck\VerificationCheck.csproj" />
+  </ItemGroup>
+</Project>

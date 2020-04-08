@@ -1,0 +1,155 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             xmlns:local="clr-namespace:Scanner.ViewModels.Scanner"
+             xmlns:extensions="clr-namespace:Scanner.Extensions"
+             xmlns:magic="clr-namespace:MagicGradients;assembly=MagicGradients"
+             x:DataType="local:ScannerSettingsViewModel"
+             x:Class="Scanner.Views.Scanner.ScannerSettingsPage"
+             Title="Настройки сканера">
+    
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style TargetType="Label">
+                <Setter Property="FontSize" Value="Small"/>
+                <Setter Property="LineBreakMode" Value="CharacterWrap"/>
+                <Setter Property="VerticalOptions" Value="Center"/>
+            </Style>
+            <Style TargetType="BoxView">
+                <Setter Property="BackgroundColor" Value="DarkGray"/>
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid>
+        <magic:GradientView>
+            <magic:GradientView.GradientSource>
+                <magic:CssGradientSource Stylesheet="{StaticResource PageGradient}"/>
+            </magic:GradientView.GradientSource>
+        </magic:GradientView>
+        
+        <ScrollView>
+            <Grid Margin="10">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="1"/>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="1"/>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="1"/>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="1"/>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="1"/>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="1"/>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="1"/>
+                    <RowDefinition Height="100"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="4*"/>
+                    <ColumnDefinition Width="2*"/>
+                </Grid.ColumnDefinitions>
+
+                <Label Grid.Row="0"
+                       Grid.Column="0"
+                       Text="Звук затвора"/>
+                <Switch x:Name="isSoundShutterRelease"
+                       Grid.Row="0"
+                       Grid.Column="1"
+                       IsToggled="{Binding IsSoundShutterRelease}"/>
+                <BoxView Grid.Row="1"
+                         Grid.ColumnSpan="2"/>
+
+                <Label Grid.Row="2"
+                       Grid.Column="0"
+                       Text="Использовать фронтальную камеру"/>
+                <Switch x:Name="useFrontCamera"
+                       Grid.Row="2"
+                       Grid.Column="1"
+                       IsToggled="{Binding UseFrontCamera}"/>
+                <BoxView Grid.Row="3"
+                         Grid.ColumnSpan="2"/>
+
+                <Label Grid.Row="4"
+                       Grid.Column="0"
+                       Text="Более глубокий взгляд на растровое изображение"/>
+                <Switch x:Name="tryHarder"
+                       Grid.Row="4"
+                       Grid.Column="1"
+                       IsToggled="{Binding TryHarder}"/>
+                <BoxView Grid.Row="5"
+                         Grid.ColumnSpan="2"/>
+
+                <Label Grid.Row="6"
+                       Grid.Column="0"
+                       Text="Инвертировать цвет QR-кода для его анализа"/>
+                <Switch x:Name="tryInverted"
+                       Grid.Row="6"
+                       Grid.Column="1"
+                       IsToggled="{Binding TryInverted}"/>
+                <BoxView Grid.Row="7"
+                         Grid.ColumnSpan="2"/>
+
+                <Label Grid.Row="8"
+                       Grid.Column="0"
+                       Text="Начальная задержка перед анализом кадров"/>
+                <StackLayout Grid.Row="8" Grid.Column="1" Spacing="0" HorizontalOptions="Center" VerticalOptions="Center">
+                    <Label x:Name="initialDelayBeforeAnalyzingFramesLabel"
+                           Text="{Binding InitialDelayBeforeAnalyzingFrames}" 
+                           HorizontalOptions="Center"/>
+                    <Slider x:Name="initialDelayBeforeAnalyzingFrames"
+                           Value="{Binding InitialDelayBeforeAnalyzingFrames}"
+                           Maximum="5"
+                           ValueChanged="InitialDelayBeforeAnalyzingFrames_ValueChanged"/>
+                </StackLayout>
+                <BoxView Grid.Row="9"
+                         Grid.ColumnSpan="2"/>
+
+                <Label Grid.Row="10"
+                       Grid.Column="0"
+                       Text="Задержка между анализом кадров"/>
+                <StackLayout Grid.Row="10" Grid.Column="1" Spacing="0" HorizontalOptions="Center" VerticalOptions="Center">
+                    <Label x:Name="delayBetweenAnalyzingFramesLabel"
+                           Text="{Binding DelayBetweenAnalyzingFrames}" 
+                           HorizontalOptions="Center"/>
+                    <Slider x:Name="delayBetweenAnalyzingFrames"
+                           Value="{Binding DelayBetweenAnalyzingFrames}"
+                           Maximum="5"
+                           ValueChanged="DelayBetweenAnalyzingFrames_ValueChanged"/>
+                </StackLayout>
+                <BoxView Grid.Row="11"
+                         Grid.ColumnSpan="2"/>
+
+                <Label Grid.Row="12"
+                       Grid.Column="0"
+                       Text="Задержка между непрерывным сканированием"/>
+                <StackLayout Grid.Row="12" Grid.Column="1" Spacing="0" HorizontalOptions="Center" VerticalOptions="Center">
+                    <Label x:Name="delayBetweenContinuousScansLabel"
+                           Text="{Binding DelayBetweenContinuousScans}" 
+                           HorizontalOptions="Center"/>
+                    <Slider x:Name="delayBetweenContinuousScans"
+                           Value="{Binding DelayBetweenContinuousScans}"
+                           Maximum="5"
+                           ValueChanged="DelayBetweenContinuousScans_ValueChanged"/>
+                </StackLayout>
+                <BoxView Grid.Row="13"
+                         Grid.ColumnSpan="2"/>
+
+                <StackLayout Grid.Row="14" Grid.ColumnSpan="2" Spacing="20" Orientation="Horizontal" HorizontalOptions="CenterAndExpand" VerticalOptions="Center">
+                    <Button x:Name="default"
+                            Text="По умолчанию"
+                            Command="{Binding DefaultSettingsCommand}"/>
+                    <Button x:Name="apply"
+                            Text="Применить"
+                            BackgroundColor="#e32942"
+                            Command="{Binding ApplySettingsCommand}"/>
+                </StackLayout>
+            </Grid>
+        </ScrollView>
+    </Grid>
+</ContentPage>

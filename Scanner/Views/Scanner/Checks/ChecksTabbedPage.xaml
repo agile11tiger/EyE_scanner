@@ -1,0 +1,125 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<TabbedPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             xmlns:local="clr-namespace:Scanner"
+             xmlns:checks="clr-namespace:Scanner.ViewModels.Scanner.Checks"
+             xmlns:extensions="clr-namespace:Scanner.Extensions"
+             xmlns:magic="clr-namespace:MagicGradients;assembly=MagicGradients"
+             xmlns:controls="clr-namespace:Scanner.Controls"
+             x:DataType="checks:ChecksListsViewModel"
+             x:Class="Scanner.Views.Scanner.Checks.ChecksTabbedPage"
+             ItemsSource="{Binding Checks}">
+
+    <Shell.TitleView>
+        <Grid Style="{StaticResource TitleGrid}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            
+            <SearchBar x:Name="searchBar"
+                       Grid.Column="0"
+                       Keyboard="Numeric"
+                       TextChanged="SearchBar_TextChanged"
+                       SearchCommand="{Binding SearchCommand}"
+                       SearchCommandParameter="{Binding Source={x:Reference searchBar}, Path=Text}"/>
+            
+            <!--<Label Grid.Column="0"
+                   Text="Чеки"
+                   Style="{StaticResource TitleLabel}"/>-->
+            <ImageButton Grid.Column="1"
+                         Style="{StaticResource QuestionImageButton}"
+                         Command="{Binding InfoCommand}"/>
+        </Grid>
+    </Shell.TitleView>
+
+    <TabbedPage.ItemTemplate>
+        <DataTemplate x:DataType="checks:ChecksListViewModel">
+            <ContentPage Title="{Binding Title}">
+                <Grid>
+                    <magic:GradientView>
+                        <magic:GradientView.GradientSource>
+                            <magic:CssGradientSource Stylesheet="{StaticResource PageGradient}"/>
+                        </magic:GradientView.GradientSource>
+                    </magic:GradientView>
+
+                    <ListView ItemsSource="{Binding List}"
+                              SelectionMode="None"
+                              HasUnevenRows="True">
+                        <ListView.ItemTemplate>
+                            <DataTemplate x:DataType="checks:FriendsChecksViewModel">
+                                <ViewCell>
+                                    <ViewCell.View>
+                                        <Frame Margin="7" HasShadow="True" BorderColor="Blue" CornerRadius="10" Padding="15">
+                                            <Grid>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="*"/>
+                                                    <RowDefinition Height="30"/>
+                                                    <RowDefinition Height="30"/>
+                                                </Grid.RowDefinitions>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="3*"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <Label x:Name="shopName"
+                                                       Grid.Row="0"
+                                                       Grid.Column="0"
+                                                       Text="{Binding RetailPlaceAddress}"
+                                                       LineBreakMode="CharacterWrap"
+                                                       HorizontalOptions="StartAndExpand"/>
+                                        
+                                                <ImageButton x:Name="removeImage"
+                                                       Grid.Row="0"
+                                                       Grid.Column="1"
+                                                       Source="{extensions:ImageResource Source={x:Static local:AppConstants.RemovePng}}"
+                                                       WidthRequest="20"
+                                                       HeightRequest="20"
+                                                       HorizontalOptions="End"
+                                                       VerticalOptions="Start"
+                                                       Command="{Binding Source={RelativeSource AncestorType={x:Type checks:ChecksListViewModel}}, Path=RemoveCommand}"
+                                                       CommandParameter="{Binding}"/>
+
+                                                <Label x:Name="dateTime"
+                                                       Grid.Row="1"
+                                                       Grid.Column="0"
+                                                       Text="{Binding DateTime, StringFormat='{0:dd.MM.yy HH:mm}'}"
+                                                       TextColor="LightGray"
+                                                       HorizontalOptions="Start"
+                                                       VerticalOptions="Start"/>
+
+                                                <controls:GradientLabel x:Name="toCheck"               
+                                                       Grid.Row="2"
+                                                       Grid.Column="0"
+                                                       Text="Перейти к чеку"
+                                                       FontSize="Medium"
+                                                       TextColorFrom="{StaticResource SpringGreen}"
+                                                       TextColorTo="{StaticResource NavyBlue}"
+                                                       VerticalOptions="Center">
+                                                    <Label.GestureRecognizers>
+                                                        <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type checks:ChecksListViewModel}}, Path=ToCheckCommand}"
+                                                                              CommandParameter="{Binding}"/>
+                                                    </Label.GestureRecognizers>
+                                                </controls:GradientLabel>
+
+                                                <Label x:Name="checkAmount"
+                                                       Grid.Row="2"
+                                                       Grid.Column="1"
+                                                       Text="{Binding CheckAmount, StringFormat='{0:C}'}"
+                                                       FontAttributes="Bold"
+                                                       HorizontalOptions="End"/>
+                                            </Grid>
+                                        </Frame>
+                                    </ViewCell.View>
+                                </ViewCell>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </Grid>
+            </ContentPage>
+        </DataTemplate>
+    </TabbedPage.ItemTemplate>
+</TabbedPage>

@@ -1,0 +1,99 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             xmlns:viewModels="clr-namespace:Scanner.ViewModels"
+             xmlns:extensions="clr-namespace:Scanner.Extensions"
+             xmlns:magic="clr-namespace:MagicGradients;assembly=MagicGradients"
+             x:DataType="viewModels:MainPageViewModel"
+             x:Class="Scanner.Views.MainPage">
+
+    <Shell.TitleView>
+        <Grid Style="{StaticResource TitleGrid}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Label Grid.Column="0"
+                   Text=""
+                   Style="{StaticResource TitleLabel}"/>
+            <ImageButton Grid.Column="1"
+                         Style="{StaticResource QuestionImageButton}"/>
+        </Grid>
+    </Shell.TitleView>
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style TargetType="ImageButton">
+                <Setter Property="WidthRequest" Value="70"/>
+                <Setter Property="HeightRequest" Value="70" />
+            </Style>
+            <Style TargetType="Label">
+                <Setter Property="FontSize" Value="Small" />
+                <Setter Property="HorizontalOptions" Value="Center"/>
+                <Setter Property="VerticalOptions" Value="Start"/>
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    
+    <ContentPage.Content>
+        <Grid >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            
+            <magic:GradientView>
+                <magic:GradientView.GradientSource>
+                    <magic:CssGradientSource Stylesheet="{StaticResource PageGradient}"/>
+                </magic:GradientView.GradientSource>
+            </magic:GradientView>
+
+            <Grid VerticalOptions="End" HorizontalOptions="Center">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="100"/>
+                <RowDefinition Height="70"/>
+                <RowDefinition Height="20"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="110"/>
+                <ColumnDefinition Width="110"/>
+            </Grid.ColumnDefinitions>
+
+            <ImageButton x:Name="checksPage"
+                         Grid.Row="1"
+                         Grid.Column="0"
+                         Source="{extensions:ImageResource Scanner.Resources.Images.Scanner.checks.png}"
+                         Command="{Binding GoToChecksCommand}"/>
+            <Label Grid.Row="2"
+                   Grid.Column="0"
+                   Text="Чеки"/>
+
+            <StackLayout Grid.RowSpan="2" Grid.Column="1" VerticalOptions="End">
+                <ImageButton x:Name="scannerPage"
+                             Source="{extensions:ImageResource Scanner.Resources.Images.Scanner.scan.png}"
+                             WidthRequest="100"
+                             HeightRequest="100"
+                             Command="{Binding GoToScannerCommand}"/>
+                <Label Text="Сканировать"/>
+            </StackLayout>
+            
+            <ImageButton x:Name="checksWaitingPage"
+                         Grid.Row="1"
+                         Grid.Column="2"
+                         Source="{extensions:ImageResource Scanner.Resources.Images.Scanner.waitingChecks.png}"
+                         Command="{Binding GoToWaitingChecksCommand}"/>
+            <Label Grid.Row="2"
+                   Grid.Column="1"
+                   Grid.ColumnSpan="2"
+                   Text="Ожидающие чеки"
+                   HorizontalOptions="End"/>
+        </Grid>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

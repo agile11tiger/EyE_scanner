@@ -1,0 +1,135 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             xmlns:qrCodes="clr-namespace:Scanner.ViewModels.Scanner.QRCodes"
+             xmlns:extensions="clr-namespace:Scanner.Extensions"
+             xmlns:magic="clr-namespace:MagicGradients;assembly=MagicGradients"
+             x:DataType="qrCodes:CashQRCodeViewModel"
+             x:Class="Scanner.Views.Scanner.QRCodes.ManualScanPage"
+             Title="Ручное сканирование">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style TargetType="Label">
+                <Setter Property="FontSize" Value="Small"/>
+                <Setter Property="IsVisible" Value="False"/>
+            </Style>
+            <Style TargetType="Entry">
+                <Setter Property="Margin" Value="0,15,0,0"/>
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ContentPage.Content>
+        <Grid>
+            <magic:GradientView>
+                <magic:GradientView.GradientSource>
+                    <magic:CssGradientSource Stylesheet="{StaticResource PageGradient}"/>
+                </magic:GradientView.GradientSource>
+            </magic:GradientView>
+            
+            <ScrollView>
+                <Grid Margin="10,20,10,20">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Label x:Name="warningLabel" 
+                           Text="{Binding FailMessage}" 
+                           TextColor="Red"
+                           FontSize="Medium" 
+                           IsVisible="True"/>
+
+                    <Label x:Name="fiscalNumberLabel"
+                           Grid.Row="0"
+                           Text="ФН №"/>
+                    <Entry x:Name="fiscalNumberEntry"
+                           Grid.Row="0"
+                           Text="{Binding FiscalNumber}" 
+                           Keyboard="Numeric"
+                           ReturnType="Next"
+                           Placeholder="ФН №" 
+                           Focused="FiscalNumberEntry_Focused"
+                           Unfocused="FiscalNumberEntry_Unfocused"/>
+
+                    <Label x:Name="fiscalDocumentLabel"
+                           Grid.Row="1"
+                           Text="ФД №"/>
+                    <Entry x:Name="fiscalDocumentEntry"
+                           Grid.Row="1"
+                           Text="{Binding FiscalDocument}" 
+                           Keyboard="Numeric"
+                           ReturnType="Next"
+                           Placeholder="ФД №" 
+                           Focused="FiscalDocumentEntry_Focused"
+                           Unfocused="FiscalDocumentEntry_Unfocused"/>
+
+                    <Label x:Name="fiscalSignDocumentLabel"
+                           Grid.Row="2"
+                           Text="ФП или ФПД №"/>
+                    <Entry x:Name="fiscalSignDocumentEntry"
+                           Grid.Row="2"
+                           Text="{Binding FiscalSignDocument}"
+                           Keyboard="Numeric"
+                           ReturnType="Next"
+                           Placeholder="ФП или ФПД №" 
+                           Focused="FiscalSignDocumentEntry_Focused"
+                           Unfocused="FiscalSignDocumentEntry_Unfocused"/>
+
+                    <Label x:Name="dateTimeLabel"
+                           Grid.Row="3"
+                           Text="Дата и время в чеке"/>
+                    <Entry x:Name="dateTimeEntry"
+                           Grid.Row="3"
+                           Text="{Binding DateTime, StringFormat='{0:F}'}"
+                           ReturnType="Next"
+                           Placeholder="Дата и время в чеке"
+                           Focused="DateTimeEntry_Focused"
+                           Unfocused="DateTimeEntry_Unfocused"/>
+                    <DatePicker x:Name="date"
+                                Grid.Row="3"
+                                Format="D"
+                                IsEnabled="False"
+                                IsVisible="False"
+                                DateSelected="Date_DateSelected"
+                                Focused="Date_Focused"
+                                Unfocused="Date_Unfocused"/>
+                    <TimePicker x:Name="time"
+                                Grid.Row="3"
+                                Format="T"
+                                IsEnabled="False"
+                                IsVisible="False"
+                                PropertyChanged="Time_PropertyChanged"
+                                Focused="Time_Focused"
+                                Unfocused="Time_Unfocused"/>
+                    
+                    <Label x:Name="checkAmountLabel"
+                           Grid.Row="4"
+                           Text="Сумма чека"/>
+                    <Entry x:Name="checkAmountEntry"
+                           Grid.Row="4"
+                           Text="{Binding CheckAmount}"
+                           Keyboard="Numeric"
+                           ReturnType="Done"
+                           Placeholder="Сумма чека" 
+                           Focused="CheckAmountEntry_Focused"
+                           Unfocused="CheckAmountEntry_Unfocused"/>
+
+                    <Button x:Name="getCheck"
+                            Grid.Row="5"
+                            Text="Получить чек"
+                            Margin="0,15,0,0"
+                            Command="{Binding ProcessCodeCommand}"/>
+                </Grid>
+            </ScrollView>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

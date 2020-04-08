@@ -1,0 +1,146 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             xmlns:local="clr-namespace:Scanner"
+             xmlns:checks="clr-namespace:Scanner.ViewModels.Scanner.Checks"
+             xmlns:qrCodes="clr-namespace:Scanner.ViewModels.Scanner.QRCodes"
+             xmlns:extensions="clr-namespace:Scanner.Extensions"
+             xmlns:controls="clr-namespace:Scanner.Controls"
+             xmlns:magic="clr-namespace:MagicGradients;assembly=MagicGradients"
+             x:DataType="checks:WaitingChecksListViewModel"
+             x:Class="Scanner.Views.Scanner.Checks.WaitingChecksPage">
+
+    <Shell.TitleView>
+        <Grid Style="{StaticResource TitleGrid}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Label Grid.Column="0"
+                   Text="Ожидающие чеки"
+                   Style="{StaticResource TitleLabel}"/>
+            <ImageButton Grid.Column="1"
+                         Style="{StaticResource QuestionImageButton}"
+                         Command="{Binding InfoCommand}"/>
+        </Grid>
+    </Shell.TitleView>
+
+    <ContentPage.Content>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="70"/>
+            </Grid.RowDefinitions>
+            
+            <magic:GradientView Grid.RowSpan="2">
+                <magic:GradientView.GradientSource>
+                    <magic:CssGradientSource Stylesheet="{StaticResource PageGradient}"/>
+                </magic:GradientView.GradientSource>
+            </magic:GradientView>
+            
+            <ListView x:Name="checksList"
+                      Grid.Row="0"
+                      ItemsSource="{Binding List}"
+                      SelectionMode="None"
+                      HasUnevenRows="True">
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="qrCodes:CashQRCodeViewModel">
+                        <ViewCell>
+                            <ViewCell.View>
+                                <Frame Margin="7" HasShadow="True" BorderColor="IndianRed" CornerRadius="10" Padding="15">
+                                    <Grid Margin="0">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="25"/>
+                                            <RowDefinition Height="50"/>
+                                            <RowDefinition Height="30"/>
+                                            <RowDefinition Height="25"/>
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="90"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        
+                                        <Label x:Name="checkAmount"
+                                               Grid.Row="0"
+                                               Grid.Column="0"
+                                               Text="{Binding CheckAmount, StringFormat='{0:C}'}"
+                                               FontAttributes="Bold"
+                                               HorizontalOptions="Center"/>
+                                        <ImageButton x:Name="removeImage"
+                                               Grid.Row="0"
+                                               Grid.Column="1"
+                                               Source="{extensions:ImageResource Source={x:Static local:AppConstants.RemovePng}}"
+                                               WidthRequest="20"
+                                               HeightRequest="20"
+                                               HorizontalOptions="End"
+                                               VerticalOptions="Start"
+                                               Command="{Binding RequestList.RemoveCommand}"
+                                               CommandParameter="{Binding}"/>
+
+                                        <Image x:Name="qrCodeImage"
+                                               Grid.Row="1"
+                                               Grid.Column="0"
+                                               Grid.RowSpan="2"
+                                               Source="{Binding Source={RelativeSource AncestorType={x:Type checks:WaitingChecksListViewModel}}, Path=QRCodeImage}"
+                                               HeightRequest="80"
+                                               WidthRequest="80"/>
+                                        <Label x:Name="readiness"
+                                               Grid.Row="1"
+                                               Grid.Column="1"
+                                               Text="Данные по чеку ещё не пришли" 
+                                               TextColor="IndianRed"
+                                               LineBreakMode="WordWrap"
+                                               Margin="0,0,25,5"
+                                               VerticalOptions="EndAndExpand"/>
+                                        <Label x:Name="dateTime"
+                                               Grid.Row="2"
+                                               Grid.Column="1"
+                                               Text="{Binding DateTime, StringFormat='{0:dd.MM.yy HH:mm}'}"
+                                               TextColor="LightGray"
+                                               VerticalOptions="StartAndExpand"/>
+
+                                        <controls:GradientLabel x:Name="refresh"
+                                               Grid.Row="3"
+                                               Grid.Column="0"
+                                               Text="Обновить"
+                                               FontSize="Medium"
+                                               TextColorFrom="{StaticResource SpringGreen}"
+                                               TextColorTo="{StaticResource NavyBlue}"
+                                               HorizontalOptions="Center">
+                                            <Label.GestureRecognizers>
+                                                <TapGestureRecognizer Command="{Binding RequestList.RefreshCommand}"
+                                                                      CommandParameter="{Binding}"/>
+                                            </Label.GestureRecognizers>
+                                        </controls:GradientLabel>
+
+                                        <controls:GradientLabel x:Name="verify"
+                                               Grid.Row="3"
+                                               Grid.Column="1"
+                                               Text="Проверить данные"
+                                               FontSize="Medium"
+                                               TextColorFrom="{StaticResource SpringGreen}"
+                                               TextColorTo="{StaticResource NavyBlue}"
+                                               Margin="10,0,0,0">
+                                            <Label.GestureRecognizers>
+                                                <TapGestureRecognizer Command="{Binding RequestList.DisplayDataCommand}"
+                                                                      CommandParameter="{Binding}"/>
+                                            </Label.GestureRecognizers>
+                                        </controls:GradientLabel>
+                                    </Grid>
+                                </Frame>
+                            </ViewCell.View>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+            <Button Grid.Row="1" 
+                    Text="Обновить все чеки"
+                    Margin="10"
+                    Command="{Binding RefreshAllCommand}"/>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

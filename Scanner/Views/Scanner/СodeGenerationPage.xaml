@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:zxing="clr-namespace:ZXing.Net.Mobile.Forms;assembly=ZXing.Net.Mobile.Forms"
+             xmlns:zxcm="clr-namespace:ZXing.Common;assembly=zxing.portable"
+             xmlns:magic="clr-namespace:MagicGradients;assembly=MagicGradients"
+             mc:Ignorable="d"
+             x:Class="Scanner.Views.Scanner.CodeGenerationPage">
+
+    <ContentPage.Content>
+        <Grid>
+            <magic:GradientView>
+                <magic:GradientView.GradientSource>
+                    <magic:CssGradientSource Stylesheet="{StaticResource PageGradient}"/>
+                </magic:GradientView.GradientSource>
+            </magic:GradientView>
+            
+            <StackLayout Orientation="Vertical" HorizontalOptions="Fill" VerticalOptions="Fill">
+                <!--https://stackoverflow.com/questions/51239686/xamarin-forms-zxingbarcodeimageview-is-blurry-->
+                <zxing:ZXingBarcodeImageView x:Name="code" 
+                                             BarcodeFormat="QR_CODE"                  
+                                             BarcodeValue="asdzxczxcasdxzc"
+                                             HorizontalOptions="FillAndExpand" 
+                                             VerticalOptions="StartAndExpand"
+                                             HeightRequest="150"
+                                             MinimumHeightRequest="150"
+                                             InputTransparent="True">
+                    <zxing:ZXingBarcodeImageView.BarcodeOptions>
+                        <zxcm:EncodingOptions Width="150" Height="150" />
+                    </zxing:ZXingBarcodeImageView.BarcodeOptions>
+                </zxing:ZXingBarcodeImageView>
+                
+                <Button Text="Click"
+                    Clicked="Handle_Clicked"/>
+            </StackLayout>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

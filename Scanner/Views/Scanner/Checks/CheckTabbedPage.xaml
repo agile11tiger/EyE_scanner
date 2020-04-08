@@ -1,0 +1,191 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<TabbedPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             xmlns:checks="clr-namespace:Scanner.ViewModels.Scanner.Checks"
+             xmlns:checksViews="clr-namespace:Scanner.Views.Scanner.Checks"
+             xmlns:controls="clr-namespace:Scanner.Controls"
+             xmlns:extensions="clr-namespace:Scanner.Extensions"
+             xmlns:magic="clr-namespace:MagicGradients;assembly=MagicGradients"
+             x:DataType="checks:FriendsChecksViewModel"
+             x:Class="Scanner.Views.Scanner.Checks.CheckTabbedPage"
+             ItemsSource="{Binding FriendsChecks}">
+
+    <Shell.TitleView>
+        <Grid Style="{StaticResource TitleGrid}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Label Grid.Column="0"
+                   Text="Чек"
+                   Style="{StaticResource TitleLabel}"/>
+            <ImageButton Grid.Column="1"
+                         Style="{StaticResource QuestionImageButton}"
+                         Command="{Binding InfoCommand}"/>
+        </Grid>
+    </Shell.TitleView>
+
+    <TabbedPage.ItemTemplate>
+        <DataTemplate x:DataType="checks:FriendCheckViewModel">
+            <ContentPage Title="{Binding TitlePage}" IconImageSource="{Binding IconPage}" >
+                <Grid>
+                    <magic:GradientView>
+                        <magic:GradientView.GradientSource>
+                            <magic:CssGradientSource Stylesheet="{StaticResource PageGradient}"/>
+                        </magic:GradientView.GradientSource>
+                    </magic:GradientView>
+
+                    <Grid Margin="10">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="50"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="3*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <controls:GradientLabel Grid.Row="0"
+                                                Grid.ColumnSpan="2"
+                                                Text="{Binding Source={RelativeSource AncestorType={x:Type checks:FriendsChecksViewModel}}, Path=SelectedFriendVM.Name}"
+                                                TextColorFrom="{StaticResource SpringGreen}"
+                                                TextColorTo="{StaticResource NavyBlue}"
+                                                FontSize="Large"
+                                                HorizontalOptions="Center"
+                                                IsEnabled="{Binding Source={RelativeSource AncestorType={x:Type checks:FriendCheckViewModel}}, Path=IsCommonCheck}"
+                                                IsVisible="{Binding Source={RelativeSource AncestorType={x:Type checks:FriendCheckViewModel}}, Path=IsCommonCheck}">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type checks:FriendsChecksViewModel}}, Path=SelectFriendCommand }"/>
+                            </Label.GestureRecognizers>
+                        </controls:GradientLabel>
+
+                        <Editor Grid.Row="0"
+                                Grid.ColumnSpan="2"
+                                Placeholder="Можете здесь написать сообщение для друга"
+                                IsEnabled="{Binding Source={RelativeSource AncestorType={x:Type checks:FriendCheckViewModel}}, Path=NoIsCommonCheck}"
+                                IsVisible="{Binding Source={RelativeSource AncestorType={x:Type checks:FriendCheckViewModel}}, Path=NoIsCommonCheck}"/>
+
+                        <Label x:Name="sum"
+                               Grid.Row="1"
+                               Grid.Column="0"
+                               Text="Сумма"
+                               FontAttributes="Bold">
+                            </Label>
+                        <Label Grid.Row="1"
+                               Grid.Column="1"
+                               Text="{Binding CheckAmount, StringFormat='{0:C}'}"
+                               FontAttributes="Bold"
+                               HorizontalOptions="End"/>
+
+                        <ListView x:Name="checkItems"
+                                  Grid.Row="2"
+                                  Grid.ColumnSpan="2"
+                                  ItemsSource="{Binding Items}"
+                                  HasUnevenRows="True"
+                                  BackgroundColor="Transparent"
+                                  SelectionMode="Single"
+                                  ItemSelected="ListView_ItemSelected">
+                            <ListView.ItemTemplate >
+                                <DataTemplate x:DataType="checks:CheckItemViewModel">
+                                    <ViewCell>
+                                        <ViewCell.View>
+                                            <Grid RowSpacing="0">
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="*"/>
+                                                    <RowDefinition Height="*"/>
+                                                </Grid.RowDefinitions>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="25"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="110"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <ImageButton Grid.RowSpan="2"
+                                                             Grid.Column="0"
+                                                             Source="{Binding MarkBoxImage}"
+                                                             WidthRequest="25"
+                                                             HeightRequest="25"
+                                                             HorizontalOptions="Center"
+                                                             VerticalOptions="Center"
+                                                             Command="{Binding Source={RelativeSource AncestorType={x:Type checks:FriendsChecksViewModel}}, Path = MarkProductCommand}"
+                                                             CommandParameter="{Binding }"
+                                                             IsEnabled="{Binding Source={RelativeSource AncestorType={x:Type checks:FriendCheckViewModel}}, Path=IsCommonCheck}"
+                                                             IsVisible="{Binding Source={RelativeSource AncestorType={x:Type checks:FriendCheckViewModel}}, Path=IsCommonCheck}"/>
+
+                                                <StackLayout Grid.RowSpan="2" 
+                                                             Grid.Column="1" 
+                                                             Spacing="0"
+                                                             Orientation="Horizontal" 
+                                                             VerticalOptions="Center"
+                                                             IsEnabled="{Binding Source={RelativeSource AncestorType={x:Type checks:FriendCheckViewModel}}, Path=IsCommonCheck}"
+                                                             IsVisible="{Binding Source={RelativeSource AncestorType={x:Type checks:FriendCheckViewModel}}, Path=IsCommonCheck}">
+                                                    <Label Text="{Binding Name}"/>
+                                                    <Label Text="{Binding SelectedQuantity, StringFormat='({0})'}"/>
+                                                </StackLayout>
+                                                
+                                                <Label Grid.RowSpan="2"
+                                                       Grid.ColumnSpan="2"
+                                                       Text="{Binding Name}"
+                                                       VerticalOptions="Center"
+                                                       IsEnabled="{Binding Source={RelativeSource AncestorType={x:Type checks:FriendCheckViewModel}}, Path=NoIsCommonCheck}"
+                                                       IsVisible="{Binding Source={RelativeSource AncestorType={x:Type checks:FriendCheckViewModel}}, Path=NoIsCommonCheck}"/>
+
+                                                <Label x:Name="sum"
+                                                       Grid.Row="0"
+                                                       Grid.Column="2"
+                                                       Text="{Binding Sum, StringFormat='{0:C}'}"
+                                                       FontSize="Small"
+                                                       HorizontalOptions="End"
+                                                       VerticalOptions="End"/>
+                                                <StackLayout Grid.Row="1" Grid.Column="2" Orientation="Horizontal" Margin="0,0,10,0" HorizontalOptions="End" VerticalOptions="Start">
+                                                    <Label x:Name="price"
+                                                           Text="{Binding Price}"
+                                                           FontSize="Micro"/>
+                                                    <Label Text="x"
+                                                           FontSize="Micro"/>
+                                                    <Label x:Name="quantity"
+                                                       Text="{Binding Quantity}"
+                                                       FontSize="Micro"/>
+                                                </StackLayout>
+                                            </Grid>
+                                        </ViewCell.View>
+                                    </ViewCell>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+
+                        <StackLayout Grid.Row="3" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+                            <Button Text="Создать чек"
+                                    HorizontalOptions="FillAndExpand"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type checks:FriendsChecksViewModel}}, Path=CreateCheckCommand}"
+                                    IsEnabled="{Binding Source={RelativeSource AncestorType={x:Type checks:FriendCheckViewModel}}, Path=IsCommonCheck}"
+                                    IsVisible="{Binding Source={RelativeSource AncestorType={x:Type checks:FriendCheckViewModel}}, Path=IsCommonCheck}"/>
+                            <Button Text="В Мои чеки"
+                                    HorizontalOptions="FillAndExpand"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type checks:FriendsChecksViewModel}}, Path=AddToMyChecksCommand}"
+                                    CommandParameter="{Binding }"
+                                    IsEnabled="{Binding Source={RelativeSource AncestorType={x:Type checks:FriendCheckViewModel}}, Path=IsCommonCheck}"
+                                    IsVisible="{Binding Source={RelativeSource AncestorType={x:Type checks:FriendCheckViewModel}}, Path=IsCommonCheck}"/>
+                            <Button Text="Отмена"
+                                    HorizontalOptions="FillAndExpand"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type checks:FriendsChecksViewModel}}, Path=RemoveCheckCommand}"
+                                    CommandParameter="{Binding }"
+                                    IsEnabled="{Binding Source={RelativeSource AncestorType={x:Type checks:FriendCheckViewModel}}, Path=NoIsCommonCheck}"
+                                    IsVisible="{Binding Source={RelativeSource AncestorType={x:Type checks:FriendCheckViewModel}}, Path=NoIsCommonCheck}"/>
+                            <Button Text="Отправить"
+                                    HorizontalOptions="FillAndExpand"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type checks:FriendsChecksViewModel}}, Path=SendCheckCommand}"
+                                    IsEnabled="{Binding Source={RelativeSource AncestorType={x:Type checks:FriendCheckViewModel}}, Path=NoIsCommonCheck}"
+                                    IsVisible="{Binding Source={RelativeSource AncestorType={x:Type checks:FriendCheckViewModel}}, Path=NoIsCommonCheck}"/>
+                        </StackLayout>
+                    </Grid>
+                </Grid>
+            </ContentPage>
+        </DataTemplate>
+    </TabbedPage.ItemTemplate>
+</TabbedPage>

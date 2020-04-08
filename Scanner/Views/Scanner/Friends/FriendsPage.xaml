@@ -1,0 +1,82 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             xmlns:friends="clr-namespace:Scanner.ViewModels.Scanner.Friends"
+             xmlns:extensions="clr-namespace:Scanner.Extensions"
+             xmlns:magic="clr-namespace:MagicGradients;assembly=MagicGradients"
+             x:DataType="friends:FriendsViewModel"
+             x:Class="Scanner.Views.Scanner.Friends.FriendsPage">
+    
+    <Shell.TitleView>
+        <Grid Style="{StaticResource TitleGrid}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <SearchBar x:Name="searchBar"
+                       Grid.Column="0"
+                       TextChanged="SearchBar_TextChanged"
+                       SearchCommand="{Binding SearchCommand}"
+                       SearchCommandParameter="{Binding Source={x:Reference searchBar}, Path=Text}"/>
+            <!--<Label Grid.Column="0"
+                   Text="Чеки"
+                   Style="{StaticResource TitleLabel}"/>-->
+            <ImageButton Grid.Column="1"
+                         Style="{StaticResource QuestionImageButton}"
+                         Command="{Binding InfoCommand}"/>
+        </Grid>
+    </Shell.TitleView>
+
+    <ContentPage.Content>
+        <Grid>
+            <magic:GradientView>
+                <magic:GradientView.GradientSource>
+                    <magic:CssGradientSource Stylesheet="{StaticResource PageGradient}"/>
+                </magic:GradientView.GradientSource>
+            </magic:GradientView>
+
+            <ListView ItemsSource="{Binding List}"
+                      HasUnevenRows="True"
+                      ItemSelected="ListView_ItemSelected">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <ViewCell.View>
+                                <Grid x:DataType="friends:FriendViewModel">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Frame Grid.Column="0"
+                                           Margin="10"
+                                           BorderColor="Black"
+                                           CornerRadius="40"
+                                           HeightRequest="40"
+                                           WidthRequest="40"
+                                           IsClippedToBounds="True"
+                                           HorizontalOptions="Center"
+                                           VerticalOptions="Center">
+                                        <Image Source="{Binding Image}"
+                                               Aspect="AspectFill"
+                                               Margin="-20"
+                                               HeightRequest="60"
+                                               WidthRequest="60" />
+                                    </Frame>
+                                    
+                                    <StackLayout Grid.Column="1" VerticalOptions="Center">
+                                        <Label Text="{Binding Name}"/>
+                                        <Label Text="{Binding Phone}"/>
+                                    </StackLayout>
+                                </Grid>
+                            </ViewCell.View>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

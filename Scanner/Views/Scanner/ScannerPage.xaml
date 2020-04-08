@@ -1,0 +1,180 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             xmlns:local="clr-namespace:Scanner"
+             xmlns:zxing="clr-namespace:ZXing.Net.Mobile.Forms;assembly=ZXing.Net.Mobile.Forms"
+             xmlns:scanner="clr-namespace:Scanner.ViewModels.Scanner"
+             xmlns:extensions="clr-namespace:Scanner.Extensions"
+             xmlns:magic="clr-namespace:MagicGradients;assembly=MagicGradients"
+             xmlns:controls="clr-namespace:Scanner.Controls"
+             x:DataType="scanner:ScannerViewModel"
+             x:Class="Scanner.Views.Scanner.ScannerPage"
+             Shell.NavBarIsVisible="False">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style x:Key="TabBarImageButton" TargetType="ImageButton">
+                <Setter Property="WidthRequest" Value="64"/>
+                <Setter Property="HeightRequest" Value="64"/>
+                <Setter Property="CornerRadius" Value="0"/>
+            </Style>
+            <Style x:Key="imageButton" TargetType="ImageButton">
+                <Setter Property="Opacity" Value="0.6"/>
+                <Setter Property="WidthRequest" Value="40"/>
+                <Setter Property="HeightRequest" Value="40"/>
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    
+    <Grid x:Name="scannerGrid" RowSpacing="0" ColumnSpacing="0" BackgroundColor="Transparent" Margin="0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="250"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="100"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="250"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!--Сканнер не обрабатывает изменения Options, когда IsScanning == true, а отключить его я не могу, так как он потом не включиться
+        Поэтому привязка не имеет смысла-->
+        <zxing:ZXingScannerView x:Name="scanner"
+                                Grid.RowSpan="3"
+                                Grid.ColumnSpan="3"
+                                Options="{Binding ScannerSettingsVM.Settings.Options}"
+                                IsScanning="{Binding IsZxingScanning}"
+                                IsAnalyzing="{Binding IsAnalyzing}"
+                                IsTorchOn="{Binding IsTorchOn}"
+                                ScanResultCommand="{Binding ProcessScanResultCommand}"/>
+
+        <BoxView Grid.Row="0" 
+                 Grid.ColumnSpan="3" 
+                 BackgroundColor="{StaticResource HoverBackgroundColor}"/>
+        <BoxView Grid.Row="1" 
+                 Grid.Column="0" 
+                 BackgroundColor="{StaticResource HoverBackgroundColor}"/>
+        <BoxView Grid.Row="1" 
+                 Grid.Column="2" 
+                 BackgroundColor="{StaticResource HoverBackgroundColor}"/>
+        <BoxView Grid.Row="2" 
+                 Grid.ColumnSpan="3" 
+                 BackgroundColor="{StaticResource HoverBackgroundColor}"/>
+        <magic:GradientView Grid.Row="3" Grid.ColumnSpan="3" HorizontalOptions="Fill" VerticalOptions="Fill">
+            <magic:GradientView.GradientSource>
+                <magic:CssGradientSource Stylesheet="{StaticResource ScannerTabBarGradient}"/>
+            </magic:GradientView.GradientSource>
+        </magic:GradientView>
+
+        <ImageButton x:Name="back"
+                     Grid.Row="0"
+                     Grid.Column="0"
+                     Style="{StaticResource imageButton}"
+                     Source="{extensions:ImageResource Source={x:Static local:AppConstants.BackPng}}"
+                     Margin="10,10,0,0"
+                     HorizontalOptions="Start"
+                     VerticalOptions="Start"
+                     Command="{Binding BackCommand}"/>
+
+        <Label Grid.Row="0" 
+               Grid.Column="1" 
+               Text="Поместите QR-код в поле для автоматического сканирования" 
+               TextColor="White" 
+               FontSize="Small"
+               Margin="0,0,0,10" 
+               LineBreakMode="WordWrap"
+               HorizontalOptions="Center"
+               VerticalOptions="End" 
+               BackgroundColor="Transparent"/>
+
+        <StackLayout Grid.Row="0" Grid.Column="2" Margin="0,10,10,0" Spacing="10" HorizontalOptions="End" VerticalOptions="Start">
+            <ImageButton x:Name="scanInfo" 
+                         Style="{StaticResource imageButton}"
+                         Source="{extensions:ImageResource Source={x:Static local:AppConstants.QuestionPng}}"
+                         Command="{Binding InfoCommand}"/>
+            <ImageButton x:Name="torch"
+                         Style="{StaticResource imageButton}"
+                         Source="{Binding TorchImage}"
+                         Command="{Binding SwitchTorchCommand}"/>
+        </StackLayout>
+
+
+        <Image Grid.Row="1" 
+               Grid.Column="1" 
+               Source="{extensions:ImageResource Scanner.Resources.Images.Scanner.frame.png}"/>
+
+        <Image x:Name="line" 
+               Grid.Row="1" 
+               Grid.Column="1" 
+               Source="{extensions:ImageResource Scanner.Resources.Images.Scanner.animate_line.png}"
+               TranslationY="{Binding LineTranslationY}"
+               VerticalOptions="Start"/>
+
+        <AbsoluteLayout Grid.Row="1" Grid.Column="1">
+            <BoxView x:Name="topLineQRCode" 
+                     AbsoluteLayout.LayoutBounds="{Binding TopLineCode}"
+                     BackgroundColor="Red"/>
+            <BoxView x:Name="bottomLineQRCode" 
+                     AbsoluteLayout.LayoutBounds="{Binding BottomLineCode}"
+                     BackgroundColor="Red"/>
+            <BoxView x:Name="leftLineQRCode" 
+                     AbsoluteLayout.LayoutBounds="{Binding LeftLineCode}"
+                     BackgroundColor="Red"/>
+            <BoxView x:Name="rightLineQRCode" 
+                     AbsoluteLayout.LayoutBounds="{Binding RightLineCode}"
+                     BackgroundColor="Red"/>
+        </AbsoluteLayout>
+
+        <StackLayout Grid.Row="1" 
+                     Grid.Column="1" 
+                     HorizontalOptions="Center" 
+                     VerticalOptions="CenterAndExpand"
+                     IsVisible="{Binding Source={x:Reference Name=indicator}, Path=IsRunning}">
+            <Label Text="{Binding ProgressIndicator, StringFormat='{0}%'}"
+                   TextColor="Red"
+                   FontSize="Large"
+                   HorizontalOptions="Center" 
+                   VerticalOptions="CenterAndExpand"/>
+            <ActivityIndicator x:Name="indicator"
+                               Color="RoyalBlue"
+                               WidthRequest="50"
+                               HeightRequest="50"
+                               HorizontalOptions="Center" 
+                               VerticalOptions="Center"
+                               IsRunning="{Binding IsRunningIndicator}"/>
+            <controls:GradientLabel Text="Отмена"
+                                    FontSize="Large"
+                                    TextColorFrom="{StaticResource SpringGreen}"
+                                    TextColorTo="{StaticResource NavyBlue}"
+                                    HorizontalOptions="Center" 
+                                    VerticalOptions="Center">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding CancelScanningPhotoCommand}"/>
+                </Label.GestureRecognizers>
+            </controls:GradientLabel>
+        </StackLayout>
+
+        <StackLayout Grid.Row="3" Grid.ColumnSpan="3" Orientation="Horizontal" Spacing="40" Margin="25,10,5,10" HorizontalOptions="Center" VerticalOptions="Center">
+           <ImageButton x:Name="scanFromGallery"
+                         Source="{extensions:ImageResource Scanner.Resources.Images.Scanner.gallery.png}"
+                         Style="{StaticResource TabBarImageButton}"
+                         Command="{Binding ScanCommand}"
+                         CommandParameter="scanFromGallery"/>
+            <ImageButton x:Name="takePhotoAndScan"
+                         Source="{extensions:ImageResource Scanner.Resources.Images.Scanner.camera.png}"
+                         Style="{StaticResource TabBarImageButton}"
+                         Command="{Binding ScanCommand}"
+                         CommandParameter="takePhotoAndScan"/>
+            <ImageButton x:Name="scanManually"
+                         Source="{extensions:ImageResource Scanner.Resources.Images.Scanner.clipboard.png}"
+                         Style="{StaticResource TabBarImageButton}"
+                         Command="{Binding ScanCommand}"
+                         CommandParameter="scanManually"/>
+        </StackLayout>
+    </Grid>
+</ContentPage>
