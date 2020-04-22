@@ -4,6 +4,7 @@ using Scanner.Extensions.Interfaces;
 using Scanner.Models;
 using Scanner.ViewModels.Authorization;
 using Scanner.Views.Authorization;
+using System;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 
@@ -14,17 +15,18 @@ namespace Scanner.ViewModels
     /// </summary>
     public class UserAccountFNSViewModel : SignViewModel
     {
-        public UserAccountFNSViewModel(Sign sign) : base(sign)
+        public UserAccountFNSViewModel(Sign sign, Lazy<AuthorizationPage> authorizationPage) : base(sign)
         {
-            AuthorizationCommand = new AsyncCommand<bool>(goToAuthorizationPage);
+            this.authorizationPage = authorizationPage;
+            AuthorizationCommand = new AsyncCommand<bool>(GoToAuthorizationPage);
         }
 
-        public IAsyncCommand<bool> AuthorizationCommand { get; set; }
-        public string TextAuthorizationButton { get => "Авторизоваться"; }
+        private readonly Lazy<AuthorizationPage> authorizationPage;
+        public IAsyncCommand<bool> AuthorizationCommand { get; }
         public ImageSource UserImage
         {
-            //Сделать. Если пользователь удаляет картинку из галлереи, то нужно вернуть ему картинку по умолчанию
-            //Проблема в том, что как узнать, что ImageSource == null. 
+            //TODO: Если пользователь удаляет картинку из галлереи, то нужно вернуть ему картинку по умолчанию
+            //Проблема в том, что как узнать, что у него нету картинки в галлереи. 
             //Если я ему даю ссылку(даже если по ней ничего нет), то он не null и не IsEmpty.
             get
             {
@@ -35,7 +37,7 @@ namespace Scanner.ViewModels
             }
         }
 
-        public async Task Synchronization(Sign sign)
+        public async Task Update(Sign sign)
         {
             Name = sign.Name;
             Email = sign.Email;
@@ -43,16 +45,16 @@ namespace Scanner.ViewModels
             Password = sign.Password;
             IsAuthorization = sign.IsAuthorization;
 
-            AsyncDatabase.AddItemAsync(Sign);
+            await AsyncDatabase.AddOrReplaceItemAsync(Sign);
         }
 
-        private async Task goToAuthorizationPage(bool isMessageToContinue)
+        private async Task GoToAuthorizationPage(bool isMessageToContinue)
         {
             var isContinue = true;
 
             if (isMessageToContinue)
             {
-                //CurrentPage устанавливается в ChecksWaitingPage
+                //CurrentPage устанавливается в WaitingChecksPage
                 isContinue = await CurrentPage.DisplayAlert(
                         "Уважаемый пользователь!",
                         "Для продолжения вам необходимо авторизоваться в ФНС, " +
@@ -64,8 +66,7 @@ namespace Scanner.ViewModels
 
             if (isContinue)
             {
-                var authorizationPage = App.Container.Get<AuthorizationPage>();
-                await Navigation.PushAsync(authorizationPage);
+                await Navigation.PushAsync(authorizationPage.Value);
                 Shell.Current.FlyoutIsPresented = false;
             }
         }

@@ -1,13 +1,16 @@
 ﻿using Scanner.Models.Iterfaces;
+using SQLite;
 using System;
 using System.Globalization;
+using VerificationCheck.Core.Interfaces;
 
 namespace Scanner.Models
 {
     /// <summary>
     /// Класс, хранящий информацию о кассовом QR-коде
     /// </summary>
-    public class CashQRCode : ICode
+    [Table("CashQRCodes")]
+    public class CashQRCode : ICode, IDatabaseItem
     {
         public CashQRCode()
         {
@@ -16,6 +19,9 @@ namespace Scanner.Models
         }
 
         private static readonly string[] separators = new string[] { "t=", "&s=", "&fn=", "&i=", "&fp=", "&n=" };
+
+        [PrimaryKey, AutoIncrement]
+        public int Id { get; set; }
         public string Name { get; }
         public string CodeInfo { get; set; }
         public DateTime? DateTime { get; set; }

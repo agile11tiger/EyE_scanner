@@ -4,7 +4,7 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:zxing="clr-namespace:ZXing.Net.Mobile.Forms;assembly=ZXing.Net.Mobile.Forms"
-             xmlns:zxcm="clr-namespace:ZXing.Common;assembly=zxing.portable"
+             xmlns:zxcm="clr-namespace:ZXing.Common;assembly=zxing"
              xmlns:magic="clr-namespace:MagicGradients;assembly=MagicGradients"
              mc:Ignorable="d"
              x:Class="Scanner.Views.Scanner.CodeGenerationPage">

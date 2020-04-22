@@ -18,7 +18,7 @@ namespace Scanner.Behaviors
             set
             {
                 mask = value;
-                setPositions();
+                SetPositions();
             }
         }
 
@@ -63,7 +63,7 @@ namespace Scanner.Behaviors
                 entry.Text = text;
         }
 
-        private void setPositions()
+        private void SetPositions()
         {
             if (string.IsNullOrEmpty(Mask))
             {

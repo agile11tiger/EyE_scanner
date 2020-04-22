@@ -18,8 +18,8 @@ namespace EyE.Droid.Dependancies
         public async Task<BinaryBitmap> GetBinaryBitmap(string path, CancellationToken token)
         {
             var bitmap = BitmapFactory.DecodeFile(path);
-            var rgbBytes = await Task.Run(() => getRgbBytesFaster(bitmap, token));
-            resetToReuse();
+            var rgbBytes = await Task.Run(() => GetRgbBytesFaster(bitmap, token));
+            ResetToReuse();
 
             if (rgbBytes == null)
                 return null;
@@ -36,7 +36,7 @@ namespace EyE.Droid.Dependancies
         /// https://github.com/Redth/ZXing.Net.Mobile/issues/495
         /// https://stackoverflow.com/questions/42464321/read-barcode-from-gallery-image-in-xamarin-c-sharp
         /// </summary>
-        private byte[] getRgbBytes(Bitmap image, CancellationToken token)
+        private byte[] GetRgbBytes(Bitmap image, CancellationToken token)
         {
             var rgbBytes = new List<byte>();
             var percent10 = image.Height / 10;
@@ -68,7 +68,7 @@ namespace EyE.Droid.Dependancies
         #endregion
 
         //https://itblogdsi.blog.fc2.com/blog-entry-262.html
-        private byte[] getRgbBytesFaster(Bitmap image, CancellationToken token)
+        private byte[] GetRgbBytesFaster(Bitmap image, CancellationToken token)
         {
             var rgbBytes = new List<byte>();
             var square = image.Width * image.Height;
@@ -99,7 +99,7 @@ namespace EyE.Droid.Dependancies
             return rgbBytes.ToArray();
         }
 
-        private void resetToReuse()
+        private void ResetToReuse()
         {
             ProgressIndicator = 0;
             Xamarin.Forms.MessagingCenter.Send<IZxingImageHelper>(this, "ProgressIndicatorChanged");

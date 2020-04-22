@@ -1,8 +1,12 @@
 ﻿using Ninject;
+using Ninject.Parameters;
 using Scanner.Extensions;
 using Scanner.Extensions.Interfaces;
+using Scanner.Models;
 using Scanner.ViewModels.Scanner.QRCodes;
 using Scanner.Views.Scanner.Checks;
+using System;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Xamarin.Forms;
@@ -14,17 +18,45 @@ namespace Scanner.ViewModels.Scanner.Checks
     /// </summary>
     public class WaitingChecksListViewModel : WaitingListViewModel<CashQRCodeViewModel>
     {
-        public WaitingChecksListViewModel(UserAccountFNSViewModel userAccountFNS) : base()
+        public WaitingChecksListViewModel(
+            UserAccountFNSViewModel userAccountFNS,
+            ChecksTabbedPage checksTabbedPage,
+            Func<CashQRCode, CashQRCodeViewModel> GetCashQRCodeVM)
+            : base()
         {
+            this.checksTabbedPage = checksTabbedPage;
+            this.GetCashQRCodeVM = GetCashQRCodeVM;
             UserAccountFNS = userAccountFNS;
-            InfoCommand = new AsyncCommand(showInfo);
-            qrCodeImage = ImageSource.FromResource(AppConstants.QrCodePng);
+            InfoCommand = new AsyncCommand(ShowInfo);
+            QRCodeImage = ImageSource.FromResource(AppConstants.QrCodePng);
         }
 
-        private ImageSource qrCodeImage;
-        public ImageSource QRCodeImage { get => qrCodeImage; }
-        public UserAccountFNSViewModel UserAccountFNS { get; set; }
-        public IAsyncCommand InfoCommand { get; set; }
+        private readonly ChecksTabbedPage checksTabbedPage;
+        private readonly Func<CashQRCode, CashQRCodeViewModel> GetCashQRCodeVM;
+        public ImageSource QRCodeImage { get; }
+        public UserAccountFNSViewModel UserAccountFNS { get; }
+        public IAsyncCommand InfoCommand { get; }
+
+        protected override async Task InitializeListFromDatabase()
+        {
+            await AsyncDatabase.CreateTableAsync<CashQRCode>();
+            var cashQRCodes = await AsyncDatabase.GetItemsAsync<CashQRCode>();
+
+            List = new ObservableCollection<CashQRCodeViewModel>(
+                cashQRCodes.Select(c => GetCashQRCodeVM(c)));
+        }
+
+        protected override async Task Add(CashQRCodeViewModel item)
+        {
+            List.Add(item);
+            await AsyncDatabase.AddItemAsync(item.CashQRCode);
+        }
+
+        protected override async Task Remove(CashQRCodeViewModel item)
+        {
+            List.RemoveAt(item.CashQRCode.Id);
+            await AsyncDatabase.RemoveItemAsync<Friend>(item.CashQRCode.Id);
+        }
 
         protected override Task Refresh(CashQRCodeViewModel cashQRCodeVM)
         {
@@ -39,12 +71,11 @@ namespace Scanner.ViewModels.Scanner.Checks
             var tasks = List.Select(i => i.TryProcessCode());
             var results = await Task.WhenAll(tasks);
             var amountReceivedСhecks = results.Where(r => r == true).Count();
-            var isContinue = await showResultCommandRefreshAll(amountReceivedСhecks).ConfigureAwait(false);
+            var isContinue = await ShowResultCommandRefreshAll(amountReceivedСhecks).ConfigureAwait(false);
 
             if (isContinue)
             {
-                var checksPage = App.Container.Get<ChecksTabbedPage>();
-                await Navigation.PushAsync(checksPage).ConfigureAwait(false);
+                await Navigation.PushAsync(checksTabbedPage).ConfigureAwait(false);
             }
         }
 
@@ -60,7 +91,7 @@ namespace Scanner.ViewModels.Scanner.Checks
                     "Ок");
         }
 
-        private Task showInfo()
+        private Task ShowInfo()
         {
             return CurrentPage.DisplayAlert(
                     "Что это?",
@@ -71,7 +102,7 @@ namespace Scanner.ViewModels.Scanner.Checks
                     "Ок");
         }
 
-        private Task<bool> showResultCommandRefreshAll(int amount)
+        private Task<bool> ShowResultCommandRefreshAll(int amount)
         {
             return CurrentPage.DisplayAlert(
                     "Результат обновления:",

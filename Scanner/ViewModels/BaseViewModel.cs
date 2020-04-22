@@ -16,19 +16,14 @@ namespace Scanner.ViewModels
         {
             isBusy = false;
             title = string.Empty;
-            AsyncDatabase = App.Container.Get<IAsyncDatabase>();
         }
 
         private bool isBusy;
         private string title;
-        [Ignore]
-        public static IAsyncDatabase AsyncDatabase { get; private set; }
-        [Ignore]
+        public static IAsyncDatabase AsyncDatabase { get; private set; } = App.Container.Get<IAsyncDatabase>();
         public Page CurrentPage { get; set; }
-        [Ignore]
         public INavigation Navigation { get => CurrentPage.Navigation;}
 
-        [Ignore]
         public bool IsBusy
         {
             get => isBusy;
@@ -42,7 +37,6 @@ namespace Scanner.ViewModels
             }
         }
 
-        [Ignore]
         public string Title
         {
             get => title;

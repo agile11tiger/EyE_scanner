@@ -2,6 +2,7 @@
 using Ninject;
 using Scanner.Extensions;
 using Scanner.Extensions.Interfaces;
+using Scanner.Models;
 using Scanner.ViewModels.Scanner.Friends;
 using Scanner.Views.Scanner.Friends;
 using SQLite;
@@ -19,27 +20,31 @@ namespace Scanner.ViewModels.Scanner.Checks
     /// <summary>
     /// Класс, взаимодействующий с чеком 
     /// </summary>
-    public class FriendsChecksViewModel : BaseViewModel, ISerializable, IDBItem
+    public class FriendsChecksViewModel : BaseViewModel
     {
         public FriendsChecksViewModel(Check check) : this()
         {
-            this.check = check;
+            Check = check;
             SetCommonCheck();
         }
 
+        //Пустой конструктор для бд, так как она предоставит чек.
         public FriendsChecksViewModel()
         {
+            checksListsVM = App.Container.Get<ChecksListsViewModel>();
+            friendsPage = App.Container.Get<FriendsPage>();
             FriendsChecks = new ObservableCollection<FriendCheckViewModel>();
             SelectedFriendVM = new FriendViewModel();
             tempFriendCheckVM = new FriendCheckViewModel();
 
-            InfoCommand = new AsyncCommand(showInfo);
-            SelectFriendCommand = new AsyncCommand(selectFriend);
-            MarkProductCommand = new AsyncCommand<CheckItemViewModel>(markProduct);
-            CreateCheckCommand = new AsyncCommand(createCheck);
-            AddToMyChecksCommand = new AsyncCommand(addToMyChecks);
-            SendCheckCommand = new AsyncCommand<FriendCheckViewModel>(sendCheck);
-            RemoveCheckCommand = new AsyncCommand<FriendCheckViewModel>(removeCheck);
+            InfoCommand = new AsyncCommand(ShowInfo);
+            SelectFriendCommand = new AsyncCommand(SelectFriend);
+            MarkProductCommand = new AsyncCommand<CheckItemViewModel>(MarkProduct);
+            CreateCheckCommand = new AsyncCommand(CreateCheck);
+            AddToMyChecksCommand = new AsyncCommand(AddToMyChecks);
+            SendCheckCommand = new AsyncCommand<FriendCheckViewModel>(SendCheck);
+            RemoveCheckCommand = new AsyncCommand<FriendCheckViewModel>(RemoveCheck);
+
         }
 
         //TODO: убрать 
@@ -52,16 +57,15 @@ namespace Scanner.ViewModels.Scanner.Checks
             if (isSetCommonCheck == false)
             {
                 isSetCommonCheck = true;
-
-                var friendVM = new FriendViewModel()
+                var friend = new Friend()
                 {
-                    Id = -1,
                     Name = "Общий чек",
                     Image = ImageSource.FromResource("Scanner.Resources.Images.Scanner.checks.png")
                 };
+                var friendVM = new FriendViewModel(friend);
                 var counter = 0;
                 var markBoxImage = ImageSource.FromResource("Scanner.Resources.Images.Scanner.emptyMarkBox.png");
-                var checkItemsVM = check.Items.Select(i => new CheckItemViewModel(counter++, i, markBoxImage));
+                var checkItemsVM = Check.Items.Select(i => new CheckItemViewModel(counter++, i, markBoxImage));
                 var items = new ObservableCollection<CheckItemViewModel>(checkItemsVM);
 
                 commonCheck = new FriendCheckViewModel(friendVM, items);
@@ -69,91 +73,57 @@ namespace Scanner.ViewModels.Scanner.Checks
             }
         }
 
-        private Check check;
+        private readonly ChecksListsViewModel checksListsVM;
+        private readonly FriendsPage friendsPage;
         private FriendCheckViewModel commonCheck;
         private FriendCheckViewModel tempFriendCheckVM;
 
-
-        [PrimaryKey, AutoIncrement]
-        public int Id { get; set; }
-        public string CheckJson { get; set; }
-
-
-        [Ignore]
+        public Check Check { get; }
         public new TabbedPage CurrentPage { get; set; }
-        [Ignore]
         public new INavigation Navigation { get => CurrentPage.Navigation; }
-        [Ignore]
-        public FriendViewModel SelectedFriendVM { get; set; }
-        [Ignore]
-        public ObservableCollection<FriendCheckViewModel> FriendsChecks { get; set; }
-        [Ignore]
-        public Func<FriendsChecksViewModel, Task> AddToMyChecks { get; set; }
-
-        [Ignore]
+        public FriendViewModel SelectedFriendVM { get; }
+        public ObservableCollection<FriendCheckViewModel> FriendsChecks { get; }
         public string TitleSelectedPage { get => (CurrentPage.SelectedItem as FriendCheckViewModel)?.TitlePage; }
-        [Ignore]
         public ImageSource MarkBoxImage { get => ImageSource.FromResource("Scanner.Resources.Images.Scanner.markBox.png"); }
-        [Ignore]
         public ImageSource EmptyMarkBoxImage { get => ImageSource.FromResource("Scanner.Resources.Images.Scanner.emptyMarkBox.png"); }
-
-
-        [Ignore]
-        public string RetailPlaceAddress { get => check.RetailPlaceAddress; }
-        [Ignore]
-        public DateTime DateTime { get => check.CheckDateTime; }
-        [Ignore]
+        public string RetailPlaceAddress { get => Check.RetailPlaceAddress; }
+        public DateTime DateTime { get => Check.CheckDateTime; }
         public int CheckAmount
         {
-            get => check.TotalSum;
+            get => Check.TotalSum;
             set
             {
-                if (check.TotalSum != value)
+                if (Check.TotalSum != value)
                 {
-                    check.TotalSum = value;
+                    Check.TotalSum = value;
                     OnPropertyChanged();
                 }
             }
         }
 
         #region Command
-        [Ignore]
-        public IAsyncCommand InfoCommand { get; set; }
-        [Ignore]
-        public IAsyncCommand SelectFriendCommand { get; set; }
-        [Ignore]
-        public IAsyncCommand<CheckItemViewModel> MarkProductCommand { get; set; }
-        [Ignore]
-        public IAsyncCommand CreateCheckCommand { get; set; }
-        [Ignore]
-        public IAsyncCommand AddToMyChecksCommand { get; set; }
-        [Ignore]
-        public IAsyncCommand<FriendCheckViewModel> SendCheckCommand { get; set; }
-        [Ignore]
-        public IAsyncCommand<FriendCheckViewModel> RemoveCheckCommand { get; set; }
+        public IAsyncCommand InfoCommand { get; }
+        public IAsyncCommand SelectFriendCommand { get; }
+        public IAsyncCommand<CheckItemViewModel> MarkProductCommand { get; }
+        public IAsyncCommand CreateCheckCommand { get; }
+        public IAsyncCommand AddToMyChecksCommand { get; }
+        public IAsyncCommand<FriendCheckViewModel> SendCheckCommand { get; }
+        public IAsyncCommand<FriendCheckViewModel> RemoveCheckCommand { get; }
         #endregion
 
-        #region ISerializable
-        public void Serialize()
+        private Task AddToMyChecks()
         {
-            CheckJson = JsonConvert.SerializeObject(check, ISerializable.JsonSettings);
+            return checksListsVM.AddToMyChecks(this);
         }
 
-        public void Deserialize()
+        private Task SelectFriend()
         {
-            check = JsonConvert.DeserializeObject<Check>(CheckJson, ISerializable.JsonSettings);
-        }
-        #endregion
-
-        private Task selectFriend()
-        {
-            var friendsPage = App.Container.Get<FriendsPage>();
-            friendsPage.ViewModel.ProcessFriendSelected = processFriendSelected;
+            friendsPage.ViewModel.ProcessFriendSelected = ProcessFriendSelected;
             friendsPage.ViewModel.IsFriendForCheck = true;
             return Navigation.PushAsync(friendsPage);
         }
 
-        private void processFriendSelected(FriendViewModel friendVM)
+        private void ProcessFriendSelected(FriendViewModel friendVM)
         {
             if (!tempFriendCheckVM.FriendVM.Equals(friendVM))
             {
@@ -162,7 +132,7 @@ namespace Scanner.ViewModels.Scanner.Checks
             }
         }
 
-        private async Task markProduct(CheckItemViewModel checkItemVM)
+        private async Task MarkProduct(CheckItemViewModel checkItemVM)
         {
             //TODO: checkItem.Quantity может быть ещё чем то кроме количества? Почему оно double
             checkItemVM.IsMarked = !checkItemVM.IsMarked;
@@ -173,7 +143,7 @@ namespace Scanner.ViewModels.Scanner.Checks
 
                 if (checkItemVM.Quantity != 1)
                 {
-                    var strSelectedQuantity = await showSelectQuantity((int)checkItemVM.Quantity);
+                    var strSelectedQuantity = await ShowSelectQuantity((int)checkItemVM.Quantity);
 
                     if (strSelectedQuantity == null)
                     {
@@ -197,21 +167,21 @@ namespace Scanner.ViewModels.Scanner.Checks
             }
         }
 
-        private async Task createCheck()
+        private async Task CreateCheck()
         {
-            if (!await validateCreateCheck())
+            if (!await ValidateCreateCheck())
                 return;
 
-            unMarkAllItemsCommonCheck();
-            changeCommonCheckWhenCreating();
-            addTempFriendCheckVMToFriendsCheck();
+            UnMarkAllItemsCommonCheck();
+            ChangeCommonCheckWhenCreating();
+            AddTempFriendCheckVMToFriendsCheck();
         }
 
-        private async Task<bool> validateCreateCheck()
+        private async Task<bool> ValidateCreateCheck()
         {
             if (SelectedFriendVM.Id == -1)
             {
-                await showNoticeSelectFriend();
+                await ShowNoticeSelectFriend();
                 return false;
             }
 
@@ -219,14 +189,14 @@ namespace Scanner.ViewModels.Scanner.Checks
 
             if (friendCheckVM != null)
             {
-                if (!await showCreateNewCheck())
+                if (!await ShowCreateNewCheck())
                     return false;
             }
 
             return true;
         }
 
-        private void changeCommonCheckWhenCreating()
+        private void ChangeCommonCheckWhenCreating()
         {
             foreach (var markedItem in tempFriendCheckVM.Items)
             {
@@ -245,7 +215,7 @@ namespace Scanner.ViewModels.Scanner.Checks
             CheckAmount = commonCheck.Items.Sum(i => i.Sum);
         }
 
-        private void addTempFriendCheckVMToFriendsCheck()
+        private void AddTempFriendCheckVMToFriendsCheck()
         {
             var indexFriendCheckVM = FriendsChecks.IndexOf(tempFriendCheckVM);
 
@@ -257,7 +227,7 @@ namespace Scanner.ViewModels.Scanner.Checks
             tempFriendCheckVM = new FriendCheckViewModel();
         }
 
-        private void unMarkAllItemsCommonCheck()
+        private void UnMarkAllItemsCommonCheck()
         {
             foreach (var item in commonCheck.Items)
             {
@@ -266,23 +236,18 @@ namespace Scanner.ViewModels.Scanner.Checks
             }
         }
 
-        private Task addToMyChecks()
-        {
-            return AddToMyChecks(this);
-        }
-
-        private async Task sendCheck(FriendCheckViewModel friendCheckVM)
+        private async Task SendCheck(FriendCheckViewModel friendCheckVM)
         {
             FriendsChecks.Remove(friendCheckVM);
         }
 
-        private async Task removeCheck(FriendCheckViewModel friendCheckVM)
+        private async Task RemoveCheck(FriendCheckViewModel friendCheckVM)
         {
-            unMarkAllItemsCommonCheck();
-            changeCommonCheckWhenRemoving(friendCheckVM);
+            UnMarkAllItemsCommonCheck();
+            ChangeCommonCheckWhenRemoving(friendCheckVM);
         }
 
-        private void changeCommonCheckWhenRemoving(FriendCheckViewModel friendCheckVM)
+        private void ChangeCommonCheckWhenRemoving(FriendCheckViewModel friendCheckVM)
         {
             foreach (var item in friendCheckVM.Items)
             {
@@ -307,13 +272,13 @@ namespace Scanner.ViewModels.Scanner.Checks
         }
 
         #region messagesForUser
-        private Task showInfo()
+        private Task ShowInfo()
         {
             var checkFriendVM = FriendsChecks.First(c => c.TitlePage == TitleSelectedPage);
             return checkFriendVM.InfoCommand.ExecuteAsync();
         }
 
-        private Task showNoticeSelectFriend()
+        private Task ShowNoticeSelectFriend()
         {
             return CurrentPage.DisplayAlert(
                 "Упссс",
@@ -321,7 +286,7 @@ namespace Scanner.ViewModels.Scanner.Checks
                 "Ок");
         }
 
-        private Task<string> showSelectQuantity(int maxQuantity)
+        private Task<string> ShowSelectQuantity(int maxQuantity)
         {
             var numbers = Enumerable.Range(1, maxQuantity).Select(n => n.ToString()).ToArray();
 
@@ -332,7 +297,7 @@ namespace Scanner.ViewModels.Scanner.Checks
                 numbers);
         }
 
-        private Task<bool> showCreateNewCheck()
+        private Task<bool> ShowCreateNewCheck()
         {
             return CurrentPage.DisplayAlert(
                    "Упсс",

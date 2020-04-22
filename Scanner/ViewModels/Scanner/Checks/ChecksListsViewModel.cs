@@ -15,23 +15,18 @@ namespace Scanner.ViewModels.Scanner.Checks
         public ChecksListsViewModel(ObservableCollection<ChecksListViewModel> checks) : base()
         {
             Checks = checks;
-            var commonChecksVM = new CommonChecksListViewModel(this);
-            var myChecksVM = new MyChecksListViewModel(this);
+            Checks.Add(new CommonChecksListViewModel() { Title = AppConstants.NAME_PAGE_COMMON_CHECKS });
+            Checks.Add(new MyChecksListViewModel() { Title = AppConstants.NAME_PAGE_MY_CHECKS });
 
-            commonChecksVM.Title = AppConstants.NAME_PAGE_COMMON_CHECKS;
-            myChecksVM.Title = AppConstants.NAME_PAGE_MY_CHECKS;
-            Checks.Add(commonChecksVM);
-            Checks.Add(myChecksVM);
-
-            SearchCommand = new AsyncCommand<string>(search);
-            InfoCommand = new AsyncCommand(showInfo);
+            SearchCommand = new AsyncCommand<string>(Search);
+            InfoCommand = new AsyncCommand(ShowInfo);
         }
 
-        public ObservableCollection<ChecksListViewModel> Checks { get; set; }
+        public ObservableCollection<ChecksListViewModel> Checks { get; }
         public new TabbedPage CurrentPage { get; set; }
         public new INavigation Navigation { get => CurrentPage.Navigation; }
-        public IAsyncCommand<string> SearchCommand { get; set; }
-        public IAsyncCommand InfoCommand { get; set; }
+        public IAsyncCommand<string> SearchCommand { get; }
+        public IAsyncCommand InfoCommand { get; }
 
         public Task AddToCommonChecks(FriendsChecksViewModel friendsChecksVM)
         {
@@ -48,7 +43,7 @@ namespace Scanner.ViewModels.Scanner.Checks
         }
 
         //TODO: Возможно это можно сделать как нибудь в xaml
-        private Task search(string searchText)
+        private Task Search(string searchText)
         {
             var currentChecksVM = (ChecksListViewModel)CurrentPage.SelectedItem;
 
@@ -58,7 +53,7 @@ namespace Scanner.ViewModels.Scanner.Checks
         }
 
         //TODO: Возможно это можно сделать как нибудь в xaml
-        private Task showInfo()
+        private Task ShowInfo()
         {
             var currentChecksVM = (ChecksListViewModel)CurrentPage.SelectedItem;
 

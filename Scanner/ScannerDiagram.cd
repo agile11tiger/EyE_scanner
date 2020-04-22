@@ -1,0 +1,612 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Comment CommentText="ObservableCollection &lt;CheckItemViewModel&gt;">
+    <Position X="34.888" Y="2.015" Height="0.497" Width="1.711" />
+  </Comment>
+  <Class Name="Scanner.Behaviors.MaskedBehavior" Collapsed="true">
+    <Position X="28.75" Y="24.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAgAIAABAgAAAgAAAACAAAAAgAA=</HashCode>
+      <FileName>Behaviors\MaskedBehavior.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Scanner.Controls.GradientLabel" Collapsed="true">
+    <Position X="28.75" Y="22" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAQAAAAAAAAAAIAAAAAAQAAAAAAAAAAAAIAAAAAAAA=</HashCode>
+      <FileName>Controls\GradientLabel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Scanner.Extensions.AsyncCommand" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="26.5" Y="23" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAQAACAAAAAMQEAABAAAAAAAABAAAAAAAAAEA=</HashCode>
+      <FileName>Extensions\AsyncCommand.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Scanner.Extensions.AsyncCommand&lt;T&gt;" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="26.5" Y="22" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAQAACAAAAAMQEAABAAAAAAAABAAAAAAAAAEA=</HashCode>
+      <FileName>Extensions\AsyncCommand.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Scanner.Extensions.ImageResourceExtension" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="28.75" Y="23" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAACAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Extensions\ImageResourceExtension.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Scanner.Extensions.TaskExtension" Collapsed="true">
+    <Position X="24.5" Y="24" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIA=</HashCode>
+      <FileName>Extensions\TaskExtension.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Scanner.Messages.CommonMessages" Collapsed="true">
+    <Position X="24.5" Y="23" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAIAAAAAABAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Messages\CommonMessages.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Scanner.Models.CashQRCode" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="24" Y="11" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAADAAAAAAAAAAAAAAAAAEwAAMAAAAQAAgAAAAAAgEA=</HashCode>
+      <FileName>Models\CashQRCode.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Scanner.Models.ScannerSettings" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="8.75" Y="16.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAIACBCAAAAAAAAAAFAABA=</HashCode>
+      <FileName>Models\ScannerSettings.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Scanner.Services.AudioPlayer" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="28.75" Y="24" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAgAAAAIAAAAAAAAAAAAAAAAAAAAAgAAAAQAAAAA=</HashCode>
+      <FileName>Services\AudioPlayer.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Scanner.Services.ImageHelper" Collapsed="true">
+    <Position X="22" Y="18" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Services\ImageHelper.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Scanner.Services.ScannerHelper" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="25.25" Y="14.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAAAAAAAgAAAAAAAAAAAAAAIAAAAEAAAAAQAAg=</HashCode>
+      <FileName>Services\ScannerHelper.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.105" Collapsed="true" />
+  </Class>
+  <Class Name="Scanner.Services.SQLiteAsyncDataBase" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="24.5" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAABEIAAACAAAAABAAAAAAAAAAIAQAAA=</HashCode>
+      <FileName>Services\SQLiteAsyncDataBase.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Scanner.ViewModels.Authorization.FNSSignViewModel" Collapsed="true">
+    <Position X="15" Y="3.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModels\Authorization\FNSSignViewModel.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="FNS" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Scanner.ViewModels.Authorization.ForgotPasswordViewModel" Collapsed="true">
+    <Position X="11.5" Y="4.75" Width="2.25" />
+    <AssociationLine Name="signInPage" Type="Scanner.Views.Authorization.SignInPage" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="13.75" Y="5" />
+        <Point X="14.125" Y="5" />
+        <Point X="14.125" Y="6.531" />
+        <Point X="15.25" Y="6.531" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAIAAAAAAAAAAAAAAAAAAAAAAEAAAQAAAAAAAQA=</HashCode>
+      <FileName>ViewModels\Authorization\ForgotPasswordViewModel.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="signInPage" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Scanner.ViewModels.Authorization.SignInViewModel" Collapsed="true">
+    <Position X="15.25" Y="4.75" Width="1.5" />
+    <InheritanceLine Type="Scanner.ViewModels.Authorization.FNSSignViewModel" ManuallyRouted="true" FixedToPoint="true">
+      <Path>
+        <Point X="15.875" Y="3.941" />
+        <Point X="15.875" Y="4.345" />
+        <Point X="15.875" Y="4.345" />
+        <Point X="15.875" Y="4.75" />
+      </Path>
+    </InheritanceLine>
+    <AssociationLine Name="forgotPasswordPage" Type="System.Lazy&lt;T&gt;" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="15.25" Y="5.125" />
+        <Point X="14.875" Y="5.125" />
+        <Point X="14.875" Y="6.031" />
+        <Point X="14.208" Y="6.031" Type="JumpStart" />
+        <Point X="14.042" Y="6.031" Type="JumpEnd" />
+        <Point X="13" Y="6.031" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAACAAAACAAAAAAAAAAoAgAAAAgAAAAAAAAAAABA=</HashCode>
+      <FileName>ViewModels\Authorization\SignInViewModel.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="forgotPasswordPage" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Scanner.ViewModels.Authorization.SignUpViewModel" Collapsed="true">
+    <Position X="18.25" Y="4.75" Width="1.75" />
+    <AssociationLine Name="signInPage" Type="Scanner.Views.Authorization.SignInPage" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="18.25" Y="5.062" />
+        <Point X="17.875" Y="5.062" />
+        <Point X="17.875" Y="6.563" />
+        <Point X="16.75" Y="6.563" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>CAAAACIAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModels\Authorization\SignUpViewModel.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="signInPage" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Scanner.ViewModels.Authorization.SignViewModel" Collapsed="true">
+    <Position X="13" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABACAAAAACAAABAAAAAAAAQAAAAAAAACAAQAIAAAAAg=</HashCode>
+      <FileName>ViewModels\Authorization\SignViewModel.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Sign" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Scanner.ViewModels.Scanner.Checks.CheckItemViewModel" Collapsed="true">
+    <Position X="37" Y="2" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAACQAAAAUEAAAACgAAAAgQAAAAAAAAAAQAAgAAAABQ=</HashCode>
+      <FileName>ViewModels\Scanner\Checks\CheckItemViewModel.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Scanner.ViewModels.Scanner.Checks.ChecksListsViewModel" Collapsed="true">
+    <Position X="27.75" Y="6.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAgAAAgggAAABAAABAAAAAAAAAAAAAAAAAAgQAI=</HashCode>
+      <FileName>ViewModels\Scanner\Checks\ChecksListsViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Scanner.ViewModels.Scanner.Checks.ChecksListViewModel" Collapsed="true">
+    <Position X="27.5" Y="3.5" Width="2.5" />
+    <InheritanceLine Type="Scanner.ViewModels.ListViewModel&lt;T&gt;" FixedToPoint="true">
+      <Path>
+        <Point X="28.625" Y="1.691" />
+        <Point X="28.625" Y="3.5" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAIAAQAAAAgAgAAABAAABAAAAAAAAAAgAABAAAAgAAA=</HashCode>
+      <FileName>ViewModels\Scanner\Checks\ChecksListViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Scanner.ViewModels.Scanner.Checks.CommonChecksListViewModel" Collapsed="true">
+    <Position X="24.5" Y="5" Width="2.5" />
+    <InheritanceLine Type="Scanner.ViewModels.Scanner.Checks.ChecksListViewModel" FixedToPoint="true">
+      <Path>
+        <Point X="28.75" Y="4.191" />
+        <Point X="28.75" Y="4.625" />
+        <Point X="25.75" Y="4.625" />
+        <Point X="25.75" Y="5" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModels\Scanner\Checks\CommonChecksListViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Scanner.ViewModels.Scanner.Checks.FriendCheckViewModel" Collapsed="true">
+    <Position X="30.5" Y="2" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAACAgAHABABAgABAIAAAAAAAAAAAAAAAAAhBA=</HashCode>
+      <FileName>ViewModels\Scanner\Checks\FriendCheckViewModel.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="FriendVM" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Scanner.ViewModels.Scanner.Checks.FriendsChecksViewModel" Collapsed="true">
+    <Position X="30.5" Y="1" Width="2" />
+    <TypeIdentifier>
+      <HashCode>4AogQAgBgEgwwaiARAAAIAEAABgCAAQAgAAAMAkQwQI=</HashCode>
+      <FileName>ViewModels\Scanner\Checks\FriendsChecksViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Scanner.ViewModels.Scanner.Checks.HistoryChecksListViewModel" Collapsed="true">
+    <Position X="27.5" Y="5" Width="2.25" />
+    <InheritanceLine Type="Scanner.ViewModels.Scanner.Checks.ChecksListViewModel" FixedToPoint="true">
+      <Path>
+        <Point X="28.75" Y="4.191" />
+        <Point X="28.75" Y="5" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModels\Scanner\Checks\HistoryChecksListViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Scanner.ViewModels.Scanner.Checks.MyChecksListViewModel" Collapsed="true">
+    <Position X="30.25" Y="5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModels\Scanner\Checks\MyChecksListViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Scanner.ViewModels.Scanner.Checks.WaitingChecksListViewModel" Collapsed="true">
+    <Position X="33.25" Y="5" Width="3" />
+    <AssociationLine Name="UserAccountFNS" Type="Scanner.ViewModels.UserAccountFNSViewModel" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="34.688" Y="5.691" />
+        <Point X="34.688" Y="9.634" />
+        <Point X="20.333" Y="9.634" Type="JumpStart" />
+        <Point X="20.167" Y="9.634" Type="JumpEnd" />
+        <Point X="9.688" Y="9.634" />
+        <Point X="9.688" Y="3.941" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>EAIgAQAIAAhAAAAABAAABAAAAAAAAAAAAAgAEAIAAAA=</HashCode>
+      <FileName>ViewModels\Scanner\Checks\WaitingChecksListViewModel.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="UserAccountFNS" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Scanner.ViewModels.Scanner.Friends.FriendsViewModel" Collapsed="true">
+    <Position X="22.75" Y="3.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAMAAQCAAAgAgAAARAAABAAAAAAAAAAAAAAAAAAgAAE=</HashCode>
+      <FileName>ViewModels\Scanner\Friends\FriendsViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Scanner.ViewModels.Scanner.Friends.FriendViewModel" Collapsed="true">
+    <Position X="33" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAABAAAAAgAAAAAQAAAAAABAACAAAIAAAAAA=</HashCode>
+      <FileName>ViewModels\Scanner\Friends\FriendViewModel.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.1" />
+  </Class>
+  <Class Name="Scanner.ViewModels.Scanner.QRCodes.CashQRCodeViewModel" Collapsed="true">
+    <Position X="19" Y="11" Width="4" />
+    <TypeIdentifier>
+      <HashCode>AAQACEAIAAAAAAAAAAEAAEgAAEAAIAQAAAAAEAAAgEA=</HashCode>
+      <FileName>ViewModels\Scanner\QRCodes\CashQRCodeViewModel.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="CashQRCode" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Scanner.ViewModels.Scanner.QRCodes.CodeViewModel&lt;Request, Result&gt;" Collapsed="true">
+    <Position X="19" Y="12" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAACAAEAAAAAQAABAAgAAAAAAAABAAAAAQAAAAAAAA=</HashCode>
+      <FileName>ViewModels\Scanner\QRCodes\CodeViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Scanner.ViewModels.Scanner.ScannerSettingsViewModel" Collapsed="true">
+    <Position X="8.75" Y="17" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>EAAAGAgCCAAAACAAAQEAIAAAAACAAAEAoAAIAAEAAAA=</HashCode>
+      <FileName>ViewModels\Scanner\ScannerSettingsViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Scanner.ViewModels.Scanner.ScannerViewModel" Collapsed="true">
+    <Position X="19" Y="14" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>BE6QIGRCiXkICSkiBAEhAiAIgAEAJDARAsEAEQUAIJg=</HashCode>
+      <FileName>ViewModels\Scanner\ScannerViewModel.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="scannerHelper" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Scanner.ViewModels.AppShellViewModel" Collapsed="true">
+    <Position X="19" Y="18" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AoBAAAAAAAAAQCAAAAAAAAAYAQAAAAAAAAQAQoAABAA=</HashCode>
+      <FileName>ViewModels\AppShellViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Scanner.ViewModels.ListViewModel&lt;T&gt;" Collapsed="true">
+    <Position X="27.75" Y="1" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAIAAwAAAAAABAACAAAABAAAAAAAAAAAAAAAAAAAAAI=</HashCode>
+      <FileName>ViewModels\ListViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Scanner.ViewModels.MainPageViewModel" Collapsed="true">
+    <Position X="19" Y="16" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAIAAAAAQAABAEAgAQAAAAAAAAAIAAAQABAAAA=</HashCode>
+      <FileName>ViewModels\MainPageViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Scanner.ViewModels.UserAccountFNSViewModel" Collapsed="true">
+    <Position X="8.75" Y="3.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAyAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAA=</HashCode>
+      <FileName>ViewModels\UserAccountFNSViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Scanner.ViewModels.WaitingListViewModel&lt;T&gt;" Collapsed="true">
+    <Position X="33.75" Y="3.5" Width="2" />
+    <InheritanceLine Type="Scanner.ViewModels.ListViewModel&lt;T&gt;" FixedFromPoint="true">
+      <Path>
+        <Point X="28.625" Y="1.691" />
+        <Point X="28.625" Y="3.125" />
+        <Point X="34.75" Y="3.125" />
+        <Point X="34.75" Y="3.5" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAgAAAAAABAAAABgAAAAAAAAAAAAAEAAAgAAAAAAAA=</HashCode>
+      <FileName>ViewModels\WaitingListViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Scanner.Views.Authorization.AuthorizationPage" Collapsed="true">
+    <Position X="16.25" Y="8.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Views\Authorization\AuthorizationPage.xaml.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Scanner.Views.Authorization.ForgotPasswordPage" Collapsed="true">
+    <Position X="11.5" Y="6.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Views\Authorization\ForgotPasswordPage.xaml.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Scanner.Views.Authorization.SignInPage" Collapsed="true">
+    <Position X="15.25" Y="6.25" Width="1.5" />
+    <AssociationLine Name="ViewModel" Type="Scanner.ViewModels.Authorization.SignInViewModel" FixedFromPoint="true">
+      <Path>
+        <Point X="16" Y="6.25" />
+        <Point X="16" Y="5.441" />
+      </Path>
+      <MemberNameLabel ManuallyPlaced="true" ManuallySized="true">
+        <Position X="0.151" Y="0.046" Height="0.182" Width="0.922" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Views\Authorization\SignInPage.xaml.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="ViewModel" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Scanner.Views.Authorization.SignUpPage" Collapsed="true">
+    <Position X="18.25" Y="6.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Views\Authorization\SignUpPage.xaml.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="ViewModel" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Scanner.Views.Scanner.Checks.ChecksTabbedPage" Collapsed="true">
+    <Position X="17" Y="15" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAQAAAAAAAAABAAAAAAAAAAAAA=</HashCode>
+      <FileName>Views\Scanner\Checks\ChecksTabbedPage.xaml.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="viewModel" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Scanner.Views.Scanner.Checks.CheckTabbedPage" Collapsed="true">
+    <Position X="30" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Views\Scanner\Checks\CheckTabbedPage.xaml.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Scanner.Views.Scanner.Checks.WaitingChecksPage" Collapsed="true">
+    <Position X="21" Y="15" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAACAgAAAAAAAAQAAAAAAAAAAAAAAAAAAAABAA=</HashCode>
+      <FileName>Views\Scanner\Checks\WaitingChecksPage.xaml.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="viewModel" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Scanner.Views.Scanner.Friends.FriendPage" Collapsed="true">
+    <Position X="11.25" Y="17" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Views\Scanner\Friends\FriendPage.xaml.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Scanner.Views.Scanner.Friends.FriendsPage" Collapsed="true">
+    <Position X="11.25" Y="18" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAgAAAAAAAAAAAAAEAAAABAAAAAAAAAABAA=</HashCode>
+      <FileName>Views\Scanner\Friends\FriendsPage.xaml.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Scanner.Views.Scanner.QRCodes.ManualScanPage" Collapsed="true">
+    <Position X="19" Y="13" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAYCAABACAAQIAABARAACAIAAAAABAACAEA=</HashCode>
+      <FileName>Views\Scanner\QRCodes\ManualScanPage.xaml.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Scanner.Views.Scanner.ScannerPage" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="19" Y="15" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAACAgAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Views\Scanner\ScannerPage.xaml.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Scanner.Views.Scanner.ScannerSettingsPage" Collapsed="true">
+    <Position X="8.75" Y="18" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAEAACAAAAAAAAAAQAEAAAAAAAAAAAAAAAIAAAAA=</HashCode>
+      <FileName>Views\Scanner\ScannerSettingsPage.xaml.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Scanner.Views.Scanner.CodeGenerationPage" Collapsed="true">
+    <Position X="13.25" Y="18" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Views\Scanner\СodeGenerationPage.xaml.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Scanner.Views.MainPage" Collapsed="true">
+    <Position X="19" Y="17" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Views\MainPage.xaml.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Scanner.App" Collapsed="true">
+    <Position X="19" Y="20" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAQAABAAAAgQEAAAAAEAAAAIAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>App.xaml.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Scanner.AppConstants" Collapsed="true">
+    <Position X="24.5" Y="22" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAABBAAAEAAAAAgQAAAAAAAAAQAAAAAAACAAAAgAA=</HashCode>
+      <FileName>AppConstants.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Scanner.AppShell" Collapsed="true">
+    <Position X="19" Y="19" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>AppShell.xaml.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Scanner.CommonModule" Collapsed="true">
+    <Position X="22.75" Y="22" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAgAAQAIgAAAIABAAAAAAAAAAAAAAEAAAAAAAAAAA=</HashCode>
+      <FileName>CommonModule.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Scanner.Models.Sign" Collapsed="true">
+    <Position X="15.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACABAAACAAAAAAAAAAAAQAAAAAAAACAAQAIAAAAAg=</HashCode>
+      <FileName>Models\Sign.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="VerificationCheck.Core.FNS" Collapsed="true">
+    <Position X="18" Y="3.25" Width="2" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="Scanner.ViewModels.Authorization.AuthorizationViewModel" Collapsed="true">
+    <Position X="16.25" Y="7.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAACIAAAgAAAAABCAACAAAgAAAAAAAgAAAAAAAAAA=</HashCode>
+      <FileName>ViewModels\Authorization\AuthorizationViewModel.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="signInPage" />
+      <Field Name="signUpPage" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="System.Lazy&lt;T&gt;" Collapsed="true">
+    <Position X="11.5" Y="5.75" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Interface Name="Scanner.Extensions.Interfaces.IAsyncCommand" Collapsed="true">
+    <Position X="35.75" Y="22" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAEA=</HashCode>
+      <FileName>Extensions\Interfaces\IAsyncCommand.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Scanner.Extensions.Interfaces.IAsyncCommand&lt;T&gt;" Collapsed="true">
+    <Position X="35.75" Y="23" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAEA=</HashCode>
+      <FileName>Extensions\Interfaces\IAsyncCommand.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Scanner.Extensions.Interfaces.IErrorHandler" Collapsed="true">
+    <Position X="35.75" Y="23.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Extensions\Interfaces\IErrorHandler.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Scanner.Models.Iterfaces.ICode" Collapsed="true">
+    <Position X="33.75" Y="23" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAAAAAAAAAAAAAAAAQAAAAAAAAAAgAAAAAAAAA=</HashCode>
+      <FileName>Models\Interfaces\ICode.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Scanner.Services.Interfaces.IAsyncDatabase" Collapsed="true">
+    <Position X="22.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEIAAACAAAAABAAAAAAAAAAIAQAAA=</HashCode>
+      <FileName>Services\Interfaces\IAsyncDatabase.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Scanner.Services.Interfaces.IPlayer" Collapsed="true">
+    <Position X="33.75" Y="22" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAA=</HashCode>
+      <FileName>Services\Interfaces\IPlayer.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Scanner.Services.Interfaces.IScannerHelper" Collapsed="true">
+    <Position X="25.25" Y="14" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAgAAAAAAAAAAAAAAIAAAAEAAAAAAAAg=</HashCode>
+      <FileName>Services\Interfaces\IScannerHelper.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Scanner.Services.Interfaces.IZxingImageHelper" Collapsed="true">
+    <Position X="31.5" Y="22" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAgAAA=</HashCode>
+      <FileName>Services\Interfaces\IZxingImageHelper.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

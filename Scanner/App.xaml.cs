@@ -21,7 +21,7 @@ namespace Scanner
         public App(NinjectModule phoneModule)
         {
             InitializeComponent();
-            AppDomain.CurrentDomain.UnhandledException += processException;
+            AppDomain.CurrentDomain.UnhandledException += ProcessException;
             var settings = new NinjectSettings() { LoadExtensions = false };
             var verificationCheckModule = new VerificationCheckModule();
             var commonModule = new CommonModule();
@@ -29,11 +29,11 @@ namespace Scanner
             var container = new StandardKernel(settings, phoneModule);
             Container = VerificationCheckModule.Container = container;
             Container.Load(verificationCheckModule, commonModule);
-
+            CreateInAdvance();
             MainPage = Container.Get<AppShell>();
         }
 
-        private void createInAdvance()
+        private void CreateInAdvance()
         {
             #region чтобы не было циклической зависимости(можно было и через Lazy, но там больше строчек писать надо)
             //при создание СashQRCodeViewModel, который зависит от WaitingChecksListViewModel и ChecksListsViewModel,
@@ -46,7 +46,7 @@ namespace Scanner
             #endregion
         }
 
-        private void processException(object sender, UnhandledExceptionEventArgs args)
+        private void ProcessException(object sender, UnhandledExceptionEventArgs args)
         {
             //TODO: Добавить глобальный обработчик ошибок
             //Console.WriteLine((args.ExceptionObject as Exception).StackTrace);

@@ -42,13 +42,11 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <!--Сканнер не обрабатывает изменения Options, когда IsScanning == true, а отключить его я не могу, так как он потом не включиться
-        Поэтому привязка не имеет смысла-->
         <zxing:ZXingScannerView x:Name="scanner"
                                 Grid.RowSpan="3"
                                 Grid.ColumnSpan="3"
                                 Options="{Binding ScannerSettingsVM.Settings.Options}"
-                                IsScanning="{Binding IsZxingScanning}"
+                                IsScanning="{Binding IsScanning}"
                                 IsAnalyzing="{Binding IsAnalyzing}"
                                 IsTorchOn="{Binding IsTorchOn}"
                                 ScanResultCommand="{Binding ProcessScanResultCommand}"/>

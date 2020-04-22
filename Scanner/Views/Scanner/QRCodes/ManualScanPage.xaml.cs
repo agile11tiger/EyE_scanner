@@ -1,4 +1,6 @@
-﻿using Scanner.ViewModels.Scanner.QRCodes;
+﻿using Ninject;
+using Scanner.Models;
+using Scanner.ViewModels.Scanner.QRCodes;
 
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -8,43 +10,48 @@ namespace Scanner.Views.Scanner.QRCodes
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class ManualScanPage : ContentPage
     {
-        CashQRCodeViewModel viewModel;
+        private readonly CashQRCodeViewModel viewModel;
 
-        public ManualScanPage()
+        public ManualScanPage(CashQRCodeViewModel cashQRCodeVM)
         {
             InitializeComponent();
 
             fiscalNumberEntry.Completed += (sender, e) => fiscalDocumentEntry.Focus();
             fiscalDocumentEntry.Completed += (sender, e) => fiscalSignDocumentEntry.Focus();
             fiscalSignDocumentEntry.Completed += (sender, e) => dateTimeEntry.Focus();
-        }
 
-        protected override void OnAppearing()
-        {
-            var cashQRCodeVM = new CashQRCodeViewModel();
             cashQRCodeVM.CurrentPage = this;
             BindingContext = viewModel = cashQRCodeVM;
-            OnBindingContextChanged();
-            base.OnAppearing();
         }
 
-        protected override void OnDisappearing()
-        {
-            //Так как эта страница переиспользуется нужно убрать видимость PlaceHolder Label-ов
-            //И установить видимость самих PlaceHolder-ов
-            fiscalNumberLabel.IsVisible = false;
-            fiscalNumberEntry.PlaceholderColor = Color.Default;
-            fiscalDocumentLabel.IsVisible = false;
-            fiscalDocumentEntry.PlaceholderColor = Color.Default;
-            fiscalSignDocumentLabel.IsVisible = false;
-            fiscalSignDocumentEntry.PlaceholderColor = Color.Default;
-            dateTimeLabel.IsVisible = false;
-            dateTimeEntry.PlaceholderColor = Color.Default;
-            checkAmountLabel.IsVisible = false;
-            checkAmountEntry.PlaceholderColor = Color.Default;
-            base.OnDisappearing();
-        }
+        #region
+        //TODO: Если нужно переиспользование
+        //protected override void OnAppearing()
+        //{
+        //    var cashQRCodeVM = App.Container.Get<CashQRCodeViewModel>();
+        //    cashQRCodeVM.CurrentPage = this;
+        //    BindingContext = viewModel = cashQRCodeVM;
+        //    OnBindingContextChanged();
+        //    base.OnAppearing();
+        //}
 
+        //protected override void OnDisappearing()
+        //{
+        //    //Так как эта страница переиспользуется нужно убрать видимость PlaceHolder Label-ов
+        //    //И установить видимость самих PlaceHolder - ов
+        //    fiscalNumberLabel.IsVisible = false;
+        //    fiscalNumberEntry.PlaceholderColor = Color.Default;
+        //    fiscalDocumentLabel.IsVisible = false;
+        //    fiscalDocumentEntry.PlaceholderColor = Color.Default;
+        //    fiscalSignDocumentLabel.IsVisible = false;
+        //    fiscalSignDocumentEntry.PlaceholderColor = Color.Default;
+        //    dateTimeLabel.IsVisible = false;
+        //    dateTimeEntry.PlaceholderColor = Color.Default;
+        //    checkAmountLabel.IsVisible = false;
+        //    checkAmountEntry.PlaceholderColor = Color.Default;
+        //    base.OnDisappearing();
+        //}
+        #endregion
         private void FiscalNumberEntry_Focused(object sender, FocusEventArgs e)
         {
             fiscalNumberEntry.PlaceholderColor = Color.Transparent;

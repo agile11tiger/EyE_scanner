@@ -12,7 +12,6 @@
        FlyoutBackgroundColor="LightGray"
        Title="Scanner">
 
-    
     <Shell.Resources>
         <ResourceDictionary>
             <Color x:Key="NavigationPrimary">#2196F3</Color>
@@ -60,7 +59,7 @@
                     </magic:GradientView>
                     
                     <Button Grid.ColumnSpan="2" 
-                            Text="{Binding UserAccount.TextAuthorizationButton}"
+                            Text="Авторизоваться"
                             VerticalOptions="Fill"
                             HorizontalOptions="Fill"
                             BackgroundColor="Transparent"

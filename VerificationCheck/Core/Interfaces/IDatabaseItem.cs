@@ -1,6 +1,6 @@
 ﻿namespace VerificationCheck.Core.Interfaces
 {
-    public interface IDBItem
+    public interface IDatabaseItem
     {
         int Id { get; set; }
     }

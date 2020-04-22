@@ -4,7 +4,7 @@ namespace Scanner.ViewModels.Scanner.Checks
 {
     public class MyChecksListViewModel : ChecksListViewModel
     {
-        public MyChecksListViewModel(ChecksListsViewModel checksListsVM) : base(checksListsVM)
+        public MyChecksListViewModel() : base()
         {
         }
     }

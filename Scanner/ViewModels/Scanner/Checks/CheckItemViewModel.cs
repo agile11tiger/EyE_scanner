@@ -16,7 +16,7 @@ namespace Scanner.ViewModels.Scanner.Checks
             this.markBoxImage = markBoxImage;
         }
 
-        private CheckItem checkItem;
+        private readonly CheckItem checkItem;
         private ImageSource markBoxImage;
         private double selectedQuantity;
         public int Id { get; set; }

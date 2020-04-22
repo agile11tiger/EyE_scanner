@@ -9,7 +9,7 @@ namespace Scanner.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class MainPage : ContentPage
     {
-        public MainPage(MainPageViewModel viewModel)
+        public MainPage(MainPageViewModel viewModel, ScannerPage scannerPage)
         {
             InitializeComponent();
             viewModel.CurrentPage = this;
@@ -17,8 +17,7 @@ namespace Scanner.Views
 
 
             //Приходиться делать так из-за бага "Чёрный экран" в MainPageViewModel
-            var scannerPAge = App.Container.Get<ScannerPage>();
-            Navigation.PushAsync(scannerPAge);
+            Navigation.PushAsync(scannerPage);
         }
     }
 }

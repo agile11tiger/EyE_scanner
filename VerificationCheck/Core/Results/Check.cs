@@ -11,7 +11,7 @@ namespace VerificationCheck.Core.Results
     /// Непосредственно сам чек. В разных чеках по разному заполнены параметры.
     /// </summary>
     [DataContract]
-    public class Check : Interfaces.ISerializable, IDBItem
+    public class Check : Interfaces.ISerializable, IDatabaseItem
     {
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
@@ -165,6 +165,7 @@ namespace VerificationCheck.Core.Results
         public List<object> Properties { get; set; }
         #endregion
 
+        #region ISerializable
         /// <summary>
         /// При добавление текущего класса в бд нужно сериализовывать
         /// </summary>
@@ -180,5 +181,6 @@ namespace VerificationCheck.Core.Results
         {
             Items = JsonConvert.DeserializeObject<List<CheckItem>>(ItemsJson, Interfaces.ISerializable.JsonSettings);
         }
+        #endregion
     }
 }

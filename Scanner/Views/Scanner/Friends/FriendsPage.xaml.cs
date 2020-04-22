@@ -15,22 +15,30 @@ namespace Scanner.Views.Scanner.Friends
             InitializeComponent();
             viewModel.CurrentPage = this;
 
+            BindingContext = ViewModel = viewModel;
+        }
+
+        private bool block;
+        protected override void OnAppearing()
+        {
             //TODO: убрать
             #region создания друзей(потом убрать)
-            for (var i = 0; i < 15; i++)
+            if(!block)
             {
-                var f = new FriendViewModel()
+                for (var i = 0; i < 15; i++)
                 {
-                    Id = i,
-                    Name = "Вася" + i,
-                    Phone = "+78768687",
-                    Image = ImageSource.FromResource("Scanner.Resources.Images.filka.jpg")
-                };
-                viewModel.List.Add(f);
+                    var f = new FriendViewModel()
+                    {
+                        Id = i,
+                        Name = "Вася" + i,
+                        Phone = "+78768687",
+                        Image = ImageSource.FromResource("Scanner.Resources.Images.filka.jpg")
+                    };
+                    ViewModel.List.Add(f);
+                }
             }
             #endregion
-
-            BindingContext = ViewModel = viewModel;
+            base.OnAppearing();
         }
 
         private void SearchBar_TextChanged(object sender, TextChangedEventArgs e)

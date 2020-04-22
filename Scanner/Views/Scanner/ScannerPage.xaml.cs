@@ -6,9 +6,9 @@ using Xamarin.Forms.Xaml;
 namespace Scanner.Views.Scanner
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class ScannerPage : ContentPage, IDisposable
+    public partial class ScannerPage : ContentPage
     {
-        ScannerViewModel viewModel;
+        private readonly ScannerViewModel viewModel;
 
         public ScannerPage(ScannerViewModel scannerVM)
         {
@@ -16,7 +16,7 @@ namespace Scanner.Views.Scanner
             scannerVM.CurrentPage = this;
             scannerVM.CashQRCodeVM.CurrentPage = this;
 
-            //scannerVM.Corner = corner;   //убрать
+            //scannerVM.Corner = corner;   //TODO: убрать
             //scannerVM.Scanner = scanner;  // убрать
 
             scannerVM.TorchImage = ImageSource.FromResource("Scanner.Resources.Images.Scanner.torch_off.png");
@@ -25,16 +25,10 @@ namespace Scanner.Views.Scanner
             BindingContext = viewModel = scannerVM;
         }
 
-        public void Dispose()
-        {
-            viewModel.Dispose();
-        }
-
         protected override void OnAppearing()
         {
             base.OnAppearing();
             viewModel.ScannerSwitchCommand.Execute(true);
-            viewModel.IsZxingScanning = true;
             viewModel.RunAnimationCommand.Execute(null);
         }
 

@@ -14,7 +14,7 @@ namespace VerificationCheck.Core
     /// </summary>
     public class FNS
     {
-        private HttpClient client;
+        private readonly HttpClient client;
 
         public FNS()
         {
@@ -48,7 +48,7 @@ namespace VerificationCheck.Core
 
             var response = await client.PostAsync(Urls.Registration, requestContent);
 
-            return await getResultAsync(response);
+            return await GetResultAsync(response);
         }
 
         /// <summary>
@@ -59,11 +59,11 @@ namespace VerificationCheck.Core
         /// <returns>Возвращает адрес электронной почты и имя указанные при регистрации</returns>
         public async Task<Result> LoginAsync(string phone, string password)
         {
-            addAuthorizationTokenToHeaders(phone, password);
+            AddAuthorizationTokenToHeaders(phone, password);
 
             var response = await client.GetAsync(Urls.Login);
 
-            return await getResultAsync(response);
+            return await GetResultAsync(response);
         }
 
         /// <summary>
@@ -82,7 +82,7 @@ namespace VerificationCheck.Core
 
             var response = await client.PostAsync(Urls.Restore, requestContent);
 
-            return await getResultAsync(response);
+            return await GetResultAsync(response);
         }
 
         /// <summary>
@@ -122,8 +122,8 @@ namespace VerificationCheck.Core
         /// <returns>Возвращает информацию по чеку</returns>
         public async Task<CheckResult> ReceiveAsync(string fiscalNumber, string fiscalDocument, string fiscalSign, string phone, string password)
         {
-            addAuthorizationTokenToHeaders(phone, password);
-            addRequiredHeaders();
+            AddAuthorizationTokenToHeaders(phone, password);
+            AddRequiredHeaders();
 
             var response = await client.GetAsync(Urls.GetReceiveUrl(fiscalNumber, fiscalDocument, fiscalSign));
             var result = new CheckResult
@@ -143,7 +143,7 @@ namespace VerificationCheck.Core
             return result;
         }
 
-        private async Task<Result> getResultAsync(HttpResponseMessage response) => new Result
+        private async Task<Result> GetResultAsync(HttpResponseMessage response) => new Result
         {
             IsSuccess = response.IsSuccessStatusCode,
             Message = await response.Content.ReadAsStringAsync(),
@@ -153,7 +153,7 @@ namespace VerificationCheck.Core
         /// <summary>
         /// Некоторые методы требуют специальных заголовков. Данный метод добавляет их.
         /// </summary>
-        private void addRequiredHeaders()
+        private void AddRequiredHeaders()
         {
             if (!client.DefaultRequestHeaders.Contains("Device-Id"))
             {
@@ -167,7 +167,7 @@ namespace VerificationCheck.Core
         /// </summary>
         /// <param name="phone">Номер телефона для авторизации</param>
         /// <param name="password">Пароль пользователя для авторизации</param>
-        private void addAuthorizationTokenToHeaders(string phone, string password)
+        private void AddAuthorizationTokenToHeaders(string phone, string password)
         {
             if (string.IsNullOrWhiteSpace(phone))
             {

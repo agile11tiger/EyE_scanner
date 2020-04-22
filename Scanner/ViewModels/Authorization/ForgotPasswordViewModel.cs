@@ -16,26 +16,27 @@ namespace Scanner.ViewModels.Authorization
     /// </summary>
     public class ForgotPasswordViewModel : FNSSignViewModel
     {
-        public ForgotPasswordViewModel(FNS fns, Func<Sign, Task> syncWithUserAccount, Sign sign) : base(fns, syncWithUserAccount, sign)
+        public ForgotPasswordViewModel(FNS fns, Sign sign, SignInPage signInPage) : base(fns, sign)
         {
-            RestorePasswordCommand = new AsyncCommand(restorePassword);
+            this.signInPage = signInPage;
+            RestorePasswordCommand = new AsyncCommand(RestorePassword);
         }
 
+        private readonly SignInPage signInPage;
         public IAsyncCommand RestorePasswordCommand { get; set; }
 
-        private async Task restorePassword()
+        private async Task RestorePassword()
         {
-            if (await tryRestorePassword())
+            if (await TryRestorePassword())
             {
-                var signInPage = App.Container.Get<SignInPage>();
                 signInPage.ViewModel.Phone = Phone;
                 await Navigation.PushAsync(signInPage).ConfigureAwait(false);
             }
         }
 
-        private async Task<bool> tryRestorePassword()
+        private async Task<bool> TryRestorePassword()
         {
-            var phone = Regex.Replace(Phone, @"[^+\d]", "");
+            var phone = ParsePhone();
 
             if (string.IsNullOrWhiteSpace(phone))
             {
@@ -44,18 +45,7 @@ namespace Scanner.ViewModels.Authorization
             }
 
             var task = FNS.RestorePasswordAsync(phone);
-
-            if (task != await Task.WhenAny(task, Task.Delay(5000)))
-            {
-                FailMessage = CommonMessages.NoInternet;
-                return false;
-            }
-
-            if (task.Result.IsSuccess)
-                return true;
-
-            FailMessage = task.Result.Message;
-            return false;
+            return await TryExecute(task);
         }
     }
 }

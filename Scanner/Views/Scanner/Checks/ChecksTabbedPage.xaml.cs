@@ -11,7 +11,7 @@ namespace Scanner.Views.Scanner.Checks
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class ChecksTabbedPage : TabbedPage
     {
-        ChecksListsViewModel viewModel;
+        private readonly ChecksListsViewModel viewModel;
 
         public ChecksTabbedPage(ChecksListsViewModel vm)
         {

@@ -11,12 +11,12 @@ namespace Scanner.Views.Scanner.Checks
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class CheckTabbedPage : TabbedPage
     {
-        FriendsChecksViewModel viewModel;
-        public CheckTabbedPage(FriendsChecksViewModel vm, Func<FriendsChecksViewModel, Task> addToMyChecks)
+        private readonly FriendsChecksViewModel viewModel;
+
+        public CheckTabbedPage(FriendsChecksViewModel vm)
         {
             InitializeComponent();
             vm.CurrentPage = this;
-            vm.AddToMyChecks = addToMyChecks;
             vm.SetCommonCheck();
 
             foreach (var check in vm.FriendsChecks)

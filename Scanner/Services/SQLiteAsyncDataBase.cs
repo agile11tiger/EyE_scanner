@@ -1,5 +1,6 @@
 ﻿using Scanner.Services.Interfaces;
 using SQLite;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -15,39 +16,45 @@ namespace Scanner.Services
             database = new SQLiteAsyncConnection(databasePath);
         }
 
-        private SQLiteAsyncConnection database;
+        private readonly SQLiteAsyncConnection database;
 
-        public Task<CreateTableResult> CreateTableAsync<T>() where T : new()
+        public async Task<CreateTableResult> CreateTableAsync<T>() where T : new()
         {
-            return database.CreateTableAsync<T>();
+            return await database.CreateTableAsync<T>();
         }
 
-        public Task<List<T>> GetItemsAsync<T>() where T : new()
+        public async Task<List<T>> GetItemsAsync<T>() where T : new()
         {
-            return database.Table<T>().ToListAsync();
+            return await database.Table<T>().ToListAsync();
         }
 
-        public Task<T> GetItemAsync<T>(int id = 0) where T : new()
+        public async Task<T> GetItemAsync<T>(int id = 0) where T : new()
         {
             try
             {
-                return database.GetAsync<T>(id);
+                return await database.GetAsync<T>(id);
             }
             catch { return default; }
         }
 
-        public Task<int> AddItemAsync<T>(T item) where T : new()
+        public async Task<int> AddItemAsync<T>(T item) where T : new()
         {
-            return database.InsertAsync(item);
+            return await database.InsertAsync(item);
         }
 
-        public Task<int> RemoveItemAsync<T>(int id = 0) where T : new()
+        public async Task<int> AddOrReplaceItemAsync<T>(T item) where T : new()
+        {
+            //не понятно почему, но этот метод не увеличивает primarykey(из за этого заменяет старый объект)
+            return await database.InsertOrReplaceAsync(item);
+        }
+
+        public async Task<int> RemoveItemAsync<T>(int id = 0) where T : new()
         {
             try
             {
-                return database.DeleteAsync<T>(id);
+                return await database.DeleteAsync<T>(id);
             }
-            catch { return Task.FromResult(-1); }
+            catch { return await Task.FromResult(-1); }
         }
     }
 }

@@ -22,8 +22,8 @@ namespace Scanner.Services
             reader = new MultiFormatReader() { Hints = hints };
         }
 
-        private MultiFormatReader reader;
-        private IZxingImageHelper imageHelper;
+        private readonly MultiFormatReader reader;
+        private readonly IZxingImageHelper imageHelper;
         //private BarcodeWriter<> writer;
 
         public Task<MediaFile> TakePhoto()

@@ -2,6 +2,7 @@
 using Scanner.Extensions;
 using Scanner.Extensions.Interfaces;
 using Scanner.Views.Authorization;
+using System;
 using System.Threading.Tasks;
 
 namespace Scanner.ViewModels.Authorization
@@ -11,18 +12,22 @@ namespace Scanner.ViewModels.Authorization
     /// </summary>
     public class AuthorizationViewModel : BaseViewModel
     {
-        public AuthorizationViewModel() : base()
+        public AuthorizationViewModel(SignInPage signInPage, SignUpPage signUpPage) : base()
         {
-            InfoCommand = new AsyncCommand(showInfo);
-            SignInCommand = new AsyncCommand(goToSignInPage);
-            SignUpCommand = new AsyncCommand(goToSignUpPage);
+            this.signInPage = signInPage;
+            this.signUpPage = signUpPage;
+            InfoCommand = new AsyncCommand(ShowInfo);
+            SignInCommand = new AsyncCommand(GoToSignInPage);
+            SignUpCommand = new AsyncCommand(GoToSignUpPage);
         }
 
-        public IAsyncCommand InfoCommand { get; set; }
-        public IAsyncCommand SignInCommand { get; set; }
-        public IAsyncCommand SignUpCommand { get; set; }
+        private readonly SignInPage signInPage;
+        private readonly SignUpPage signUpPage;
+        public IAsyncCommand InfoCommand { get; }
+        public IAsyncCommand SignInCommand { get; }
+        public IAsyncCommand SignUpCommand { get; }
 
-        private Task showInfo()
+        private Task ShowInfo()
         {
             return CurrentPage.DisplayAlert(
                 "Зачем регистрироваться в ФНС?",
@@ -34,15 +39,13 @@ namespace Scanner.ViewModels.Authorization
                 "Ок");
         }
 
-        private Task goToSignInPage()
+        private Task GoToSignInPage()
         {
-            var signInPage = App.Container.Get<SignInPage>();
             return Navigation.PushAsync(signInPage);
         }
 
-        private Task goToSignUpPage()
+        private Task GoToSignUpPage()
         {
-            var signUpPage = App.Container.Get<SignUpPage>();
             return Navigation.PushAsync(signUpPage);
         }
     }

@@ -12,25 +12,28 @@ namespace Scanner.Models
     /// <summary>
     /// Класс, хранящий информацию об настройках сканера
     /// </summary>
-    public class ScannerSettings : ISerializable
+    [Table("ScannerSettings")]
+    public class ScannerSettings : ISerializable, IDatabaseItem
     {
         public ScannerSettings()
         {
-            Options = new MobileBarcodeScanningOptions();
-            Options.DelayBetweenContinuousScans = 2000;
-            Options.PossibleFormats = App.Container.Get<List<BarcodeFormat>>();
+            Options = new MobileBarcodeScanningOptions
+            {
+                DelayBetweenContinuousScans = 2000,
+                PossibleFormats = App.Container.Get<List<BarcodeFormat>>()
+            };
         }
 
-        [Unique]
+        [PrimaryKey, Unique]
+        public int Id { get; set; }
         public string OptionsJson { get; set; }
-        [Unique]
         public bool IsSoundShutterRelease { get; set; }
         /// <summary>
         /// http://developer.intersoftsolutions.com/display/crosslightapi/MobileBarcodeScanningOptions+Class
         /// https://forums.xamarin.com/discussion/161328/how-to-reference-object-in-sqlite
         /// </summary>
         [Ignore]
-        public MobileBarcodeScanningOptions Options { get; set; }
+        public MobileBarcodeScanningOptions Options { get; private set; }
 
         public void Serialize()
         {
@@ -42,17 +45,11 @@ namespace Scanner.Models
             Options = JsonConvert.DeserializeObject<MobileBarcodeScanningOptions>(OptionsJson, ISerializable.JsonSettings);
         }
 
-        /// <summary>
-        /// Глубокое клонирование, кроме свойства jsonSettings
-        /// </summary>
         public async Task<ScannerSettings> CloneAsync()
         {
             return await Task.Run(() => Clone());
         }
 
-        /// <summary>
-        /// Глубокое клонирование, кроме свойства jsonSettings
-        /// </summary>
         public ScannerSettings Clone()
         {
             Serialize();

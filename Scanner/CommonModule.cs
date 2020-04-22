@@ -1,12 +1,15 @@
 ﻿using Ninject;
 using Ninject.Modules;
+using Ninject.Parameters;
 using Scanner.Models;
 using Scanner.Models.Iterfaces;
 using Scanner.Services;
 using Scanner.Services.Interfaces;
 using Scanner.ViewModels;
+using Scanner.ViewModels.Authorization;
 using Scanner.ViewModels.Scanner;
 using Scanner.ViewModels.Scanner.Checks;
+using Scanner.ViewModels.Scanner.QRCodes;
 using Scanner.Views;
 using Scanner.Views.Authorization;
 using Scanner.Views.Scanner;
@@ -16,6 +19,7 @@ using Scanner.Views.Scanner.QRCodes;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using ZXing;
 
@@ -29,8 +33,10 @@ namespace Scanner
             //Стараюсь делать все классы в .InSingletonScope() для того, чтобы не тратить время на создания новых.
             #region Pages(указываю ВСЕ СТРАНИЦЫ ЯВНО)
             //Легче определить поведение страниц(одна на всех или нет), так как точкой входа отдельных элементов является страница.
-            Bind<AuthorizationPage>().ToSelf().InSingletonScope();
+            Bind<AuthorizationPage>().ToSelf();
+            Bind<Lazy<AuthorizationPage>>().ToMethod(context => new Lazy<AuthorizationPage>(() => Kernel.Get<AuthorizationPage>()));
             Bind<ForgotPasswordPage>().ToSelf();
+            Bind<Lazy<ForgotPasswordPage>>().ToMethod(context => new Lazy<ForgotPasswordPage>(() => Kernel.Get<ForgotPasswordPage>()));
             Bind<SignInPage>().ToSelf();
             Bind<SignUpPage>().ToSelf();
             Bind<ChecksTabbedPage>().ToSelf().InSingletonScope();
@@ -38,7 +44,8 @@ namespace Scanner
             Bind<WaitingChecksPage>().ToSelf().InSingletonScope();
             Bind<FriendsPage>().ToSelf().InSingletonScope();
             Bind<FriendPage>().ToSelf();
-            Bind<ManualScanPage>().ToSelf().InSingletonScope();
+            Bind<ManualScanPage>().ToSelf();
+            Bind<Func<ManualScanPage>>().ToMethod(context => () => Kernel.Get<ManualScanPage>());
             Bind<ScannerPage>().ToSelf().InSingletonScope();
             Bind<ScannerSettingsPage>().ToSelf().InSingletonScope();
             Bind<CodeGenerationPage>().ToSelf().InSingletonScope();
@@ -52,22 +59,25 @@ namespace Scanner
             Bind<ScannerSettingsViewModel>().ToSelf().InSingletonScope();
             Bind<ChecksListsViewModel>().ToSelf().InSingletonScope();
             Bind<WaitingChecksListViewModel>().ToSelf().InSingletonScope();
+            Bind<Func<CashQRCode, CashQRCodeViewModel>>()
+                .ToMethod(context => (c) => Kernel.Get<CashQRCodeViewModel>(new ConstructorArgument("cashQRCode", c)));
             #endregion
 
             #region OtherBindings
             Bind<ImageHelper>().ToSelf().InSingletonScope();
-            Bind<Func<Sign, Task>>().ToMethod(context => Kernel.Get<UserAccountFNSViewModel>().Synchronization).InSingletonScope();
+            Bind<Func<Sign, Task>>().ToMethod(context => Kernel.Get<UserAccountFNSViewModel>().Update)
+                .WhenInjectedInto<SignInViewModel>()
+                .InSingletonScope();
             Bind<List<BarcodeFormat>>().ToConstant(barcodeFormats).InSingletonScope();
-            Bind<ICode>().To<CashQRCode>().Named("CashQRCode");
             Bind<IScannerHelper>().To<ScannerHelper>().InSingletonScope();
             Bind<IPlayer>().To<AudioPlayer>().InSingletonScope();
             #endregion
 
-            setUpAsyncDataBase();
-            Task.Run(() =>setUpDependenciesFromAsyncDatabase().ConfigureAwait(false)).Wait();
+            SetUpAsyncDataBase();
+            Task.Run(() => SetUpDependenciesFromAsyncDatabase().ConfigureAwait(false)).Wait();
         }
 
-        private List<BarcodeFormat> barcodeFormats = new List<BarcodeFormat>()
+        private readonly List<BarcodeFormat> barcodeFormats = new List<BarcodeFormat>()
         {
             BarcodeFormat.QR_CODE,
             //TODO: Какие обрабатывать форматы?
@@ -87,20 +97,20 @@ namespace Scanner
         //    App.Container.Bind<IDatabase>().ToConstant(database).InSingletonScope();
         //}
 
-        private void setUpAsyncDataBase()
+        private void SetUpAsyncDataBase()
         {
             var pathToAsyncBD = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), ASYNC_DATABASE_NAME);
             asyncDatabase = new SQLiteAsyncDataBase(pathToAsyncBD);
             App.Container.Bind<IAsyncDatabase>().ToConstant(asyncDatabase).InSingletonScope();
         }
 
-        public async Task setUpDependenciesFromAsyncDatabase()
+        public async Task SetUpDependenciesFromAsyncDatabase()
         {
-            await setUpSignDependence();
-            await setUpSettingsDependence();
+            await SetUpSignDependence();
+            await SetUpSettingsDependence();
         }
 
-        private async Task setUpSignDependence()
+        private async Task SetUpSignDependence()
         {
             await asyncDatabase.CreateTableAsync<Sign>();
             var sign = await asyncDatabase.GetItemAsync<Sign>();
@@ -114,7 +124,7 @@ namespace Scanner
             }
         }
 
-        private async Task setUpSettingsDependence()
+        private async Task SetUpSettingsDependence()
         {
             await asyncDatabase.CreateTableAsync<ScannerSettings>();
             var scannerSettings = await asyncDatabase.GetItemAsync<ScannerSettings>();

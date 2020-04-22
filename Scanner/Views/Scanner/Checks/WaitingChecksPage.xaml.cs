@@ -1,4 +1,7 @@
-﻿using Scanner.ViewModels.Scanner.Checks;
+﻿using Ninject;
+using Scanner.Models;
+using Scanner.Services.Interfaces;
+using Scanner.ViewModels.Scanner.Checks;
 using Scanner.ViewModels.Scanner.QRCodes;
 using System.Threading.Tasks;
 using Xamarin.Forms;
@@ -9,7 +12,7 @@ namespace Scanner.Views.Scanner.Checks
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class WaitingChecksPage : ContentPage
     {
-        WaitingChecksListViewModel viewModel;
+        private readonly WaitingChecksListViewModel viewModel;
 
         public WaitingChecksPage(WaitingChecksListViewModel vm)
         {
@@ -17,32 +20,41 @@ namespace Scanner.Views.Scanner.Checks
             vm.CurrentPage = this;
             vm.UserAccountFNS.CurrentPage = this;
 
-            //TODO: убрать
-            #region убрать
-            for (var i = 0; i< 15; i++)
-            {
-                var cashQRCode = new CashQRCodeViewModel()
-                {
-                    FiscalNumber = $"{i}",
-                    FiscalDocument = $"{i}",
-                    FiscalSignDocument = $"{i}",
-                    DateTime = System.DateTime.Now.AddDays(i),
-                    CheckAmount = i + 1000,
-                    TypeCashCheck = "1",
-                };
-                vm.List.Add(cashQRCode);
-            }
-            #endregion
-
             BindingContext = viewModel = vm;
         }
 
-        protected override void OnAppearing()
+        private bool block;
+        protected async override void OnAppearing()
         {
-            base.OnAppearing();
+            //TODO: убрать
+            #region убрать
+            if (!block)
+            {
+                for (var i = 0; i < 15; i++)
+                {
+                    var cashQRCode = App.Container.Get<CashQRCodeViewModel>();
+                    cashQRCode.FiscalNumber = $"{i}";
+                    cashQRCode.FiscalDocument = $"{i}";
+                    cashQRCode.FiscalSignDocument = $"{i}";
+                    cashQRCode.DateTime = System.DateTime.Now.AddDays(i);
+                    cashQRCode.CheckAmount = i + 1000;
+                    cashQRCode.TypeCashCheck = "1";
+                    viewModel.List.Add(cashQRCode);
+                }
+                block = true;
+            }
+            #endregion
 
             if (!viewModel.UserAccountFNS.Sign.IsAuthorization)
                 viewModel.UserAccountFNS.AuthorizationCommand.Execute(true);
+
+            base.OnAppearing();
+        }
+
+        protected override void OnDisappearing()
+        {
+            base.OnDisappearing();
+            Navigation.PopToRootAsync();
         }
     }
 }

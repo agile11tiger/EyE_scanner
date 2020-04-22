@@ -1,5 +1,4 @@
 ﻿using Scanner.ViewModels.Scanner;
-
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -8,7 +7,7 @@ namespace Scanner.Views.Scanner
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class ScannerSettingsPage : ContentPage
     {
-        ScannerSettingsViewModel viewModel;
+        private readonly ScannerSettingsViewModel viewModel;
 
         public ScannerSettingsPage(ScannerSettingsViewModel viewModel)
         {

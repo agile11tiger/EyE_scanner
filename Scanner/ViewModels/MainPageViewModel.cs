@@ -12,24 +12,33 @@ namespace Scanner.ViewModels
     /// </summary>
     public class MainPageViewModel : BaseViewModel
     {
-        public MainPageViewModel() : base()
+        public MainPageViewModel(
+            ChecksTabbedPage checksTabbedPage,
+            ScannerPage scannerPage,
+            WaitingChecksPage waitingChecksPage) 
+            : base()
         {
-            GoToChecksCommand = new AsyncCommand(toChecks);
-            GoToScannerCommand = new AsyncCommand(toScanner);
-            GoToWaitingChecksCommand = new AsyncCommand(toChecksWaiting);
+            this.checksTabbedPage = checksTabbedPage;
+            this.scannerPage = scannerPage;
+            this.waitingChecksPage = waitingChecksPage;
+            GoToChecksCommand = new AsyncCommand(ToChecks);
+            GoToScannerCommand = new AsyncCommand(ToScanner);
+            GoToWaitingChecksCommand = new AsyncCommand(ToWaitingChecks);
         }
 
-        public IAsyncCommand GoToChecksCommand { get; set; }
-        public IAsyncCommand GoToScannerCommand { get; set; }
-        public IAsyncCommand GoToWaitingChecksCommand { get; set; }
+        private readonly ChecksTabbedPage checksTabbedPage;
+        private readonly ScannerPage scannerPage;
+        private readonly WaitingChecksPage waitingChecksPage;
+        public IAsyncCommand GoToChecksCommand { get; }
+        public IAsyncCommand GoToScannerCommand { get; }
+        public IAsyncCommand GoToWaitingChecksCommand { get; }
 
-        private Task toChecks()
+        private Task ToChecks()
         {
-            var checksPage = App.Container.Get<ChecksTabbedPage>();
-            return Navigation.PushAsync(checksPage);
+            return Navigation.PushAsync(checksTabbedPage);
         }
 
-        private Task toScanner()
+        private Task ToScanner()
         {
             #region баг "Чёрный экран"(Оказалось проблема в включенной анимации при переходе на другую страницу, но без неё не красиво...)
             //https://github.com/xamarin/Xamarin.Forms/blob/master/Xamarin.Forms.Core/NavigationPage.cs
@@ -39,14 +48,12 @@ namespace Scanner.ViewModels
             //Стоит отменить, что при возврате с ЧЕРНОГО ЭКРАНА, OnAppearing  текущей страницы(MainPage) не запускается.
             //Это при первой загрузке, при последующих все нормально!??
             #endregion
-            var scannerPage = App.Container.Get<ScannerPage>();
             return Navigation.PushAsync(scannerPage);
         }
 
-        private Task toChecksWaiting()
+        private Task ToWaitingChecks()
         {
-            var checksWaitingPage = App.Container.Get<WaitingChecksPage>();
-            return Navigation.PushAsync(checksWaitingPage);
+            return Navigation.PushAsync(waitingChecksPage);
         }
     }
 }

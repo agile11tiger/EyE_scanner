@@ -1,4 +1,5 @@
 ﻿using Ninject;
+using Plugin.Media;
 using Scanner.Extensions;
 using Scanner.Extensions.Interfaces;
 using Scanner.Services;
@@ -14,54 +15,63 @@ namespace Scanner.ViewModels
     /// </summary>
     public class AppShellViewModel : BaseViewModel
     {
-        public AppShellViewModel(UserAccountFNSViewModel userAccount, ImageHelper imageHelper) : base()
+        public AppShellViewModel(
+            UserAccountFNSViewModel userAccount, 
+            ImageHelper imageHelper,
+            FriendsPage friendsPage,
+            CodeGenerationPage codeGenerationPage,
+            ScannerSettingsPage scannerSettingsPage) : base()
         {
             UserAccount = userAccount;
             this.imageHelper = imageHelper;
+            this.friendsPage = friendsPage;
+            this.codeGenerationPage = codeGenerationPage;
+            this.scannerSettingsPage = scannerSettingsPage;
 
-            ToFriendsCommand = new AsyncCommand(toFriends);
-            ToCodeGenerationCommand = new AsyncCommand(toCodeGeneration);
-            SetUserImageCommand = new AsyncCommand(setUserImage);
-            ToSettingsCommand = new AsyncCommand(toSettings);
+            ToFriendsCommand = new AsyncCommand(ToFriends);
+            ToCodeGenerationCommand = new AsyncCommand(ToCodeGeneration);
+            SetUserImageCommand = new AsyncCommand(SetUserImage);
+            ToSettingsCommand = new AsyncCommand(ToSettings);
         }
 
-        private ImageHelper imageHelper;
-        public UserAccountFNSViewModel UserAccount { get; set; }
-        public IAsyncCommand ToFriendsCommand { get; set; }
-        public IAsyncCommand ToCodeGenerationCommand { get; set; }
-        public IAsyncCommand SetUserImageCommand { get; set; }
-        public IAsyncCommand ToSettingsCommand { get; set; }
+        private readonly ImageHelper imageHelper;
+        private readonly FriendsPage friendsPage;
+        private readonly CodeGenerationPage codeGenerationPage;
+        private readonly ScannerSettingsPage scannerSettingsPage;
 
-        private async Task toFriends()
+        public UserAccountFNSViewModel UserAccount { get; }
+        public IAsyncCommand ToFriendsCommand { get; }
+        public IAsyncCommand ToCodeGenerationCommand { get; }
+        public IAsyncCommand SetUserImageCommand { get; }
+        public IAsyncCommand ToSettingsCommand { get; }
+
+        private async Task ToFriends()
         {
-            var friendsPage = App.Container.Get<FriendsPage>();
             await Navigation.PushAsync(friendsPage);
             Shell.Current.FlyoutIsPresented = false;
         }
 
-        private async Task toCodeGeneration()
+        private async Task ToCodeGeneration()
         {
-            var codeGenerationPage = App.Container.Get<CodeGenerationPage>();
             await Navigation.PushAsync(codeGenerationPage);
             Shell.Current.FlyoutIsPresented = false;
         }
 
-        private async Task setUserImage()
+        private async Task SetUserImage()
         {
-            var path = await imageHelper.GetImagePathFromGalleryAsync();
+            var path = await imageHelper.GetImagePathFromGalleryAsync(CrossMedia.Current);
 
             if (path != null)
             {
                 UserAccount.Sign.PathToUserImage = path;
                 OnPropertyChanged(nameof(UserAccount.UserImage));
-                await AsyncDatabase.AddItemAsync(UserAccount.Sign);
+                await AsyncDatabase.AddOrReplaceItemAsync(UserAccount.Sign);
             }
         }
 
-        private async Task toSettings()
+        private async Task ToSettings()
         {
-            var settingsPage = App.Container.Get<ScannerSettingsPage>();
-            await Navigation.PushAsync(settingsPage);
+            await Navigation.PushAsync(scannerSettingsPage);
             Shell.Current.FlyoutIsPresented = false;
         }
     }

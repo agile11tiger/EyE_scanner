@@ -4,6 +4,7 @@ using Scanner.Extensions.Interfaces;
 using Scanner.Models;
 using Scanner.Views.Scanner;
 using System.Threading.Tasks;
+using ZXing.Mobile;
 
 namespace Scanner.ViewModels.Scanner
 {
@@ -17,15 +18,29 @@ namespace Scanner.ViewModels.Scanner
             Settings = settings.Clone();
             tempSettings = settings.Clone();
 
-            OnDisappearingCommand = new AsyncCommand(onDisappearing);
-            DefaultSettingsCommand = new AsyncCommand(makeDefaultSettings);
-            ApplySettingsCommand = new AsyncCommand(applySettings);
+            OnDisappearingCommand = new AsyncCommand(OnDisappearing);
+            DefaultSettingsCommand = new AsyncCommand(MakeDefaultSettings);
+            ApplySettingsCommand = new AsyncCommand(ApplySettings);
         }
 
         private ScannerSettings tempSettings;
-        public ScannerSettings Settings { get; set; }
+        private ScannerSettings settings;
 
         #region Properties(OnPropertyChanged)
+        public ScannerSettings Settings
+        {
+            get => settings;
+            set
+            {
+                if (settings != value)
+                {
+                    settings = value;
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(Settings.Options));
+                }
+            }
+        }
+
         public bool IsSoundShutterRelease
         {
             get => tempSettings.IsSoundShutterRelease;
@@ -80,10 +95,12 @@ namespace Scanner.ViewModels.Scanner
 
         public double InitialDelayBeforeAnalyzingFrames
         {
-            get => tempSettings.Options.InitialDelayBeforeAnalyzingFrames / 1000d; //переводит из милисекунд(int) в секунды(double)
+            //переводит из милисекунд(int) в секунды(double)
+            get => tempSettings.Options.InitialDelayBeforeAnalyzingFrames / 1000d; 
             set
-            {
-                var tempValue = (int)(value * 1000); //переводит из секунд(double) в милисекунды(int)
+            { 
+                //переводит из секунд(double) в милисекунды(int)
+                var tempValue = (int)(value * 1000); 
                 if (tempSettings.Options.InitialDelayBeforeAnalyzingFrames != tempValue)
                 {
                     tempSettings.Options.InitialDelayBeforeAnalyzingFrames = tempValue;
@@ -122,41 +139,33 @@ namespace Scanner.ViewModels.Scanner
         #endregion
 
         #region Commands
-        public IAsyncCommand OnDisappearingCommand { get; set; }
-        public IAsyncCommand DefaultSettingsCommand { get; set; }
-        public IAsyncCommand ApplySettingsCommand { get; set; }
+        public IAsyncCommand OnDisappearingCommand { get; }
+        public IAsyncCommand DefaultSettingsCommand { get; }
+        public IAsyncCommand ApplySettingsCommand { get; }
         #endregion
 
-        private async Task onDisappearing()
+        private async Task OnDisappearing()
         {
             tempSettings = await Settings.CloneAsync().ConfigureAwait(false);
         }
 
-        private Task makeDefaultSettings()
+        private Task MakeDefaultSettings()
         {
             Settings = new ScannerSettings();
             tempSettings = new ScannerSettings();
-            return goToMainPageAsync();
+            return GoToMainPageAsync();
         }
 
-        private async Task applySettings()
+        private async Task ApplySettings()
         {
             Settings = await tempSettings.CloneAsync();
-            await goToMainPageAsync().ConfigureAwait(false);
+            await GoToMainPageAsync().ConfigureAwait(false);
         }
 
-        private async Task goToMainPageAsync()
+        private async Task GoToMainPageAsync()
         {
-            //Нужно обязательно перевязывать, иначе настройки сканера не изменяться
-            App.Container.Get<ScannerPage>().Dispose();
-            App.Container.Rebind<ScannerPage>().ToSelf().InSingletonScope();
             await Navigation.PopToRootAsync().ConfigureAwait(false);
-            await syncSettingsWithDatabase();
-        }
-
-        private Task syncSettingsWithDatabase()
-        {
-            return AsyncDatabase.AddItemAsync(Settings);
+            await AsyncDatabase.AddOrReplaceItemAsync(Settings);
         }
     }
 }

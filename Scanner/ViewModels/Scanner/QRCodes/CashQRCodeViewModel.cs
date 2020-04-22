@@ -16,126 +16,116 @@ namespace Scanner.ViewModels.Scanner.QRCodes
     /// <summary>
     /// Класс, взаимодействующий с кассовым QR-кодом 
     /// </summary>
-    public class CashQRCodeViewModel : CodeViewModel<CashQRCodeViewModel, FriendsChecksViewModel>, ISerializable, IDBItem
+    public class CashQRCodeViewModel : CodeViewModel<CashQRCodeViewModel, FriendsChecksViewModel>
     {
-        public CashQRCodeViewModel() : base(
-            App.Container.Get<ICode>("CashQRCode"),
-            App.Container.Get<WaitingChecksListViewModel>(),
-            App.Container.Get<ChecksListsViewModel>())
+        public CashQRCodeViewModel(
+            CashQRCode cashQRCode, 
+            WaitingChecksListViewModel waitingChecksListVM, 
+            ChecksListsViewModel checksListsVM,
+            FNS fns,
+            UserAccountFNSViewModel userAccountFNS,
+            ChecksTabbedPage checksTabbedPage,
+            WaitingChecksPage waitingChecksPage)
+            : base(
+            cashQRCode,
+            waitingChecksListVM,
+            checksListsVM)
         {
-            fns = App.Container.Get<FNS>();
-            cashQRCode = Code as CashQRCode;
-            UserAccountFNS = App.Container.Get<UserAccountFNSViewModel>();
+            this.fns = fns;
+            this.waitingChecksPage = waitingChecksPage;
+            this.checksTabbedPage = checksTabbedPage;
+            CashQRCode = cashQRCode;
+            UserAccountFNS = userAccountFNS;
         }
 
-        private FNS fns;
-        private CashQRCode cashQRCode;
-        public string CashQRCodeJson { get; set; }
-        [PrimaryKey, AutoIncrement]
-        public int Id { get; set; }
-        [Ignore]
-        public UserAccountFNSViewModel UserAccountFNS { get; set; }
+        private readonly FNS fns;
+        private readonly ChecksTabbedPage checksTabbedPage;
+        private readonly WaitingChecksPage waitingChecksPage;
+        public CashQRCode CashQRCode { get; }
+        public UserAccountFNSViewModel UserAccountFNS { get; }
 
-        [Ignore]
         public string FiscalNumber
         {
-            get => cashQRCode.FiscalNumber;
+            get => CashQRCode.FiscalNumber;
             set
             {
-                if (cashQRCode.FiscalNumber != value)
+                if (CashQRCode.FiscalNumber != value)
                 {
-                    cashQRCode.FiscalNumber = value;
+                    CashQRCode.FiscalNumber = value;
                     OnPropertyChanged();
                 }
             }
         }
 
-        [Ignore]
         public string FiscalDocument
         {
-            get => cashQRCode.FiscalDocument;
+            get => CashQRCode.FiscalDocument;
             set
             {
-                if (cashQRCode.FiscalDocument != value)
+                if (CashQRCode.FiscalDocument != value)
                 {
-                    cashQRCode.FiscalDocument = value;
+                    CashQRCode.FiscalDocument = value;
                     OnPropertyChanged();
                 }
             }
         }
 
-        [Ignore]
         public string FiscalSignDocument
         {
-            get => cashQRCode.FiscalSignDocument;
+            get => CashQRCode.FiscalSignDocument;
             set
             {
-                if (cashQRCode.FiscalSignDocument != value)
+                if (CashQRCode.FiscalSignDocument != value)
                 {
-                    cashQRCode.FiscalSignDocument = value;
+                    CashQRCode.FiscalSignDocument = value;
                     OnPropertyChanged();
                 }
             }
         }
 
-        [Ignore]
         public DateTime? DateTime
         {
-            get => cashQRCode.DateTime;
+            get => CashQRCode.DateTime;
             set
             {
-                if (cashQRCode.DateTime != value)
+                if (CashQRCode.DateTime != value)
                 {
-                    cashQRCode.DateTime = value;
+                    CashQRCode.DateTime = value;
                     OnPropertyChanged();
                 }
             }
         }
 
-        [Ignore]
         public double? CheckAmount
         {
-            get => cashQRCode.CheckAmount;
+            get => CashQRCode.CheckAmount;
             set
             {
-                if (cashQRCode.CheckAmount != value)
+                if (CashQRCode.CheckAmount != value)
                 {
-                    cashQRCode.CheckAmount = value;
+                    CashQRCode.CheckAmount = value;
                     OnPropertyChanged();
                 }
             }
         }
 
-        [Ignore]
         public string TypeCashCheck
         {
-            get => cashQRCode.TypeCashCheck;
+            get => CashQRCode.TypeCashCheck;
             set
             {
-                if (cashQRCode.TypeCashCheck != value)
+                if (CashQRCode.TypeCashCheck != value)
                 {
-                    cashQRCode.TypeCashCheck = value;
+                    CashQRCode.TypeCashCheck = value;
                     OnPropertyChanged();
                 }
             }
-        }
-
-        public void Serialize()
-        {
-            CashQRCodeJson = JsonConvert.SerializeObject(cashQRCode, ISerializable.JsonSettings);
-        }
-
-        public void Deserialize()
-        {
-            cashQRCode = JsonConvert.DeserializeObject<CashQRCode>(CashQRCodeJson, ISerializable.JsonSettings);
-            Code = cashQRCode;
         }
 
         protected override async Task ProcessCode()
         {
-            var checksWaitingPage = App.Container.Get<WaitingChecksPage>();
             await RequestList.AddCommand.ExecuteAsync(this);
-            await Navigation.PushAsync(checksWaitingPage);
+            await Navigation.PushAsync(waitingChecksPage);
 
             //var verifyResult = await fns.VerifyAsync(
             //    FiscalNumber,
@@ -143,27 +133,25 @@ namespace Scanner.ViewModels.Scanner.QRCodes
             //    FiscalSignDocument,
             //    DateTime.GetValueOrDefault(),
             //    CheckAmount.GetValueOrDefault()
-            //    );        
+            //    );
 
 
             //if (!verifyResult.CheckExists)
-            //    return false;
+            //    return;
             //var checkResult = await fns.ReceiveAsync(FiscalNumber, FiscalDocument, FiscalSignDocument, UserAccountFNS.Phone, UserAccountFNS.Password);
 
             //if (checkResult.IsSuccess)
             //{
-            //    var checksPage = App.Container.Get<ChecksPage>();
             //    var checkVM = new FriendsChecksViewModel(checkResult.Document.Check);
-            //    await ResultList.AddCommand.ExecuteAsync(checkVM);
+            //    await ResultLists.AddToCommonChecks(checkVM);
             //    await RequestList.RemoveCommand.ExecuteAsync(this);
-            //    await Navigation.PushAsync(checksPage).ConfigureAwait(false);
+            //    await Navigation.PushAsync(checksTabbedPage).ConfigureAwait(false);
             //}
             //else
             //{
-            //    var checksWaitingPage = App.Container.Get<ChecksWaitingPage>();
             //    FailMessage = verifyResult.Message;
             //    await RequestList.AddCommand.ExecuteAsync(this);
-            //    await Navigation.PushAsync(checksWaitingPage).ConfigureAwait(false);
+            //    await Navigation.PushAsync(waitingChecksPage).ConfigureAwait(false);
             //}
         }
 

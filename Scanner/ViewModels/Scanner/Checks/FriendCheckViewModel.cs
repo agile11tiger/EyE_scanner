@@ -1,5 +1,6 @@
 ﻿using Scanner.Extensions;
 using Scanner.Extensions.Interfaces;
+using Scanner.Models;
 using Scanner.ViewModels.Scanner.Friends;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -14,24 +15,24 @@ namespace Scanner.ViewModels.Scanner.Checks
         {
             FriendVM = friendVM;
             Items = items;
-            setCommands();
+            SetCommands();
         }
 
         public FriendCheckViewModel()
         {
             FriendVM = new FriendViewModel();
             Items = new ObservableCollection<CheckItemViewModel>();
-            setCommands();
+            SetCommands();
         }
 
-        private void setCommands()
+        private void SetCommands()
         {
-            InfoCommand = new AsyncCommand(showInfo);
-            RemoveCommand = new AsyncCommand<CheckItemViewModel>(remove);
+            InfoCommand = new AsyncCommand(ShowInfo);
+            RemoveCommand = new AsyncCommand<CheckItemViewModel>(Remove);
         }
 
         private ObservableCollection<CheckItemViewModel> items;
-        public FriendViewModel FriendVM { get; set; }
+        public FriendViewModel FriendVM { get; }
         public ObservableCollection<CheckItemViewModel> Items 
         {
             get => items;
@@ -75,15 +76,15 @@ namespace Scanner.ViewModels.Scanner.Checks
             get => !IsCommonCheck;
         }
 
-        public IAsyncCommand InfoCommand { get; set; }
-        public IAsyncCommand<CheckItemViewModel> RemoveCommand { get; set; }
+        public IAsyncCommand InfoCommand { get; private set; }
+        public IAsyncCommand<CheckItemViewModel> RemoveCommand { get; private set; }
 
-        private async Task remove(CheckItemViewModel checkItemVM)
+        private async Task Remove(CheckItemViewModel checkItemVM)
         {
             Items.Remove(checkItemVM);
         }
 
-        private async Task showInfo()
+        private async Task ShowInfo()
         {
             if(TitlePage == AppConstants.NAME_PAGE_COMMON_CHECK)
             {

@@ -13,6 +13,7 @@ namespace Scanner.Services.Interfaces
         Task<List<T>> GetItemsAsync<T>() where T : new();
         Task<T> GetItemAsync<T>(int id = 0) where T : new();
         Task<int> AddItemAsync<T>(T item) where T : new();
+        Task<int> AddOrReplaceItemAsync<T>(T item) where T : new();
         Task<int> RemoveItemAsync<T>(int id = 0) where T : new();
     }
 }

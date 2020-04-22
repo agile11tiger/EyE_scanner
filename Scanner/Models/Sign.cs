@@ -1,27 +1,27 @@
-﻿using SQLite;
+﻿using Ninject;
+using Scanner.Services.Interfaces;
+using SQLite;
+using System.Threading.Tasks;
+using VerificationCheck.Core.Interfaces;
 
 namespace Scanner.Models
 {
     /// <summary>
     /// Класс, хранящий информацию о авторизации пользователя
     /// </summary>
-    public class Sign
+    [Table("Sign")]
+    public class Sign: IDatabaseItem
     {
         public const string PathUserImageDefault = "Scanner.Resources.Images.user.png";
 
-        [Unique]
+        [PrimaryKey, Unique]
+        public int Id { get; set; }
         public bool IsAuthorization { get; set; }
-        [Unique]
         public string FailMessage { get; set; }
-        [Unique]
         public string Name { get; set; }
-        [Unique]
         public string Email { get; set; }
-        [Unique]
         public string Phone { get; set; }
-        [Unique]
         public string Password { get; set; }
-        [Unique]
         public string PathToUserImage { get; set; } = PathUserImageDefault;
     }
 }

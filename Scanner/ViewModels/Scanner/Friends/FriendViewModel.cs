@@ -1,29 +1,33 @@
-﻿using SQLite;
+﻿using Scanner.Models;
+using SQLite;
 using System;
 using VerificationCheck.Core.Interfaces;
 using Xamarin.Forms;
 
 namespace Scanner.ViewModels.Scanner.Friends
 {
-    public class FriendViewModel : BaseViewModel, ISerializable, IDBItem, IEquatable<FriendViewModel>
+    public class FriendViewModel : BaseViewModel, IEquatable<FriendViewModel>
     {
-        public FriendViewModel()
+        public FriendViewModel(Friend friend)
         {
+            Friend = friend;
         }
 
-        private int id = -1;
-        private string name = "Выберите друга";
-        private ImageSource image;
-        private string phone;
+        public FriendViewModel()
+        {
+            Friend = new Friend();
+        }
+
+        public Friend Friend { get; }
 
         public int Id
         {
-            get => id;
+            get => Friend.Id;
             set
             {
-                if (id != value)
+                if (Friend.Id != value)
                 {
-                    id = value;
+                    Friend.Id = value;
                     OnPropertyChanged();
                 }
             }
@@ -31,38 +35,37 @@ namespace Scanner.ViewModels.Scanner.Friends
 
         public string Name
         {
-            get => name;
+            get => Friend.Name;
             set
             {
-                if (name != value)
+                if (Friend.Name != value)
                 {
-                    name = value;
+                    Friend.Name = value;
                     OnPropertyChanged();
                 }
             }
         }
 
-        [Ignore]
         public ImageSource Image
         {
-            get => image;
+            get => Friend.Image;
             set
             {
-                if (image != value)
+                if (Friend.Image != value)
                 {
-                    image = value;
+                    Friend.Image = value;
                     OnPropertyChanged();
                 }
             }
         }
         public string Phone
         {
-            get => phone;
+            get => Friend.Phone;
             set
             {
-                if (phone != value)
+                if (Friend.Phone != value)
                 {
-                    phone = value;
+                    Friend.Phone = value;
                     OnPropertyChanged();
                 }
             }
@@ -74,14 +77,6 @@ namespace Scanner.ViewModels.Scanner.Friends
             Name = friendVM.Name;
             Image = friendVM.Image;
             Phone = friendVM.Phone;
-        }
-
-        public void Deserialize()
-        {
-        }
-
-        public void Serialize()
-        {
         }
 
         public bool Equals(FriendViewModel other)

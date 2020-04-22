@@ -16,26 +16,27 @@ namespace Scanner.ViewModels.Authorization
     /// </summary>
     public class SignUpViewModel : FNSSignViewModel
     {
-        public SignUpViewModel(FNS fns, Func<Sign, Task> syncWithUserAccount, Sign sign) : base(fns, syncWithUserAccount, sign)
+        public SignUpViewModel(FNS fns, Sign sign, SignInPage signInPage) : base(fns, sign)
         {
-            SignUpCommand = new AsyncCommand(signUp);
+            this.signInPage = signInPage;
+            SignUpCommand = new AsyncCommand(SignUp);
         }
 
-        public IAsyncCommand SignUpCommand { get; set; }
+        private readonly SignInPage signInPage;
+        public IAsyncCommand SignUpCommand { get; }
 
-        private async Task signUp()
+        private async Task SignUp()
         {
-            if (await trySignUp())
+            if (await TrySignUp())
             {
-                var signInPage = App.Container.Get<SignInPage>();
                 signInPage.ViewModel.Phone = Phone;
                 await Navigation.PushAsync(signInPage).ConfigureAwait(false);
             }
         }
 
-        private async Task<bool> trySignUp()
+        private async Task<bool> TrySignUp()
         {
-            var phone = Regex.Replace(Phone, @"[^+\d]", "");
+            var phone = ParsePhone();
 
             if (string.IsNullOrWhiteSpace(Email)
              || string.IsNullOrWhiteSpace(Name)
@@ -46,18 +47,7 @@ namespace Scanner.ViewModels.Authorization
             }
 
             var task = FNS.RegistrationAsync(Email, Name, phone);
-
-            if (task != await Task.WhenAny(task, Task.Delay(5000)))
-            {
-                FailMessage = CommonMessages.NoInternet;
-                return false;
-            }
-
-            if (task.Result.IsSuccess)
-                return true;
-
-            FailMessage = task.Result.Message;
-            return false;
+            return await TryExecute(task);
         }
     }
 }

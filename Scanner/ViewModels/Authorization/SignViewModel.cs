@@ -1,13 +1,18 @@
-﻿using Scanner.Models;
+﻿using Scanner.Messages;
+using Scanner.Models;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using VerificationCheck.Core;
+using VerificationCheck.Core.Results;
 
 namespace Scanner.ViewModels.Authorization
 {
     /// <summary>
     /// Класс, взаимодействующий со страницей авторизации пользователя
     /// </summary>
-    public class SignViewModel : BaseViewModel
+    public abstract class SignViewModel : BaseViewModel
     {
-        public SignViewModel(Sign sign) : base()
+        protected SignViewModel(Sign sign) : base()
         {
             Sign = sign;
         }
@@ -90,6 +95,27 @@ namespace Scanner.ViewModels.Authorization
                     OnPropertyChanged();
                 }
             }
+        }
+
+        public string ParsePhone()
+        {
+            return Regex.Replace(Phone, @"[^+\d]", "");
+        }
+
+        public async Task<bool> TryExecute(Task<Result> task)
+        {
+            if (task != await Task.WhenAny(task, Task.Delay(5000)))
+            {
+                FailMessage = CommonMessages.NoInternet;
+                return false;
+            }
+
+            if (task.Result.IsSuccess)
+                return true;
+            else
+                FailMessage = task.Result.Message;
+
+            return false;
         }
     }
 }

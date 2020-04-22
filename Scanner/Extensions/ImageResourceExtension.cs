@@ -12,11 +12,9 @@ namespace Scanner.Extensions
         public object ProvideValue(IServiceProvider serviceProvider)
         {
             if (Source == null)
-            {
                 return null;
-            }
-            var imageSource = ImageSource.FromResource(Source);
 
+            var imageSource = ImageSource.FromResource(Source);
             return imageSource;
         }
     }

@@ -9,18 +9,17 @@ namespace Scanner.ViewModels
     /// Класс, взаимодействующий со списком ожидания чего-либо через команды
     /// </summary>
     public abstract class WaitingListViewModel<T> : ListViewModel<T>
-        where T : IDBItem, ISerializable, new()
     {
-        public WaitingListViewModel() : base()
+        protected WaitingListViewModel() : base()
         {
             RefreshCommand = new AsyncCommand<T>(Refresh);
             RefreshAllCommand = new AsyncCommand(RefreshAll);
             DisplayDataCommand = new AsyncCommand<T>(DisplayData);
         }
 
-        public IAsyncCommand<T> RefreshCommand { get; set; }
-        public IAsyncCommand RefreshAllCommand { get; set; }
-        public IAsyncCommand<T> DisplayDataCommand { get; set; }
+        public IAsyncCommand<T> RefreshCommand { get; }
+        public IAsyncCommand RefreshAllCommand { get; }
+        public IAsyncCommand<T> DisplayDataCommand { get; }
         protected abstract Task Refresh(T item);
         protected abstract Task RefreshAll();
         protected abstract Task DisplayData(T item);

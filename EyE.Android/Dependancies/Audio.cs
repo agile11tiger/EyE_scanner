@@ -14,7 +14,7 @@ namespace EyE.Droid.Dependancies
             this.player = player;
         }
 
-        private MediaPlayer player;
+        private readonly MediaPlayer player;
 
         public void Play(string fileName)
         {
@@ -26,7 +26,7 @@ namespace EyE.Droid.Dependancies
                 player.Prepare();
                 player.Start();
             }
-            catch (Exception e)
+            catch
             {
 
             }

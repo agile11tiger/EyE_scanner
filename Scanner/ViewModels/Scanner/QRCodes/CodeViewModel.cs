@@ -12,7 +12,7 @@ namespace Scanner.ViewModels.Scanner.QRCodes
     /// </summary>
     public abstract class CodeViewModel<Request, Result> : BaseViewModel
     {
-        public CodeViewModel(ICode code, WaitingChecksListViewModel waitingChecksListVM, ChecksListsViewModel checksListsVM)
+        protected CodeViewModel(ICode code, WaitingChecksListViewModel waitingChecksListVM, ChecksListsViewModel checksListsVM)
         {
             Code = code;
             RequestList = waitingChecksListVM;
@@ -22,14 +22,9 @@ namespace Scanner.ViewModels.Scanner.QRCodes
         }
 
         private string failMessage;
-        [Ignore]
-        public WaitingChecksListViewModel RequestList { get; private set; }
-        [Ignore]
-        public ChecksListsViewModel ResultLists { get; private set; }
-        [Ignore]
-        public ICode Code { get; set; }
-
-        [Ignore]
+        public ICode Code { get; }
+        public WaitingChecksListViewModel RequestList { get; }
+        public ChecksListsViewModel ResultLists { get; }
         public string FailMessage
         {
             get => failMessage;
@@ -43,8 +38,7 @@ namespace Scanner.ViewModels.Scanner.QRCodes
             }
         }
 
-        [Ignore]
-        public IAsyncCommand ProcessCodeCommand { get; private set; }
+        public IAsyncCommand ProcessCodeCommand { get; }
 
         protected abstract Task ProcessCode();
     }

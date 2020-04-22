@@ -1,15 +1,16 @@
 ﻿using Plugin.Media;
+using Plugin.Media.Abstractions;
 using System.Threading.Tasks;
 
 namespace Scanner.Services
 {
     public class ImageHelper
     {
-        public async Task<string> GetImagePathFromGalleryAsync()
+        public async Task<string> GetImagePathFromGalleryAsync(IMedia media)
         {
-            if (CrossMedia.Current.IsPickPhotoSupported)
+            if (media.IsPickPhotoSupported)
             {
-                var photo = await CrossMedia.Current.PickPhotoAsync();
+                var photo = await media.PickPhotoAsync();
 
                 if (photo != null)
                     return photo.Path;

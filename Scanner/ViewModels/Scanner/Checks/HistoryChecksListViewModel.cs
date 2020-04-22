@@ -7,7 +7,7 @@ namespace Scanner.ViewModels.Scanner.Checks
     /// </summary>
     public class HistoryChecksListViewModel : ChecksListViewModel
     {
-        public HistoryChecksListViewModel(ChecksListsViewModel checksListsVM) : base(checksListsVM)
+        public HistoryChecksListViewModel() : base()
         {
         }
     }

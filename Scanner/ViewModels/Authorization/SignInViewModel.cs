@@ -17,34 +17,42 @@ namespace Scanner.ViewModels.Authorization
     /// </summary>
     public class SignInViewModel : FNSSignViewModel
     {
-        public SignInViewModel(FNS fns, Func<Sign, Task> syncWithUserAccount, Sign sign) : base(fns, syncWithUserAccount, sign)
+        public SignInViewModel(
+            FNS fns, 
+            Func<Sign, Task> updateUserAccount, 
+            Sign sign, 
+            Lazy<ForgotPasswordPage> forgotPasswordPage) 
+            : base(fns, sign)
         {
-            SignInCommand = new AsyncCommand(signIn);
-            ForgotPasswordCommand = new AsyncCommand(goToForgotPasswordPage);
+            UpdateUserAccount = updateUserAccount;
+            this.forgotPasswordPage = forgotPasswordPage;
+            SignInCommand = new AsyncCommand(SignIn);
+            ForgotPasswordCommand = new AsyncCommand(GoToForgotPasswordPage);
         }
 
-        public IAsyncCommand SignInCommand { get; set; }
-        public IAsyncCommand ForgotPasswordCommand { get; set; }
+        private readonly Lazy<ForgotPasswordPage> forgotPasswordPage;
+        public IAsyncCommand SignInCommand { get; }
+        public IAsyncCommand ForgotPasswordCommand { get; }
+        public Func<Sign, Task> UpdateUserAccount { get; }
 
-        private async Task signIn()
+        private async Task SignIn()
         {
-            if (await trySignIn())
+            if (await TrySignIn())
             {
                 await Navigation.PopToRootAsync().ConfigureAwait(false);
             }
         }
 
-        private Task goToForgotPasswordPage()
+        private Task GoToForgotPasswordPage()
         {
-            var forgotPasswordPage = App.Container.Get<ForgotPasswordPage>();
-            forgotPasswordPage.ViewModel.Phone = Phone;
-            return Navigation.PushAsync(forgotPasswordPage);
+            forgotPasswordPage.Value.ViewModel.Phone = Phone;
+            return Navigation.PushAsync(forgotPasswordPage.Value);
         }
 
-        private async Task<bool> trySignIn()
+        private async Task<bool> TrySignIn()
         {
             //var b = "{\"email\":\"11nature98@gmail.com\",\"name\":\"Danil`\"}";
-            var phone = Regex.Replace(Phone, @"[^+\d]", "");
+            var phone = ParsePhone();
 
             if (string.IsNullOrWhiteSpace(phone) || string.IsNullOrWhiteSpace(Password))
             {
@@ -54,24 +62,17 @@ namespace Scanner.ViewModels.Authorization
 
             var task = FNS.LoginAsync(phone, Password);
 
-            if (task != await Task.WhenAny(task, Task.Delay(5000)))
-            {
-                FailMessage = CommonMessages.NoInternet;
-                return false;
-            }
-
-            if (task.Result.IsSuccess)
+            if (await TryExecute(task))
             {
                 var temp = JsonConvert.DeserializeObject<SignViewModel>(task.Result.Message);
                 Name = temp.Name;
                 Email = temp.Email;
                 IsAuthorization = true;
 
-                await SyncWithUserAccount(Sign);
+                await UpdateUserAccount(Sign);
                 return true;
             }
 
-            FailMessage = task.Result.Message;
             return false;
         }
     }

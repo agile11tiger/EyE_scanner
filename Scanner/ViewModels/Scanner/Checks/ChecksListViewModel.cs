@@ -4,25 +4,46 @@ using Scanner.Views.Scanner.Checks;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using VerificationCheck.Core.Results;
 
 namespace Scanner.ViewModels.Scanner.Checks
 {
     public abstract class ChecksListViewModel : ListViewModel<FriendsChecksViewModel>
     {
-        public ChecksListViewModel(ChecksListsViewModel checksListsVM) : base()
+        protected ChecksListViewModel() : base()
         {
-            this.checksListsVM = checksListsVM;
-            InfoCommand = new AsyncCommand(showInfo);
-            SearchCommand = new AsyncCommand<string>(search);
-            ToCheckCommand = new AsyncCommand<FriendsChecksViewModel>(toCheck);
+            InfoCommand = new AsyncCommand(ShowInfo);
+            SearchCommand = new AsyncCommand<string>(Search);
+            ToCheckCommand = new AsyncCommand<FriendsChecksViewModel>(ToCheck);
         }
 
-        private ChecksListsViewModel checksListsVM;
-        public IAsyncCommand InfoCommand { get; set; }
-        public IAsyncCommand<string> SearchCommand { get; set; }
-        public IAsyncCommand<FriendsChecksViewModel> ToCheckCommand { get; set; }
+        public IAsyncCommand InfoCommand { get; }
+        public IAsyncCommand<string> SearchCommand { get; }
+        public IAsyncCommand<FriendsChecksViewModel> ToCheckCommand { get; }
 
-        private Task showInfo()
+        protected override async Task InitializeListFromDatabase()
+        {
+            await AsyncDatabase.CreateTableAsync<Check>();
+            var checks = await AsyncDatabase.GetItemsAsync<Check>();
+            checks.ForEach(c => c.Deserialize());
+
+            List = new ObservableCollection<FriendsChecksViewModel>(checks.Select(c => new FriendsChecksViewModel(c)));
+
+        }
+
+        protected override async Task Add(FriendsChecksViewModel item)
+        {
+            List.Add(item);
+            await AsyncDatabase.AddItemAsync(item.Check);
+        }
+
+        protected override async Task Remove(FriendsChecksViewModel item)
+        {
+            List.RemoveAt(item.Check.Id);
+            await AsyncDatabase.RemoveItemAsync<Check>(item.Check.Id);
+        }
+
+        private Task ShowInfo()
         {
             //TODO: может лучше как в сканере через календарь
             return CurrentPage.DisplayAlert(
@@ -41,27 +62,27 @@ namespace Scanner.ViewModels.Scanner.Checks
                     "Ок");
         }
 
-        private async Task search(string searchText)
+        private async Task Search(string searchText)
         {
             //TODO: добавить поиск согласно showInfo
             IOrderedEnumerable<FriendsChecksViewModel> sortedList;
 
             if (string.IsNullOrEmpty(searchText))
-                sortedList = List.OrderByDescending(i => i.DateTime);
+                sortedList = await Task.Run(() => List.OrderByDescending(i => i.DateTime));
             else
-                sortedList = List.OrderByDescending(i => i.DateTime.ToString("dd.MM.yy").StartsWith(searchText));
+                sortedList = await Task.Run(() => List.OrderByDescending(i => i.DateTime.ToString("dd.MM.yy").StartsWith(searchText)));
 
             List = new ObservableCollection<FriendsChecksViewModel>(sortedList);
         }
 
-        private async Task toCheck(FriendsChecksViewModel friendsChecksVM)
+        private async Task ToCheck(FriendsChecksViewModel friendsChecksVM)
         {
             //TODO: Убрать(расскометировать(должен получать клон чека из бд))
             //var cloneCheckVM = await AsyncDatabase.GetItemAsync<FriendsChecksViewModel>(friendsChecksVM.Id);
             //cloneCheckVM.Deserialize();
             //var checkPage = new CheckTabbedPage(cloneCheckVM, checksListsVM.AddToMyChecks);
 
-            var checkPage = new CheckTabbedPage(friendsChecksVM, checksListsVM.AddToMyChecks);
+            var checkPage = new CheckTabbedPage(friendsChecksVM);
             await Navigation.PushAsync(checkPage).ConfigureAwait(false);
         }
     }
