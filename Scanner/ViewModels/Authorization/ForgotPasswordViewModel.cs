@@ -1,13 +1,9 @@
-﻿using Ninject;
-using Scanner.Extensions;
+﻿using Scanner.Extensions;
 using Scanner.Extensions.Interfaces;
 using Scanner.Messages;
 using Scanner.Models;
-using Scanner.Views.Authorization;
-using System;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using VerificationCheck.Core;
+using VerifyReceiptSDK;
 
 namespace Scanner.ViewModels.Authorization
 {
@@ -16,27 +12,25 @@ namespace Scanner.ViewModels.Authorization
     /// </summary>
     public class ForgotPasswordViewModel : FNSSignViewModel
     {
-        public ForgotPasswordViewModel(FNS fns, Sign sign, SignInPage signInPage) : base(fns, sign)
+        public ForgotPasswordViewModel(Sign sign) : base(sign)
         {
-            this.signInPage = signInPage;
             RestorePasswordCommand = new AsyncCommand(RestorePassword);
         }
 
-        private readonly SignInPage signInPage;
         public IAsyncCommand RestorePasswordCommand { get; set; }
 
         private async Task RestorePassword()
         {
             if (await TryRestorePassword())
             {
-                signInPage.ViewModel.Phone = Phone;
-                await Navigation.PushAsync(signInPage).ConfigureAwait(false);
+                Pages.SignInPage.ViewModel.Phone = Phone;
+                await Navigation.PushAsync(Pages.SignInPage).ConfigureAwait(false);
             }
         }
 
         private async Task<bool> TryRestorePassword()
         {
-            var phone = ParsePhone();
+            var phone = GetClearPhone();
 
             if (string.IsNullOrWhiteSpace(phone))
             {

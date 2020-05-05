@@ -15,6 +15,7 @@ namespace Scanner.ViewModels.Scanner.Friends
             InfoCommand = new AsyncCommand(ShowInfo);
             SearchCommand = new AsyncCommand<string>(Search);
             ItemSelectedCommand = new AsyncCommand<FriendViewModel>(ProcessItemSelected);
+            CallInitializeListFromDatabase().Wait();
         }
 
         public IAsyncCommand InfoCommand { get; }
@@ -49,19 +50,15 @@ namespace Scanner.ViewModels.Scanner.Friends
 
         protected override async Task Add(FriendViewModel item)
         {
-            List.Add(item);
-            await AsyncDatabase.AddOrReplaceItemAsync(item.Friend);
+            var friendVM = item.Clone();
+            List.Add(friendVM);
+            await AsyncDatabase.AddOrReplaceItemAsync(friendVM.Friend);
         }
 
         protected override async Task Remove(FriendViewModel item)
         {
-            var index = List.IndexOf(item);
-            if (index != -1)
-            {
-                List.RemoveAt(index);
-                //почему нельзя так List.RemoveAt(item.Id);
-                await AsyncDatabase.RemoveItemAsync<Friend>(item.Id);
-            }
+            List.Remove(item);
+            await AsyncDatabase.RemoveItemAsync<Friend>(item.Id);
         }
 
         private Task ShowInfo()
@@ -86,13 +83,11 @@ namespace Scanner.ViewModels.Scanner.Friends
 
         private async Task Search(string input)
         {
-            IOrderedEnumerable<FriendViewModel> sortedFriends;
             input = input.ToLower();
 
-            if (string.IsNullOrEmpty(input))
-                sortedFriends = await Task.Run(() => List.OrderBy(i => i.Name));
-            else
-                sortedFriends = await Task.Run(() => List.OrderByDescending(i => i.Name.ToLower().StartsWith(input)));
+            var sortedFriends = string.IsNullOrEmpty(input)
+                ? await Task.Run(() => List.OrderBy(i => i.Name))
+                : await Task.Run(() => List.OrderByDescending(i => i.Name.ToLower().StartsWith(input)));
 
             List = new ObservableCollection<FriendViewModel>(sortedFriends);
         }

@@ -1,8 +1,5 @@
-﻿using Ninject;
-using Scanner.Extensions;
+﻿using Scanner.Extensions;
 using Scanner.Extensions.Interfaces;
-using Scanner.Views.Authorization;
-using System;
 using System.Threading.Tasks;
 
 namespace Scanner.ViewModels.Authorization
@@ -12,17 +9,13 @@ namespace Scanner.ViewModels.Authorization
     /// </summary>
     public class AuthorizationViewModel : BaseViewModel
     {
-        public AuthorizationViewModel(SignInPage signInPage, SignUpPage signUpPage) : base()
+        public AuthorizationViewModel() : base()
         {
-            this.signInPage = signInPage;
-            this.signUpPage = signUpPage;
             InfoCommand = new AsyncCommand(ShowInfo);
             SignInCommand = new AsyncCommand(GoToSignInPage);
             SignUpCommand = new AsyncCommand(GoToSignUpPage);
         }
 
-        private readonly SignInPage signInPage;
-        private readonly SignUpPage signUpPage;
         public IAsyncCommand InfoCommand { get; }
         public IAsyncCommand SignInCommand { get; }
         public IAsyncCommand SignUpCommand { get; }
@@ -41,12 +34,12 @@ namespace Scanner.ViewModels.Authorization
 
         private Task GoToSignInPage()
         {
-            return Navigation.PushAsync(signInPage);
+            return Navigation.PushAsync(Pages.SignInPage);
         }
 
         private Task GoToSignUpPage()
         {
-            return Navigation.PushAsync(signUpPage);
+            return Navigation.PushAsync(Pages.SignUpPage);
         }
     }
 }

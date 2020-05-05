@@ -63,16 +63,16 @@
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
                                         
-                                        <Label x:Name="checkAmount"
+                                        <Label x:Name="TotalSum"
                                                Grid.Row="0"
                                                Grid.Column="0"
-                                               Text="{Binding CheckAmount, StringFormat='{0:C}'}"
+                                               Text="{Binding TotalSum, StringFormat='{0:C}'}"
                                                FontAttributes="Bold"
                                                HorizontalOptions="Center"/>
                                         <ImageButton x:Name="removeImage"
                                                Grid.Row="0"
                                                Grid.Column="1"
-                                               Source="{extensions:ImageResource Source={x:Static local:AppConstants.RemovePng}}"
+                                               Source="{extensions:ImageResource Source={x:Static local:ImagePaths.Remove}}"
                                                WidthRequest="20"
                                                HeightRequest="20"
                                                HorizontalOptions="End"
@@ -84,7 +84,7 @@
                                                Grid.Row="1"
                                                Grid.Column="0"
                                                Grid.RowSpan="2"
-                                               Source="{Binding Source={RelativeSource AncestorType={x:Type checks:WaitingChecksListViewModel}}, Path=QRCodeImage}"
+                                               Source="{Binding Source={RelativeSource AncestorType={x:Type checks:WaitingChecksListViewModel}}, Path=Image}"
                                                HeightRequest="80"
                                                WidthRequest="80"/>
                                         <Label x:Name="readiness"

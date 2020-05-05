@@ -1,9 +1,7 @@
-﻿using Ninject;
-using Plugin.Media;
+﻿using Plugin.Media;
 using Scanner.Extensions;
 using Scanner.Extensions.Interfaces;
 using Scanner.Services;
-using Scanner.Views.Scanner;
 using Scanner.Views.Scanner.Friends;
 using System.Threading.Tasks;
 using Xamarin.Forms;
@@ -16,17 +14,13 @@ namespace Scanner.ViewModels
     public class AppShellViewModel : BaseViewModel
     {
         public AppShellViewModel(
-            UserAccountFNSViewModel userAccount, 
+            UserAccountFNSViewModel userAccount,
             ImageHelper imageHelper,
-            FriendsPage friendsPage,
-            CodeGenerationPage codeGenerationPage,
-            ScannerSettingsPage scannerSettingsPage) : base()
+            FriendsPage friendsPage) : base()
         {
             UserAccount = userAccount;
             this.imageHelper = imageHelper;
             this.friendsPage = friendsPage;
-            this.codeGenerationPage = codeGenerationPage;
-            this.scannerSettingsPage = scannerSettingsPage;
 
             ToFriendsCommand = new AsyncCommand(ToFriends);
             ToCodeGenerationCommand = new AsyncCommand(ToCodeGeneration);
@@ -36,10 +30,9 @@ namespace Scanner.ViewModels
 
         private readonly ImageHelper imageHelper;
         private readonly FriendsPage friendsPage;
-        private readonly CodeGenerationPage codeGenerationPage;
-        private readonly ScannerSettingsPage scannerSettingsPage;
 
         public UserAccountFNSViewModel UserAccount { get; }
+        public ImageSource UserImage { get => UserAccount.UserImage; }
         public IAsyncCommand ToFriendsCommand { get; }
         public IAsyncCommand ToCodeGenerationCommand { get; }
         public IAsyncCommand SetUserImageCommand { get; }
@@ -53,7 +46,7 @@ namespace Scanner.ViewModels
 
         private async Task ToCodeGeneration()
         {
-            await Navigation.PushAsync(codeGenerationPage);
+            await Navigation.PushAsync(Pages.CodeGenerationPage);
             Shell.Current.FlyoutIsPresented = false;
         }
 
@@ -64,14 +57,14 @@ namespace Scanner.ViewModels
             if (path != null)
             {
                 UserAccount.Sign.PathToUserImage = path;
-                OnPropertyChanged(nameof(UserAccount.UserImage));
+                OnPropertyChanged(nameof(UserImage));
                 await AsyncDatabase.AddOrReplaceItemAsync(UserAccount.Sign);
             }
         }
 
         private async Task ToSettings()
         {
-            await Navigation.PushAsync(scannerSettingsPage);
+            await Navigation.PushAsync(Pages.ScannerSettingsPage);
             Shell.Current.FlyoutIsPresented = false;
         }
     }

@@ -1,5 +1,4 @@
 ﻿using Scanner.ViewModels.Scanner.Friends;
-using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -15,30 +14,22 @@ namespace Scanner.Views.Scanner.Friends
             InitializeComponent();
             viewModel.CurrentPage = this;
 
-            BindingContext = ViewModel = viewModel;
-        }
-
-        private bool block;
-        protected override void OnAppearing()
-        {
             //TODO: убрать
             #region создания друзей(потом убрать)
-            if(!block)
+            for (var i = 0; i < 3; i++)
             {
-                for (var i = 0; i < 15; i++)
+                var f = new FriendViewModel()
                 {
-                    var f = new FriendViewModel()
-                    {
-                        Id = i,
-                        Name = "Вася" + i,
-                        Phone = "+78768687",
-                        Image = ImageSource.FromResource("Scanner.Resources.Images.filka.jpg")
-                    };
-                    ViewModel.List.Add(f);
-                }
+                    Id = i,
+                    Name = "Вася" + i,
+                    Phone = "+70123456789",
+                    Image = ImageSource.FromResource("Scanner.Resources.Images.filka.jpg")
+                };
+                viewModel.List.Add(f);
             }
             #endregion
-            base.OnAppearing();
+
+            BindingContext = ViewModel = viewModel;
         }
 
         private void SearchBar_TextChanged(object sender, TextChangedEventArgs e)

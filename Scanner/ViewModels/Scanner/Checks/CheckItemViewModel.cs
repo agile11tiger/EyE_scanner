@@ -1,41 +1,40 @@
-﻿using Scanner.Extensions;
-using Scanner.Extensions.Interfaces;
-using System;
-using System.Threading.Tasks;
-using VerificationCheck.Core.Results;
+﻿using System;
+using VerifyReceiptSDK.Results;
 using Xamarin.Forms;
 
 namespace Scanner.ViewModels.Scanner.Checks
 {
     public class CheckItemViewModel : BaseViewModel, IEquatable<CheckItemViewModel>
     {
-        public CheckItemViewModel(int id, CheckItem checkItem, ImageSource markBoxImage)
+        public CheckItemViewModel(int id, Item item, ImageSource markBoxImage)
         {
             Id = id;
-            this.checkItem = checkItem;
+            Item = item;
             this.markBoxImage = markBoxImage;
         }
 
-        private readonly CheckItem checkItem;
         private ImageSource markBoxImage;
         private double selectedQuantity;
+        public Item Item { get; private set; }
         public int Id { get; set; }
         public bool IsMarked { get; set; }
-        public string Name { get => checkItem.Name; }
-        public int Sum { get => checkItem.Sum; }
-        public int Price { get => checkItem.Price; }
+        public string Name { get => Item.Name; }
+        public int Sum { get => Item.Sum; }
+        public double SumRub { get => Item.Sum / 100; }
+        public int Price { get => Item.Price; }
+        public double PriceRub { get => Item.Price / 100; }
 
         public double Quantity
         {
-            get => checkItem.Quantity;
+            get => Item.Quantity;
             set
             {
-                if (checkItem.Quantity != value)
+                if (Item.Quantity != value)
                 {
-                    checkItem.Quantity = value;
-                    checkItem.Sum = Price * (int)Quantity;
+                    Item.Quantity = value;
+                    Item.Sum = Price * (int)Quantity;
                     OnPropertyChanged();
-                    OnPropertyChanged(nameof(Sum));
+                    OnPropertyChanged(nameof(SumRub));
                 }
             }
         }
@@ -66,10 +65,11 @@ namespace Scanner.ViewModels.Scanner.Checks
             }
         }
 
-        public CheckItemViewModel Clone()
+        public CheckItemViewModel Clone(ImageSource image)
         {
-            var cloneCheckItem = (CheckItem)checkItem.Clone();
-            var clone = new CheckItemViewModel(Id, cloneCheckItem, null);
+            var clone = (CheckItemViewModel)MemberwiseClone();
+            clone.Item = Item.PartialClone();
+            clone.MarkBoxImage = image;
             return clone;
         }
 

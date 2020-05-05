@@ -42,11 +42,6 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    <Label x:Name="warningLabel" 
-                           Text="{Binding FailMessage}" 
-                           TextColor="Red"
-                           FontSize="Medium" 
-                           IsVisible="True"/>
 
                     <Label x:Name="fiscalNumberLabel"
                            Grid.Row="0"
@@ -116,7 +111,7 @@
                            Text="Сумма чека"/>
                     <Entry x:Name="checkAmountEntry"
                            Grid.Row="4"
-                           Text="{Binding CheckAmount}"
+                           Text="{Binding TotalSum}"
                            Keyboard="Numeric"
                            ReturnType="Done"
                            Placeholder="Сумма чека" 
@@ -126,8 +121,16 @@
                     <Button x:Name="getCheck"
                             Grid.Row="5"
                             Text="Получить чек"
-                            Margin="0,15,0,0"
                             Command="{Binding ProcessCodeCommand}"/>
+                    
+                    <Label x:Name="warningLabel" 
+                           Grid.Row="6"
+                           Margin="0,15,0,0"
+                           Text="{Binding FailMessage}" 
+                           TextColor="Red"
+                           FontSize="Medium" 
+                           LineBreakMode="CharacterWrap"
+                           IsVisible="True"/>
                 </Grid>
             </ScrollView>
         </Grid>

@@ -1,9 +1,9 @@
 ﻿using Newtonsoft.Json;
 using Ninject;
+using Scanner.Models.Interfaces;
+using Scanner.Models.Iterfaces;
 using SQLite;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using VerificationCheck.Core.Interfaces;
 using ZXing;
 using ZXing.Mobile;
 
@@ -13,7 +13,7 @@ namespace Scanner.Models
     /// Класс, хранящий информацию об настройках сканера
     /// </summary>
     [Table("ScannerSettings")]
-    public class ScannerSettings : ISerializable, IDatabaseItem
+    public class ScannerSettings : ISerializableDatabaseItem, IDatabaseItem, IClone<ScannerSettings>
     {
         public ScannerSettings()
         {
@@ -26,7 +26,6 @@ namespace Scanner.Models
 
         [PrimaryKey, Unique]
         public int Id { get; set; }
-        public string OptionsJson { get; set; }
         public bool IsSoundShutterRelease { get; set; }
         /// <summary>
         /// http://developer.intersoftsolutions.com/display/crosslightapi/MobileBarcodeScanningOptions+Class
@@ -34,20 +33,16 @@ namespace Scanner.Models
         /// </summary>
         [Ignore]
         public MobileBarcodeScanningOptions Options { get; private set; }
+        public string OptionsJson { get; private set; }
 
         public void Serialize()
         {
-            OptionsJson = JsonConvert.SerializeObject(Options, ISerializable.JsonSettings);
+            OptionsJson = JsonConvert.SerializeObject(Options, ISerializableDatabaseItem.JsonSettings);
         }
 
         public void Deserialize()
         {
-            Options = JsonConvert.DeserializeObject<MobileBarcodeScanningOptions>(OptionsJson, ISerializable.JsonSettings);
-        }
-
-        public async Task<ScannerSettings> CloneAsync()
-        {
-            return await Task.Run(() => Clone());
+            Options = JsonConvert.DeserializeObject<MobileBarcodeScanningOptions>(OptionsJson, ISerializableDatabaseItem.JsonSettings);
         }
 
         public ScannerSettings Clone()

@@ -1,5 +1,4 @@
-﻿using Plugin.Media;
-using Plugin.Media.Abstractions;
+﻿using Plugin.Media.Abstractions;
 using System.Threading.Tasks;
 
 namespace Scanner.Services

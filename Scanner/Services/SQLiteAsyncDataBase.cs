@@ -1,6 +1,5 @@
 ﻿using Scanner.Services.Interfaces;
 using SQLite;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -17,6 +16,7 @@ namespace Scanner.Services
         }
 
         private readonly SQLiteAsyncConnection database;
+        public SQLiteAsyncConnection Db { get => database; }
 
         public async Task<CreateTableResult> CreateTableAsync<T>() where T : new()
         {
@@ -44,7 +44,6 @@ namespace Scanner.Services
 
         public async Task<int> AddOrReplaceItemAsync<T>(T item) where T : new()
         {
-            //не понятно почему, но этот метод не увеличивает primarykey(из за этого заменяет старый объект)
             return await database.InsertOrReplaceAsync(item);
         }
 

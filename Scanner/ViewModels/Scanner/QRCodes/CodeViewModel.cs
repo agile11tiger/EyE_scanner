@@ -1,8 +1,6 @@
 ﻿using Scanner.Extensions;
 using Scanner.Extensions.Interfaces;
 using Scanner.Models.Iterfaces;
-using Scanner.ViewModels.Scanner.Checks;
-using SQLite;
 using System.Threading.Tasks;
 
 namespace Scanner.ViewModels.Scanner.QRCodes
@@ -12,19 +10,19 @@ namespace Scanner.ViewModels.Scanner.QRCodes
     /// </summary>
     public abstract class CodeViewModel<Request, Result> : BaseViewModel
     {
-        protected CodeViewModel(ICode code, WaitingChecksListViewModel waitingChecksListVM, ChecksListsViewModel checksListsVM)
+        protected CodeViewModel(ICode code, Request request, Result result)
         {
             Code = code;
-            RequestList = waitingChecksListVM;
-            ResultLists = checksListsVM;
+            RequestList = request;
+            ResultList = result;
             failMessage = "";
-            ProcessCodeCommand = new AsyncCommand(ProcessCode);
+            ProcessCodeCommand = new AsyncCommand(ProcessQRCode);
         }
 
         private string failMessage;
         public ICode Code { get; }
-        public WaitingChecksListViewModel RequestList { get; }
-        public ChecksListsViewModel ResultLists { get; }
+        public Request RequestList { get; }
+        public Result ResultList { get; }
         public string FailMessage
         {
             get => failMessage;
@@ -40,6 +38,6 @@ namespace Scanner.ViewModels.Scanner.QRCodes
 
         public IAsyncCommand ProcessCodeCommand { get; }
 
-        protected abstract Task ProcessCode();
+        protected abstract Task ProcessQRCode();
     }
 }

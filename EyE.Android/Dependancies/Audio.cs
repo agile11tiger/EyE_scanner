@@ -1,6 +1,5 @@
 ﻿using Android.App;
 using Android.Media;
-using System;
 
 namespace EyE.Droid.Dependancies
 {

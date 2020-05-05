@@ -11,7 +11,6 @@ namespace Scanner.Services
     /// </summary>
     public class AudioPlayer : IPlayer
     {
-        private const string pathToAudio = "Scanner.Resources.Audio.";
         private ISimpleAudioPlayer Player { get => CrossSimpleAudioPlayer.Current; }
 
         public void Play(string fileName)
@@ -24,7 +23,7 @@ namespace Scanner.Services
         private Stream GetStreamFromFile(string fileName)
         {
             var assembly = typeof(App).GetTypeInfo().Assembly;
-            var stream = assembly.GetManifestResourceStream($"{pathToAudio}" + fileName);
+            var stream = assembly.GetManifestResourceStream($"{Audio.PathToAudio}" + fileName);
             return stream;
         }
     }

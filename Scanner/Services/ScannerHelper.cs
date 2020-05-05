@@ -24,7 +24,6 @@ namespace Scanner.Services
 
         private readonly MultiFormatReader reader;
         private readonly IZxingImageHelper imageHelper;
-        //private BarcodeWriter<> writer;
 
         public Task<MediaFile> TakePhoto()
         {
@@ -54,7 +53,7 @@ namespace Scanner.Services
             throw new NotImplementedException();
         }
 
-        public async Task<Result> GetResult(string path, CancellationToken token)
+        public async Task<Result> Scan(string path, CancellationToken token)
         {
             var binaryBitmapTask = await imageHelper.GetBinaryBitmap(path, token);
 
@@ -63,41 +62,6 @@ namespace Scanner.Services
 
             var result = reader.decode(binaryBitmapTask);
             return result;
-            //var binaryBitmap = await imageHelper.GetBinaryBitmapAsync(path);
-            //var result = reader.decode(binaryBitmap);
-            //return result;
-
-            //Если в пакетах добавить ссылку на System.Drawing.Common и использовать это, 
-            //то будет ошибка, что платформа не поддерживает вызов Image.FromFile(path)
-            //var bitmap = (Bitmap)Image.FromFile(path);
-            //var multiReader = new MultiFormatReader();
-            //var rgb = getRgbBytes(bitmap);
-            //var rgbLuminanceSource = new RGBLuminanceSource(rgb, bitmap.Width, bitmap.Height);
-            //var binarizer = new HybridBinarizer(rgbLuminanceSource);
-            //var binaryBitmap = new BinaryBitmap(binarizer);
-            //var result = multiReader.decode(binaryBitmap);
-            //return result;
-
-            //Это тоже не работает, мб не поддерживается
-            //var reader = new BarcodeReader();
-            //var bytes = File.ReadAllBytes(path);
-            //return reader.Decode(bytes);
-
-            //byte[] fileData = null;
-            //using (FileStream fs = File.OpenRead(path))
-            //    using (BinaryReader binaryReader = new BinaryReader(fs))
-            //        fileData = binaryReader.ReadBytes((int)fs.Length);
-
-            //byte[] buffer = null;
-            //using (FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read))
-            //{
-            //    buffer = new byte[fs.Length];
-            //    fs.Read(buffer, 0, (int)fs.Length);
-            //}
-
-            //var imageStream = photo.GetStream();
-            //var br = new BinaryReader(imageStream);
-            //var imageByte = br.ReadBytes((int)imageStream.Length);
         }
     }
 }

@@ -1,12 +1,11 @@
 ﻿using Scanner.Models;
-using SQLite;
+using Scanner.Models.Interfaces;
 using System;
-using VerificationCheck.Core.Interfaces;
 using Xamarin.Forms;
 
 namespace Scanner.ViewModels.Scanner.Friends
 {
-    public class FriendViewModel : BaseViewModel, IEquatable<FriendViewModel>
+    public class FriendViewModel : BaseViewModel, IEquatable<FriendViewModel>, IClone<FriendViewModel>
     {
         public FriendViewModel(Friend friend)
         {
@@ -18,7 +17,7 @@ namespace Scanner.ViewModels.Scanner.Friends
             Friend = new Friend();
         }
 
-        public Friend Friend { get; }
+        public Friend Friend { get; private set; }
 
         public int Id
         {
@@ -82,6 +81,13 @@ namespace Scanner.ViewModels.Scanner.Friends
         public bool Equals(FriendViewModel other)
         {
             return Id == other.Id;
+        }
+
+        public FriendViewModel Clone()
+        {
+            var clone = (FriendViewModel)MemberwiseClone();
+            clone.Friend = Friend.Clone();
+            return clone;
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Scanner.Extensions;
 using Scanner.Extensions.Interfaces;
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,49 +16,44 @@ namespace Scanner.ViewModels.Scanner.Checks
         public ChecksListsViewModel(ObservableCollection<ChecksListViewModel> checks) : base()
         {
             Checks = checks;
-            Checks.Add(new CommonChecksListViewModel() { Title = AppConstants.NAME_PAGE_COMMON_CHECKS });
-            Checks.Add(new MyChecksListViewModel() { Title = AppConstants.NAME_PAGE_MY_CHECKS });
+            Checks.Add(new CommonChecksListViewModel() { Title = PageTitles.COMMON_CHECKS });
+            Checks.Add(new MyChecksListViewModel() { Title = PageTitles.MY_CHECKS });
+            Checks.Add(new IOweChecksListViewModel() { Title = PageTitles.I_OWE });
+            Checks.Add(new OweMeChecksListViewModel() { Title = PageTitles.OWE_ME });
 
-            SearchCommand = new AsyncCommand<string>(Search);
+            SearchCommand = new AsyncCommand<DateTime>(Search);
             InfoCommand = new AsyncCommand(ShowInfo);
         }
 
         public ObservableCollection<ChecksListViewModel> Checks { get; }
-        public new TabbedPage CurrentPage { get; set; }
-        public new INavigation Navigation { get => CurrentPage.Navigation; }
-        public IAsyncCommand<string> SearchCommand { get; }
+        public ChecksListViewModel CurrentChecksListVM { get => (ChecksListViewModel)(CurrentPage as TabbedPage).SelectedItem; }
+        public IAsyncCommand<DateTime> SearchCommand { get; }
         public IAsyncCommand InfoCommand { get; }
 
-        public Task AddToCommonChecks(FriendsChecksViewModel friendsChecksVM)
+        public Task Add(CheckViewModel сheckVM, string pageTitle)
         {
-            return Checks.First(c => c.Title == AppConstants.NAME_PAGE_COMMON_CHECKS)
+            return Checks.First(c => c.Title == pageTitle)
                 .AddCommand
-                .ExecuteAsync(friendsChecksVM);
+                .ExecuteAsync(сheckVM);
         }
 
-        public Task AddToMyChecks(FriendsChecksViewModel friendsChecksVM)
+        public Task Remove(CheckViewModel сheckVM, string pageTitle)
         {
-            return Checks.First(c => c.Title == AppConstants.NAME_PAGE_MY_CHECKS)
-                .AddCommand
-                .ExecuteAsync(friendsChecksVM);
+            return Checks.First(c => c.Title == pageTitle)
+                .RemoveCommand
+                .ExecuteAsync(сheckVM);
         }
 
-        //TODO: Возможно это можно сделать как нибудь в xaml
-        private Task Search(string searchText)
+        private Task Search(DateTime date)
         {
-            var currentChecksVM = (ChecksListViewModel)CurrentPage.SelectedItem;
-
-            return Checks.First(c => c.Title == currentChecksVM.Title)
+            return Checks.First(c => c.Title == CurrentChecksListVM.Title)
                 .SearchCommand
-                .ExecuteAsync(searchText);
+                .ExecuteAsync(date);
         }
 
-        //TODO: Возможно это можно сделать как нибудь в xaml
         private Task ShowInfo()
         {
-            var currentChecksVM = (ChecksListViewModel)CurrentPage.SelectedItem;
-
-            return Checks.First(c => c.Title == currentChecksVM.Title)
+            return Checks.First(c => c.Title == CurrentChecksListVM.Title)
                 .InfoCommand
                 .ExecuteAsync();
         }

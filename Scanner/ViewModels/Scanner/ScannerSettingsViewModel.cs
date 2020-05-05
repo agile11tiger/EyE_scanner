@@ -1,10 +1,7 @@
-﻿using Ninject;
-using Scanner.Extensions;
+﻿using Scanner.Extensions;
 using Scanner.Extensions.Interfaces;
 using Scanner.Models;
-using Scanner.Views.Scanner;
 using System.Threading.Tasks;
-using ZXing.Mobile;
 
 namespace Scanner.ViewModels.Scanner
 {
@@ -96,11 +93,11 @@ namespace Scanner.ViewModels.Scanner
         public double InitialDelayBeforeAnalyzingFrames
         {
             //переводит из милисекунд(int) в секунды(double)
-            get => tempSettings.Options.InitialDelayBeforeAnalyzingFrames / 1000d; 
+            get => tempSettings.Options.InitialDelayBeforeAnalyzingFrames / 1000d;
             set
-            { 
+            {
                 //переводит из секунд(double) в милисекунды(int)
-                var tempValue = (int)(value * 1000); 
+                var tempValue = (int)(value * 1000);
                 if (tempSettings.Options.InitialDelayBeforeAnalyzingFrames != tempValue)
                 {
                     tempSettings.Options.InitialDelayBeforeAnalyzingFrames = tempValue;
@@ -144,9 +141,10 @@ namespace Scanner.ViewModels.Scanner
         public IAsyncCommand ApplySettingsCommand { get; }
         #endregion
 
-        private async Task OnDisappearing()
+        private Task OnDisappearing()
         {
-            tempSettings = await Settings.CloneAsync().ConfigureAwait(false);
+            tempSettings = Settings.Clone();
+            return Task.FromResult(true);
         }
 
         private Task MakeDefaultSettings()
@@ -158,7 +156,7 @@ namespace Scanner.ViewModels.Scanner
 
         private async Task ApplySettings()
         {
-            Settings = await tempSettings.CloneAsync();
+            Settings = tempSettings.Clone();
             await GoToMainPageAsync().ConfigureAwait(false);
         }
 

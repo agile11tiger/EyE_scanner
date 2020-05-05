@@ -12,7 +12,7 @@ namespace Scanner.Services.Interfaces
     {
         Task<MediaFile> TakePhoto();
         Task<MediaFile> GetFromGallery();
-        Task<Result> GetResult(string path, CancellationToken token);
+        Task<Result> Scan(string path, CancellationToken token);
         Task WriteAsync();
     }
 }

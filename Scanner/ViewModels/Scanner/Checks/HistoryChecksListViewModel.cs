@@ -1,4 +1,4 @@
-﻿using System.Collections.ObjectModel;
+﻿using Scanner.Models;
 
 namespace Scanner.ViewModels.Scanner.Checks
 {
@@ -7,7 +7,7 @@ namespace Scanner.ViewModels.Scanner.Checks
     /// </summary>
     public class HistoryChecksListViewModel : ChecksListViewModel
     {
-        public HistoryChecksListViewModel() : base()
+        public HistoryChecksListViewModel() : base(CheckTypes.HistoryCheck)
         {
         }
     }

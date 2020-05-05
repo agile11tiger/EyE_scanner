@@ -9,6 +9,7 @@ namespace Scanner.Services.Interfaces
     /// </summary>
     public interface IAsyncDatabase
     {
+        SQLiteAsyncConnection Db { get; }
         Task<CreateTableResult> CreateTableAsync<T>() where T : new();
         Task<List<T>> GetItemsAsync<T>() where T : new();
         Task<T> GetItemAsync<T>(int id = 0) where T : new();

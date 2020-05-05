@@ -2,8 +2,7 @@
 using Scanner.Models;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using VerificationCheck.Core;
-using VerificationCheck.Core.Results;
+using VerifyReceiptSDK.Results;
 
 namespace Scanner.ViewModels.Authorization
 {
@@ -97,7 +96,7 @@ namespace Scanner.ViewModels.Authorization
             }
         }
 
-        public string ParsePhone()
+        public string GetClearPhone()
         {
             return Regex.Replace(Phone, @"[^+\d]", "");
         }

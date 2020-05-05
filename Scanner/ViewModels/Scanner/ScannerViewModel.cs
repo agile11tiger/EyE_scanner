@@ -1,17 +1,14 @@
-﻿using Ninject;
+﻿using Plugin.Media.Abstractions;
 using Scanner.Extensions;
 using Scanner.Extensions.Interfaces;
 using Scanner.Services;
 using Scanner.Services.Interfaces;
 using Scanner.ViewModels.Scanner.QRCodes;
-using Scanner.Views.Scanner.QRCodes;
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
 using ZXing;
-using ZXing.Mobile;
 
 namespace Scanner.ViewModels.Scanner
 {
@@ -23,16 +20,14 @@ namespace Scanner.ViewModels.Scanner
         public ScannerViewModel(
             CashQRCodeViewModel cashQRCodeVM,
             ScannerSettingsViewModel scannerSettingsVM,
-            ScannerHelper scannerHelper, 
-            IPlayer player,
-            Func<ManualScanPage> GetManualScanPage) 
+            ScannerHelper scannerHelper,
+            IPlayer player)
             : base()
         {
             CashQRCodeVM = cashQRCodeVM;
             ScannerSettingsVM = scannerSettingsVM;
             this.scannerHelper = scannerHelper;
             this.player = player;
-            this.GetManualScanPage = GetManualScanPage;
             cancellationTS = new CancellationTokenSource();
             SetSubscribe();
 
@@ -40,10 +35,10 @@ namespace Scanner.ViewModels.Scanner
             BackCommand = new AsyncCommand(GoToBack);
             SwitchTorchCommand = new Command(SwitchTorch);
             TurnTorchCommand = new Command<bool>(TurnTorch);
-            InitialOutlineQRCodeCommand = new Command(SetInitialOutlineCode);
+            SetOutlineCodeCommand = new Command(SetOutlineCode);
             InfoCommand = new AsyncCommand(ShowInfo);
             ScanCommand = new AsyncCommand<string>(Scan);
-            ProcessScanResultCommand = new AsyncCommand<Result>(ProcessScanResultFromScanner);
+            ProcessScanResultCommand = new AsyncCommand<Result>(ProcessScanResult);
             ScannerSwitchCommand = new Command<bool>(ScannerSwitch);
             CancelScanningPhotoCommand = new Command(CancelScanningPhoto);
         }
@@ -61,7 +56,6 @@ namespace Scanner.ViewModels.Scanner
 
         private readonly IScannerHelper scannerHelper;
         private readonly IPlayer player;
-        private readonly Func<ManualScanPage> GetManualScanPage;
         private CancellationTokenSource cancellationTS;
         private bool isScanning;
         private bool isAnalyzing;
@@ -227,7 +221,7 @@ namespace Scanner.ViewModels.Scanner
         public IAsyncCommand BackCommand { get; }
         public ICommand SwitchTorchCommand { get; }
         public ICommand TurnTorchCommand { get; }
-        public ICommand InitialOutlineQRCodeCommand { get; }
+        public ICommand SetOutlineCodeCommand { get; }
         public IAsyncCommand InfoCommand { get; }
         public AsyncCommand<string> ScanCommand { get; }
         public ICommand CancelScanningPhotoCommand { get; }
@@ -270,12 +264,12 @@ namespace Scanner.ViewModels.Scanner
         private void SetImageForTorch()
         {
             if (IsTorchOn)
-                TorchImage = ImageSource.FromResource("Scanner.Resources.Images.Scanner.torch_on.png");
+                TorchImage = ImageSource.FromResource(ImagePaths.TorchOn);
             else
-                TorchImage = ImageSource.FromResource("Scanner.Resources.Images.Scanner.torch_off.png");
+                TorchImage = ImageSource.FromResource(ImagePaths.TorchOff);
         }
 
-        private void SetInitialOutlineCode()
+        private void SetOutlineCode()
         {
             TopLineCode = new Rectangle(100, 2, 50, 3);
             BottomLineCode = new Rectangle(100, 245, 50, 3);
@@ -293,69 +287,68 @@ namespace Scanner.ViewModels.Scanner
                     "Ок");
         }
 
-        private Task ProcessScanResultFromScanner(Result result)
+        private Task ProcessScanResult(Result result)
         {
-            return Scan("fromScanner", result);
+            return WrapUp("scanResult", result);
         }
 
-        private Task Scan(string str)
+        private Task Scan(string name)
         {
-            return Scan(str, null);
+            return WrapUp(name, null);
         }
 
-        private async Task Scan(string str, Result result = null)
+        private async Task WrapUp(string name, Result result = null)
         {
-            //Чтобы пользователь не смог запустить команду до завершения другой команды
-            if (!isScanning)
-                return;
-
-            ScannerSwitch(false);
-            CurrentPage.AbortAnimation("SimpleAnimation");
-
-            var isOk = await TryProcess(str, result);
-
-            if (!isOk)
+            await Device.InvokeOnMainThreadAsync(async() =>
             {
-                //если не получилось обработать код, то продолжаем сканировать следующий
-                await RunAnimation();
-                ScannerSwitch(true);
-            }
+                //Чтобы пользователь не смог запустить команду до завершения другой команды
+                if (!isScanning)
+                    return;
+
+                ScannerSwitch(false);
+                CurrentPage.AbortAnimation("SimpleAnimation");
+
+                var isOk = await TryProcess(name, result);
+
+                if (!isOk)
+                {
+                    //если не получилось обработать код, то продолжаем сканировать следующий
+                    await RunAnimation();
+                    ScannerSwitch(true);
+                }
+            });
         }
 
-        private Task<bool> TryProcess(string str, Result result = null)
+        private async Task<bool> TryProcess(string name, Result result = null)
         {
-            switch (str)
+            switch (name)
             {
-                case "fromScanner":
-                    return TryProcessScanResult(result, true);
+                case "scanResult":
+                    return await TryProcessScanResult(result, true);
                 case "scanFromGallery":
-                    return TryProcessScanResultWithIndicatorFromGallery(true);
+                    return await TryScanWithIndicator(await scannerHelper.GetFromGallery());
                 case "takePhotoAndScan":
-                    return TryProcessScanResultWithIndicatorFromGallery(false);
+                    return await TryScanWithIndicator(await scannerHelper.TakePhoto());
                 case "scanManually":
-                    return ScanManually();
+                    return await ScanManually();
                 default:
-                    return Task.FromResult(false);
+                    return await Task.FromResult(false);
             };
         }
 
         private async Task<bool> ScanManually()
         {
-            await Navigation.PushAsync(GetManualScanPage());
+            await Navigation.PushAsync(Pages.GetManualScanPage());
             return true;
         }
 
-        private async Task<bool> TryProcessScanResultWithIndicatorFromGallery(bool fromGallery)
+        private async Task<bool> TryScanWithIndicator(MediaFile file)
         {
-            var file = fromGallery
-                    ? await scannerHelper.GetFromGallery()
-                    : await scannerHelper.TakePhoto();
-
-            if (file == null)
+            if (file == default)
                 return false;
 
             IsRunningIndicator = true;
-            var result = await scannerHelper.GetResult(file.Path, cancellationTS.Token);
+            var result = await scannerHelper.Scan(file.Path, cancellationTS.Token);
 
             if (cancellationTS.IsCancellationRequested)
             {
@@ -383,17 +376,10 @@ namespace Scanner.ViewModels.Scanner
 
             if (fromScanner)
             {
-                HighlightOutlineScanResult(result);
-
                 if (ScannerSettingsVM.Settings.IsSoundShutterRelease)
-                {
-                    player.Play("camera_shutter_release.mp3");
-                    //спим 2 сек, если будет выделения QR-кода
-                }
+                    player.Play(Audio.CameraShutterRelease);
 
-                var isOk = await TryProcessCode(result);
-                SetInitialOutlineCode();
-                return isOk;
+                return await TryProcessCode(result);
             }
             else
             {
@@ -425,26 +411,25 @@ namespace Scanner.ViewModels.Scanner
 
         private async Task<bool> TryProcessCashQRCode(Result result)
         {
-            var isContinue = await Device.InvokeOnMainThreadAsync(
-                () => CurrentPage.DisplayAlert(
-                    "В этом QRCode закодирован чек",
-                    result.Text,
-                    "Получить чек",
-                    "Отмена"));
+            var isContinue = await CurrentPage.DisplayAlert(
+                "В этом QRCode закодирован чек",
+                result.Text,
+                "Получить чек",
+                "Отмена");
 
             if (!isContinue)
                 return false;
 
-            CashQRCodeVM.ProcessCodeCommand.Execute(null);
+            await CashQRCodeVM.ProcessCodeCommand.ExecuteAsync();
             return true;
         }
 
         private void ShowMessageUnKnownCode(Result result)
         {
-            Device.InvokeOnMainThreadAsync(() => CurrentPage.DisplayAlert(
-                    $"Попробуйте снова или другой код",
-                    $"Не понятно, что делать с этим кодом 😔:\r\n{result?.Text ?? ""}",
-                    "Ок"));
+            CurrentPage.DisplayAlert(
+                $"Попробуйте снова или другой код",
+                $"Не понятно, что делать с этим кодом 😔:\r\n{result?.Text ?? ""}",
+                "Ок");
         }
 
         private void ScannerSwitch(bool position)
@@ -452,87 +437,5 @@ namespace Scanner.ViewModels.Scanner
             IsAnalyzing = position;
             IsScanning = position;
         }
-
-        //public Image Corner { get; set; }
-        //public ZXingScannerView Scanner { get; set; }
-
-        //получать разрешение камеры например 480х640
-        //https://github.com/Redth/ZXing.Net.Mobile/blob/ebcb4e4cdd716570d2c7e8c1112e4165b9550343/Source/ZXing.Net.Mobile.Android/CameraAccess/CameraController.cs#L272
-        //https://switch-case.ru/53232983
-        //http://www.bolshoyvopros.ru/questions/2515982-diagonal-telefona-55-djujmov-eto-skolko-v-santimetrah.html
-        //https://stackoverflow.com/questions/43034961/how-to-get-the-coordinates-of-qr-code-using-zxing
-        private void HighlightOutlineScanResult(Result result)
-        {
-            //var cofX = Scanner.Width / 480; //коэффициент, для преобразования пикселей в см
-            //var cofY = Scanner.Height / 640;
-
-            //if (result.ResultPoints.Length == 3)
-            //{
-            //    var point = new Point(Scanner.Width, Scanner.Height); //крайняя точка у сканера
-            //    var points = result.ResultPoints
-            //        .Select(p =>
-            //        {
-            //            var x = (p.X * cofX) + Corner.X; //пиксели в см, плюс текущая позиция в см(настолько надо смещать)
-            //            var y = (p.Y * cofY) + Corner.Y;
-            //            var moduleSise = (p as FinderPattern).EstimatedModuleSize;
-            //            return new MyFinderPattern(point.Offset(-x, -y), moduleSise);
-            //        })
-            //        .OrderBy(p => p)
-            //        .ToList();
-
-            //    //var firstPoint = new Point(points[0].X - points[0].EstimatedModuleSize, points[0].Y - points[0].EstimatedModuleSize);
-            //    //var secondPoint = new Point(points[1].X - points[1].EstimatedModuleSize, points[1].Y - points[1].EstimatedModuleSize);
-            //    //var thirdPoint = new Point(points[2].X - points[2].EstimatedModuleSize, points[2].Y - points[2].EstimatedModuleSize);
-
-            //    var firstPoint = new Point(points[0].X - 5, points[0].Y - 5);
-            //    var secondPoint = new Point(points[1].X - 5, points[1].Y - 5);
-            //    var thirdPoint = new Point(points[2].X - 5, points[2].Y - 5);
-
-            //    var width = thirdPoint.X - firstPoint.X;
-            //    var height =points.OrderBy(p => p.Y).Last().Y - points.OrderBy(p => p.Y).First().Y;
-
-            //    TopLineQRCode = new Rectangle(firstPoint.X, firstPoint.Y, width, 3);
-            //    BottomLineQRCode = new Rectangle(firstPoint.X, secondPoint.Y, width, 3);
-            //    LeftLineQRCode = new Rectangle(firstPoint.X, firstPoint.Y, 3, height);
-            //    RightLineQRCode = new Rectangle(firstPoint.X + width, firstPoint.Y, 3, height+3);
-
-            //    Thread.Sleep(2000);
-            //}
-        }
-
-        //public class MyFinderPattern : IComparable<MyFinderPattern>
-        //{
-        //    public MyFinderPattern(double x, double y, double estimatedModuleSize)
-        //    {
-        //        X = x;
-        //        Y = y;
-        //        EstimatedModuleSize = estimatedModuleSize;
-        //    }
-
-        //    public MyFinderPattern(Point point, double estimatedModuleSize)
-        //    {
-        //        X = point.X;
-        //        Y = point.Y;
-        //        EstimatedModuleSize = estimatedModuleSize;
-        //    }
-
-        //    public double X { get; set; }
-        //    public double Y { get; set; }
-        //    public double EstimatedModuleSize { get; set; }
-
-        //    public int CompareTo(MyFinderPattern other)
-        //    {
-        //        var arg1 = X + Y;
-        //        var arg2 = other.X + other.Y;
-
-        //        if (arg1 > arg2)
-        //            return 1;
-        //        else if (arg1 < arg2)
-        //            return -1;
-        //        else
-        //            return 0;
-        //    }
-        //}
-
     }
 }

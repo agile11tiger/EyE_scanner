@@ -2,97 +2,58 @@
 using Scanner.Extensions.Interfaces;
 using Scanner.Models;
 using Scanner.ViewModels.Scanner.Friends;
-using System.Collections.ObjectModel;
-using System.Linq;
+using System;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 
 namespace Scanner.ViewModels.Scanner.Checks
 {
-    public class FriendCheckViewModel : BaseViewModel
+    public class FriendCheckViewModel : CheckViewModel, IEquatable<FriendCheckViewModel>
     {
-        public FriendCheckViewModel(FriendViewModel friendVM, ObservableCollection<CheckItemViewModel> items)
+        public FriendCheckViewModel(FriendViewModel friendVM, Check check) : base(check)
         {
             FriendVM = friendVM;
-            Items = items;
-            SetCommands();
+            InfoCommand = new AsyncCommand<Page>(ShowInfo);
+            SyncCheckItemsWithItems();
         }
 
-        public FriendCheckViewModel()
-        {
-            FriendVM = new FriendViewModel();
-            Items = new ObservableCollection<CheckItemViewModel>();
-            SetCommands();
-        }
-
-        private void SetCommands()
-        {
-            InfoCommand = new AsyncCommand(ShowInfo);
-            RemoveCommand = new AsyncCommand<CheckItemViewModel>(Remove);
-        }
-
-        private ObservableCollection<CheckItemViewModel> items;
         public FriendViewModel FriendVM { get; }
-        public ObservableCollection<CheckItemViewModel> Items 
-        {
-            get => items;
-            set
-            {
-                if(items != value)
-                {
-                    items = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        public string TitlePage { get => FriendVM.Name; }
-        public ImageSource IconPage { get => FriendVM.Image; }
-
-        public int CheckAmount
-        {
-            get
-            {
-                if (Items.Count > 0)
-                    return Items.Sum(i => i.Sum);
-
-                return 0;
-            }
-        }
+        public string TitlePage { get => FriendVM?.Name; }
+        public ImageSource IconPage { get => FriendVM?.Image; }
 
         public bool IsCommonCheck
         {
             get
             {
-                if (TitlePage == AppConstants.NAME_PAGE_COMMON_CHECK)
+                if (TitlePage == PageTitles.COMMON_CHECK)
                     return true;
 
                 return false;
             }
         }
-
         public bool NoIsCommonCheck
         {
             get => !IsCommonCheck;
         }
 
-        public IAsyncCommand InfoCommand { get; private set; }
-        public IAsyncCommand<CheckItemViewModel> RemoveCommand { get; private set; }
+        public IAsyncCommand<Page> InfoCommand { get; private set; }
 
-        private async Task Remove(CheckItemViewModel checkItemVM)
+        public bool Equals(FriendCheckViewModel other)
         {
-            Items.Remove(checkItemVM);
+            if (FriendVM?.Id == other.FriendVM.Id)
+                return true;
+
+            return false;
         }
 
-        private async Task ShowInfo()
+        private async Task ShowInfo(Page currentPage)
         {
-            if(TitlePage == AppConstants.NAME_PAGE_COMMON_CHECK)
+            if (TitlePage == PageTitles.COMMON_CHECK)
             {
-                await CurrentPage.DisplayAlert(
+                await currentPage.DisplayAlert(
                         "Как работают кнопки?",
-                        "1) Кнопка \"Создать чек\" — создает новый чек для выбранного друга из отмеченных товаров " +
-                        "и вычитает выбранное вами количество для товара из общего чека\r\n" +
-                        "2) Кнопка \"В мои чеки\" — добавляет все товары(неважно отмеченные или нет) в мои чеки",
+                        "1) Кнопка \"Создать чек\" — создает новый чек для выбранного друга из отмеченных товаров.\r\n" +
+                        "2) Кнопка \"В мои чеки\" — добавляет отмеченные товары в мои чеки",
                         "Ок");
             }
         }

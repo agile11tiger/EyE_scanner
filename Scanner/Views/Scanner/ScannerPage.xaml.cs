@@ -1,5 +1,4 @@
 ﻿using Scanner.ViewModels.Scanner;
-using System;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -16,11 +15,8 @@ namespace Scanner.Views.Scanner
             scannerVM.CurrentPage = this;
             scannerVM.CashQRCodeVM.CurrentPage = this;
 
-            //scannerVM.Corner = corner;   //TODO: убрать
-            //scannerVM.Scanner = scanner;  // убрать
-
             scannerVM.TorchImage = ImageSource.FromResource("Scanner.Resources.Images.Scanner.torch_off.png");
-            scannerVM.InitialOutlineQRCodeCommand.Execute(null);
+            scannerVM.SetOutlineCodeCommand.Execute(null);
 
             BindingContext = viewModel = scannerVM;
         }

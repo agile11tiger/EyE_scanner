@@ -4,6 +4,7 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
              xmlns:local="clr-namespace:Scanner"
              xmlns:checks="clr-namespace:Scanner.ViewModels.Scanner.Checks"
              xmlns:extensions="clr-namespace:Scanner.Extensions"
@@ -19,17 +20,12 @@
                 <ColumnDefinition Width="3*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            
-            <SearchBar x:Name="searchBar"
-                       Grid.Column="0"
-                       Keyboard="Numeric"
-                       TextChanged="SearchBar_TextChanged"
-                       SearchCommand="{Binding SearchCommand}"
-                       SearchCommandParameter="{Binding Source={x:Reference searchBar}, Path=Text}"/>
-            
-            <!--<Label Grid.Column="0"
-                   Text="Чеки"
-                   Style="{StaticResource TitleLabel}"/>-->
+
+            <DatePicker Format="D"
+                        Date="{x:Static system:DateTime.Today}"
+                        TextColor="WhiteSmoke"
+                        DateSelected="DatePicker_DateSelected"/>
+
             <ImageButton Grid.Column="1"
                          Style="{StaticResource QuestionImageButton}"
                          Command="{Binding InfoCommand}"/>
@@ -50,7 +46,7 @@
                               SelectionMode="None"
                               HasUnevenRows="True">
                         <ListView.ItemTemplate>
-                            <DataTemplate x:DataType="checks:FriendsChecksViewModel">
+                            <DataTemplate x:DataType="checks:CheckViewModel">
                                 <ViewCell>
                                     <ViewCell.View>
                                         <Frame Margin="7" HasShadow="True" BorderColor="Blue" CornerRadius="10" Padding="15">
@@ -61,7 +57,7 @@
                                                     <RowDefinition Height="30"/>
                                                 </Grid.RowDefinitions>
                                                 <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="3*"/>
+                                                    <ColumnDefinition Width="*"/>
                                                     <ColumnDefinition Width="*"/>
                                                 </Grid.ColumnDefinitions>
 
@@ -75,7 +71,7 @@
                                                 <ImageButton x:Name="removeImage"
                                                        Grid.Row="0"
                                                        Grid.Column="1"
-                                                       Source="{extensions:ImageResource Source={x:Static local:AppConstants.RemovePng}}"
+                                                       Source="{extensions:ImageResource Source={x:Static local:ImagePaths.Remove}}"
                                                        WidthRequest="20"
                                                        HeightRequest="20"
                                                        HorizontalOptions="End"
@@ -105,10 +101,10 @@
                                                     </Label.GestureRecognizers>
                                                 </controls:GradientLabel>
 
-                                                <Label x:Name="checkAmount"
+                                                <Label x:Name="TotalSum"
                                                        Grid.Row="2"
                                                        Grid.Column="1"
-                                                       Text="{Binding CheckAmount, StringFormat='{0:C}'}"
+                                                       Text="{Binding TotalSumRub, StringFormat='{0:C2}'}"
                                                        FontAttributes="Bold"
                                                        HorizontalOptions="End"/>
                                             </Grid>

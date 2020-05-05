@@ -80,6 +80,7 @@
     <PackageReference Include="MagicGradients" Version="1.0.0" />
     <PackageReference Include="Ninject" Version="3.3.4" />
     <PackageReference Include="SkiaSharp.Views.Forms" Version="1.68.1.1" />
+    <PackageReference Include="sqlite-net-pcl" Version="1.6.292" />
     <PackageReference Include="Xam.Plugin.Media" Version="5.0.1" />
     <PackageReference Include="Xam.Plugin.SimpleAudioPlayer" Version="1.4.0" />
     <PackageReference Include="Xamarin.Forms" Version="4.5.0.617" />  
@@ -91,6 +92,9 @@
 
   <ItemGroup>
     <EmbeddedResource Update="Views\MainPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Scanner\Checks\CheckPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Views\Scanner\Checks\ChecksTabbedPage.xaml">
@@ -180,6 +184,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\VerificationCheck\VerificationCheck.csproj" />
+    <ProjectReference Include="..\CheckReceiptSDK-master\CheckReceiptSDK\VerifyReceiptSDK.csproj" />
   </ItemGroup>
 </Project>

@@ -1,14 +1,11 @@
 ﻿using Newtonsoft.Json;
-using Ninject;
 using Scanner.Extensions;
 using Scanner.Extensions.Interfaces;
 using Scanner.Messages;
 using Scanner.Models;
-using Scanner.Views.Authorization;
 using System;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using VerificationCheck.Core;
+using VerifyReceiptSDK;
 
 namespace Scanner.ViewModels.Authorization
 {
@@ -17,20 +14,13 @@ namespace Scanner.ViewModels.Authorization
     /// </summary>
     public class SignInViewModel : FNSSignViewModel
     {
-        public SignInViewModel(
-            FNS fns, 
-            Func<Sign, Task> updateUserAccount, 
-            Sign sign, 
-            Lazy<ForgotPasswordPage> forgotPasswordPage) 
-            : base(fns, sign)
+        public SignInViewModel(Func<Sign, Task> updateUserAccount, Sign sign) : base(sign)
         {
             UpdateUserAccount = updateUserAccount;
-            this.forgotPasswordPage = forgotPasswordPage;
             SignInCommand = new AsyncCommand(SignIn);
             ForgotPasswordCommand = new AsyncCommand(GoToForgotPasswordPage);
         }
 
-        private readonly Lazy<ForgotPasswordPage> forgotPasswordPage;
         public IAsyncCommand SignInCommand { get; }
         public IAsyncCommand ForgotPasswordCommand { get; }
         public Func<Sign, Task> UpdateUserAccount { get; }
@@ -45,14 +35,13 @@ namespace Scanner.ViewModels.Authorization
 
         private Task GoToForgotPasswordPage()
         {
-            forgotPasswordPage.Value.ViewModel.Phone = Phone;
-            return Navigation.PushAsync(forgotPasswordPage.Value);
+            Pages.ForgotPasswordPage.Value.ViewModel.Phone = Phone;
+            return Navigation.PushAsync(Pages.ForgotPasswordPage.Value);
         }
 
         private async Task<bool> TrySignIn()
         {
-            //var b = "{\"email\":\"11nature98@gmail.com\",\"name\":\"Danil`\"}";
-            var phone = ParsePhone();
+            var phone = GetClearPhone();
 
             if (string.IsNullOrWhiteSpace(phone) || string.IsNullOrWhiteSpace(Password))
             {
@@ -64,7 +53,7 @@ namespace Scanner.ViewModels.Authorization
 
             if (await TryExecute(task))
             {
-                var temp = JsonConvert.DeserializeObject<SignViewModel>(task.Result.Message);
+                var temp = JsonConvert.DeserializeObject<Sign>(task.Result.Message);
                 Name = temp.Name;
                 Email = temp.Email;
                 IsAuthorization = true;

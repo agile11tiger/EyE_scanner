@@ -1,10 +1,5 @@
-﻿using Ninject;
-using Ninject.Parameters;
-using Scanner.Extensions;
-using Scanner.Extensions.Interfaces;
-using Scanner.Models;
+﻿using Scanner.Models;
 using Scanner.ViewModels.Scanner.QRCodes;
-using Scanner.Views.Scanner.Checks;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -20,22 +15,16 @@ namespace Scanner.ViewModels.Scanner.Checks
     {
         public WaitingChecksListViewModel(
             UserAccountFNSViewModel userAccountFNS,
-            ChecksTabbedPage checksTabbedPage,
             Func<CashQRCode, CashQRCodeViewModel> GetCashQRCodeVM)
             : base()
         {
-            this.checksTabbedPage = checksTabbedPage;
             this.GetCashQRCodeVM = GetCashQRCodeVM;
             UserAccountFNS = userAccountFNS;
-            InfoCommand = new AsyncCommand(ShowInfo);
-            QRCodeImage = ImageSource.FromResource(AppConstants.QrCodePng);
+            Image = ImageSource.FromResource(ImagePaths.QrCode);
         }
 
-        private readonly ChecksTabbedPage checksTabbedPage;
         private readonly Func<CashQRCode, CashQRCodeViewModel> GetCashQRCodeVM;
-        public ImageSource QRCodeImage { get; }
         public UserAccountFNSViewModel UserAccountFNS { get; }
-        public IAsyncCommand InfoCommand { get; }
 
         protected override async Task InitializeListFromDatabase()
         {
@@ -48,35 +37,38 @@ namespace Scanner.ViewModels.Scanner.Checks
 
         protected override async Task Add(CashQRCodeViewModel item)
         {
-            List.Add(item);
-            await AsyncDatabase.AddItemAsync(item.CashQRCode);
+            var cashQRCodeVM = item.PartialClone();
+            List.Add(cashQRCodeVM);
+            await AsyncDatabase.AddItemAsync(cashQRCodeVM.CashQRCode);
         }
 
         protected override async Task Remove(CashQRCodeViewModel item)
         {
-            List.RemoveAt(item.CashQRCode.Id);
-            await AsyncDatabase.RemoveItemAsync<Friend>(item.CashQRCode.Id);
+            List.Remove(item);
+            await AsyncDatabase.GetItemsAsync<CashQRCode>();
+            await AsyncDatabase.RemoveItemAsync<CashQRCode>(item.CashQRCode.Id);
         }
 
-        protected override Task Refresh(CashQRCodeViewModel cashQRCodeVM)
+        protected async override Task Refresh(CashQRCodeViewModel cashQRCodeVM)
         {
-            if (UserAccountFNS.Sign.IsAuthorization)
-                return cashQRCodeVM.ProcessCodeCommand.ExecuteAsync();
-            else
-                return UserAccountFNS.AuthorizationCommand.ExecuteAsync(true);
+            if (!await UserAccountFNS.TryAuthorization())
+                return;
+
+            if (await cashQRCodeVM.TryProcessCode() && await ShowResultCommandRefreshAll(1))
+                await Navigation.PushAsync(Pages.ChecksTabbedPage).ConfigureAwait(false);
         }
 
         protected async override Task RefreshAll()
         {
+            if (!await UserAccountFNS.TryAuthorization())
+                return;
+
             var tasks = List.Select(i => i.TryProcessCode());
             var results = await Task.WhenAll(tasks);
             var amountReceivedСhecks = results.Where(r => r == true).Count();
-            var isContinue = await ShowResultCommandRefreshAll(amountReceivedСhecks).ConfigureAwait(false);
 
-            if (isContinue)
-            {
-                await Navigation.PushAsync(checksTabbedPage).ConfigureAwait(false);
-            }
+            if (await ShowResultCommandRefreshAll(amountReceivedСhecks).ConfigureAwait(false))
+                await Navigation.PushAsync(Pages.ChecksTabbedPage).ConfigureAwait(false);
         }
 
         protected override Task DisplayData(CashQRCodeViewModel cashQRCodeVM)
@@ -87,11 +79,11 @@ namespace Scanner.ViewModels.Scanner.Checks
                     $"ФД — {cashQRCodeVM.FiscalDocument},\n" +
                     $"ФП — {cashQRCodeVM.FiscalSignDocument},\n" +
                     $"Дата и время — {cashQRCodeVM.DateTime},\n" +
-                    $"Сумма — {cashQRCodeVM.CheckAmount}",
+                    $"Сумма — {cashQRCodeVM.TotalSum}",
                     "Ок");
         }
 
-        private Task ShowInfo()
+        protected override Task ShowInfo()
         {
             return CurrentPage.DisplayAlert(
                     "Что это?",

@@ -5,7 +5,7 @@ using ZXing;
 namespace Scanner.Services.Interfaces
 {
     /// <summary>
-    /// Интерфейс для получения BinaryBitmap
+    /// Интерфейс, помогающий работать с фото
     /// </summary>
     public interface IZxingImageHelper
     {

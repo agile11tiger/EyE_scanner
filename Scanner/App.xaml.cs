@@ -2,7 +2,6 @@
 using Ninject.Modules;
 using Scanner.ViewModels.Scanner.Checks;
 using System;
-using VerificationCheck;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 
@@ -23,26 +22,20 @@ namespace Scanner
             InitializeComponent();
             AppDomain.CurrentDomain.UnhandledException += ProcessException;
             var settings = new NinjectSettings() { LoadExtensions = false };
-            var verificationCheckModule = new VerificationCheckModule();
             var commonModule = new CommonModule();
+            Container = new StandardKernel(settings, phoneModule);
+            Container.Load(commonModule);
 
-            var container = new StandardKernel(settings, phoneModule);
-            Container = VerificationCheckModule.Container = container;
-            Container.Load(verificationCheckModule, commonModule);
             CreateInAdvance();
             MainPage = Container.Get<AppShell>();
         }
 
         private void CreateInAdvance()
         {
-            #region чтобы не было циклической зависимости(можно было и через Lazy, но там больше строчек писать надо)
-            //при создание СashQRCodeViewModel, который зависит от WaitingChecksListViewModel и ChecksListsViewModel,
-            //которые получаю из бд CashQRCodeViewModel
-            Container.Get<WaitingChecksListViewModel>();
+            #region чтобы не было циклической зависимости
+            Pages.Initialize();
+            Container.Get<WaitingChecksListViewModel>().CallInitializeListFromDatabase().Wait();
             Container.Get<ChecksListsViewModel>();
-            #endregion
-            #region Так как эти страницы долго грузятся создаю их заранее
-            //TODO: Добавить страницы, которые нужно создавать заранее
             #endregion
         }
 

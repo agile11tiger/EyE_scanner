@@ -9,7 +9,7 @@ using ZXing.Common;
 namespace EyE.Droid.Dependancies
 {
     /// <summary>
-    /// Класс, позволяющий получить BinaryBitmap из проекта андроид
+    /// Класс, помогающий работать с фото
     /// </summary>
     public class ZxingImageHelper : IZxingImageHelper
     {
@@ -20,9 +20,6 @@ namespace EyE.Droid.Dependancies
             var bitmap = BitmapFactory.DecodeFile(path);
             var rgbBytes = await Task.Run(() => GetRgbBytesFaster(bitmap, token));
             ResetToReuse();
-
-            if (rgbBytes == null)
-                return null;
 
             var rgbLuminanceSource = new RGBLuminanceSource(rgbBytes, bitmap.Width, bitmap.Height);
             var binarizer = new HybridBinarizer(rgbLuminanceSource);

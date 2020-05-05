@@ -68,9 +68,9 @@
                             Style="{StaticResource notVisible}"/>
 
                     <ImageButton Grid.Column="0"
-                                 Source="{Binding UserAccount.UserImage}"
+                                 Source="{Binding UserImage}"
                                  Margin="10"
-                                 Aspect="AspectFill"
+                                 Aspect="AspectFit"
                                  CornerRadius="5"
                                  HeightRequest="85"
                                  WidthRequest="65"
@@ -138,25 +138,25 @@
         </DataTemplate>
     </Shell.MenuItemTemplate>
 
-    <FlyoutItem Title="EyE" FlyoutIcon="{extensions:ImageResource Source={x:Static local:AppConstants.SettingsPng}}" Route="mainPage">
+    <FlyoutItem Title="EyE" FlyoutIcon="{extensions:ImageResource Source={x:Static local:ImagePaths.Settings}}" Route="mainPage">
         <ShellContent x:Name="mainPage"/>
     </FlyoutItem>
 
     <MenuItem Text="Список друзей"
               x:DataType="viewModels:AppShellViewModel"
-              IconImageSource="{extensions:ImageResource Source={x:Static local:AppConstants.SettingsPng}}"
+              IconImageSource="{extensions:ImageResource Source={x:Static local:ImagePaths.Settings}}"
               Command="{Binding ToFriendsCommand}"/>
     <MenuItem Text="Генерация кодов"
               x:DataType="viewModels:AppShellViewModel"
-              IconImageSource="{extensions:ImageResource Source={x:Static local:AppConstants.SettingsPng}}"
+              IconImageSource="{extensions:ImageResource Source={x:Static local:ImagePaths.Settings}}"
               Command="{Binding ToCodeGenerationCommand}"/>
     <MenuItem Text="Настройки сканера"
               x:DataType="viewModels:AppShellViewModel"
-              IconImageSource="{extensions:ImageResource Source={x:Static local:AppConstants.SettingsPng}}"
+              IconImageSource="{extensions:ImageResource Source={x:Static local:ImagePaths.Settings}}"
               Command="{Binding ToSettingsCommand}"/>
     <MenuItem Text="Реавторизоваться"
               x:DataType="viewModels:AppShellViewModel"
-              IconImageSource="{extensions:ImageResource Source={x:Static local:AppConstants.SettingsPng}}"
+              IconImageSource="{extensions:ImageResource Source={x:Static local:ImagePaths.Settings}}"
               Command="{Binding UserAccount.AuthorizationCommand}"
               CommandParameter="{StaticResource False}"/>
 

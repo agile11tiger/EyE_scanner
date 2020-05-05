@@ -1,8 +1,5 @@
-﻿using Ninject;
-using Scanner.Extensions;
+﻿using Scanner.Extensions;
 using Scanner.Extensions.Interfaces;
-using Scanner.Views.Scanner;
-using Scanner.Views.Scanner.Checks;
 using System.Threading.Tasks;
 
 namespace Scanner.ViewModels
@@ -12,30 +9,20 @@ namespace Scanner.ViewModels
     /// </summary>
     public class MainPageViewModel : BaseViewModel
     {
-        public MainPageViewModel(
-            ChecksTabbedPage checksTabbedPage,
-            ScannerPage scannerPage,
-            WaitingChecksPage waitingChecksPage) 
-            : base()
+        public MainPageViewModel() : base()
         {
-            this.checksTabbedPage = checksTabbedPage;
-            this.scannerPage = scannerPage;
-            this.waitingChecksPage = waitingChecksPage;
             GoToChecksCommand = new AsyncCommand(ToChecks);
             GoToScannerCommand = new AsyncCommand(ToScanner);
             GoToWaitingChecksCommand = new AsyncCommand(ToWaitingChecks);
         }
 
-        private readonly ChecksTabbedPage checksTabbedPage;
-        private readonly ScannerPage scannerPage;
-        private readonly WaitingChecksPage waitingChecksPage;
         public IAsyncCommand GoToChecksCommand { get; }
         public IAsyncCommand GoToScannerCommand { get; }
         public IAsyncCommand GoToWaitingChecksCommand { get; }
 
         private Task ToChecks()
         {
-            return Navigation.PushAsync(checksTabbedPage);
+            return Navigation.PushAsync(Pages.ChecksTabbedPage);
         }
 
         private Task ToScanner()
@@ -48,12 +35,12 @@ namespace Scanner.ViewModels
             //Стоит отменить, что при возврате с ЧЕРНОГО ЭКРАНА, OnAppearing  текущей страницы(MainPage) не запускается.
             //Это при первой загрузке, при последующих все нормально!??
             #endregion
-            return Navigation.PushAsync(scannerPage);
+            return Navigation.PushAsync(Pages.ScannerPage);
         }
 
         private Task ToWaitingChecks()
         {
-            return Navigation.PushAsync(waitingChecksPage);
+            return Navigation.PushAsync(Pages.WaitingChecksPage);
         }
     }
 }

@@ -1,17 +1,14 @@
-﻿using SQLite;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using VerificationCheck.Core.Interfaces;
+﻿using Scanner.Models.Interfaces;
+using Scanner.Models.Iterfaces;
+using SQLite;
 using Xamarin.Forms;
 
 namespace Scanner.Models
 {
     [Table("Friends")]
-    public class Friend : IDatabaseItem
+    public class Friend : IDatabaseItem, IClone<Friend>
     {
-        //каждому пользователю будет выдаваться уникальный id, поэтому не надо autoincrement
-        //TODO решить проблему с unique(не работает)
+        //TODO:каждому пользователю будет выдаваться уникальный id, поэтому не надо autoincrement
         [PrimaryKey, Unique]
         public int Id { get; set; } = -1;
 
@@ -20,5 +17,10 @@ namespace Scanner.Models
         [Ignore]
         public ImageSource Image { get; set; }
         public string Phone { get; set; }
+
+        public Friend Clone()
+        {
+            return (Friend)MemberwiseClone();
+        }
     }
 }

@@ -119,7 +119,7 @@ namespace Scanner.Extensions
                 }
             }
 
-            //TODO: Куда деваеть запрос если CanExecute == false
+            //TODO: Куда девать запрос если CanExecute == false
             RaiseCanExecuteChanged();
         }
 

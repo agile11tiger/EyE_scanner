@@ -1,47 +1,33 @@
-﻿using Newtonsoft.Json;
-using Ninject;
-using Scanner.Models;
-using Scanner.Models.Iterfaces;
+﻿using Scanner.Models;
+using Scanner.Models.Interfaces;
 using Scanner.ViewModels.Scanner.Checks;
-using Scanner.Views.Scanner.Checks;
-using SQLite;
 using System;
-using System.Linq;
 using System.Threading.Tasks;
-using VerificationCheck.Core;
-using VerificationCheck.Core.Interfaces;
+using VerifyReceiptSDK;
+using VerifyReceiptSDK.Results;
 
 namespace Scanner.ViewModels.Scanner.QRCodes
 {
     /// <summary>
     /// Класс, взаимодействующий с кассовым QR-кодом 
     /// </summary>
-    public class CashQRCodeViewModel : CodeViewModel<CashQRCodeViewModel, FriendsChecksViewModel>
+    public class CashQRCodeViewModel : CodeViewModel<WaitingChecksListViewModel, ChecksListsViewModel>, IEquatable<CashQRCodeViewModel>, IPartialClone<CashQRCodeViewModel>
     {
         public CashQRCodeViewModel(
-            CashQRCode cashQRCode, 
-            WaitingChecksListViewModel waitingChecksListVM, 
+            CashQRCode cashQRCode,
+            WaitingChecksListViewModel waitingChecksListVM,
             ChecksListsViewModel checksListsVM,
-            FNS fns,
-            UserAccountFNSViewModel userAccountFNS,
-            ChecksTabbedPage checksTabbedPage,
-            WaitingChecksPage waitingChecksPage)
+            UserAccountFNSViewModel userAccountFNS)
             : base(
             cashQRCode,
             waitingChecksListVM,
             checksListsVM)
         {
-            this.fns = fns;
-            this.waitingChecksPage = waitingChecksPage;
-            this.checksTabbedPage = checksTabbedPage;
             CashQRCode = cashQRCode;
             UserAccountFNS = userAccountFNS;
         }
 
-        private readonly FNS fns;
-        private readonly ChecksTabbedPage checksTabbedPage;
-        private readonly WaitingChecksPage waitingChecksPage;
-        public CashQRCode CashQRCode { get; }
+        public CashQRCode CashQRCode { get; private set; }
         public UserAccountFNSViewModel UserAccountFNS { get; }
 
         public string FiscalNumber
@@ -96,14 +82,14 @@ namespace Scanner.ViewModels.Scanner.QRCodes
             }
         }
 
-        public double? CheckAmount
+        public double? TotalSum
         {
-            get => CashQRCode.CheckAmount;
+            get => CashQRCode.TotalSum;
             set
             {
-                if (CashQRCode.CheckAmount != value)
+                if (CashQRCode.TotalSum != value)
                 {
-                    CashQRCode.CheckAmount = value;
+                    CashQRCode.TotalSum = value;
                     OnPropertyChanged();
                 }
             }
@@ -122,66 +108,86 @@ namespace Scanner.ViewModels.Scanner.QRCodes
             }
         }
 
-        protected override async Task ProcessCode()
+        protected override async Task ProcessQRCode()
         {
-            await RequestList.AddCommand.ExecuteAsync(this);
-            await Navigation.PushAsync(waitingChecksPage);
-
-            //var verifyResult = await fns.VerifyAsync(
-            //    FiscalNumber,
-            //    FiscalDocument,
-            //    FiscalSignDocument,
-            //    DateTime.GetValueOrDefault(),
-            //    CheckAmount.GetValueOrDefault()
-            //    );
-
-
-            //if (!verifyResult.CheckExists)
-            //    return;
-            //var checkResult = await fns.ReceiveAsync(FiscalNumber, FiscalDocument, FiscalSignDocument, UserAccountFNS.Phone, UserAccountFNS.Password);
-
-            //if (checkResult.IsSuccess)
-            //{
-            //    var checkVM = new FriendsChecksViewModel(checkResult.Document.Check);
-            //    await ResultLists.AddToCommonChecks(checkVM);
-            //    await RequestList.RemoveCommand.ExecuteAsync(this);
-            //    await Navigation.PushAsync(checksTabbedPage).ConfigureAwait(false);
-            //}
-            //else
-            //{
-            //    FailMessage = verifyResult.Message;
-            //    await RequestList.AddCommand.ExecuteAsync(this);
-            //    await Navigation.PushAsync(waitingChecksPage).ConfigureAwait(false);
-            //}
+            if (await TryProcessCode())
+            {
+                await Navigation.PushAsync(Pages.ChecksTabbedPage);
+            }
+            else
+            {
+                await RequestList.AddCommand.ExecuteAsync(this);
+                await Navigation.PushAsync(Pages.WaitingChecksPage);
+            }
         }
 
-        /// <summary>
-        /// Вызывается только внутри другой команды
-        /// </summary>
         public async Task<bool> TryProcessCode()
         {
-            var verifyResult = await fns.VerifyAsync(
-                FiscalNumber,
-                FiscalDocument,
-                FiscalSignDocument,
-                DateTime.GetValueOrDefault(),
-                CheckAmount.GetValueOrDefault()
-                );
+            var checkResult = await TryGetCheckResult();
 
-            if (!verifyResult.CheckExists)
+            if (checkResult == null)
                 return false;
-
-            var checkResult = await fns.ReceiveAsync(FiscalNumber, FiscalDocument, FiscalSignDocument, UserAccountFNS.Phone, UserAccountFNS.Password);
 
             if (checkResult.IsSuccess)
             {
-                var checkVM = new FriendsChecksViewModel(checkResult.Document.Check);
-                await ResultLists.Checks.FirstOrDefault(c => c.Title == "Чеки")?.AddCommand.ExecuteAsync(checkVM);
-                await RequestList.RemoveCommand.ExecuteAsync(this).ConfigureAwait(false);
+                var check = new Check(checkResult.Document.Receipt);
+                var commonCheckVM = new CheckViewModel(check);
+                await ResultList.Add(commonCheckVM, PageTitles.COMMON_CHECKS);
+                await RequestList.RemoveCommand.ExecuteAsync(this);
                 return true;
             }
+            else
+            {
+                FailMessage = checkResult.Message;
+                return false;
+            }
+        }
 
-            return false;
+        private async Task<ReceiptResult> TryGetCheckResult()
+        {
+            if (!UserAccountFNS.IsAuthorization)
+                return null;
+
+            try
+            {
+                var verifyResult = await FNS.VerifyAsync(
+                   FiscalNumber,
+                   FiscalDocument,
+                   FiscalSignDocument,
+                   DateTime.GetValueOrDefault(),
+                   TotalSum.GetValueOrDefault()
+                   );
+
+                if (!verifyResult.ReceiptExists)
+                {
+                    FailMessage = verifyResult.Message;
+                    return null;
+                }
+
+                return await FNS.ReceiveAsync(
+                    FiscalNumber,
+                    FiscalDocument,
+                    FiscalSignDocument,
+                    UserAccountFNS.GetClearPhone(),
+                    UserAccountFNS.Password);
+            }
+            catch(ArgumentException e)
+            {
+                FailMessage = e.Message;
+                throw;
+            }
+        }
+
+        public bool Equals(CashQRCodeViewModel other)
+        {
+            return CashQRCode.Id == other.CashQRCode.Id;
+        }
+
+        public CashQRCodeViewModel PartialClone()
+        {
+            var clone = (CashQRCodeViewModel)MemberwiseClone();
+            clone.CashQRCode = CashQRCode.Clone();
+            return clone;
         }
     }
 }

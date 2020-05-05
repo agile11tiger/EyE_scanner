@@ -1,0 +1,109 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             xmlns:magic="clr-namespace:MagicGradients;assembly=MagicGradients"
+             xmlns:checks="clr-namespace:Scanner.ViewModels.Scanner.Checks"
+             x:Class="Scanner.Views.Scanner.Checks.CheckPage">
+    
+    <Shell.TitleView>
+        <Grid Style="{StaticResource TitleGrid}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Label Grid.Column="0"
+                   Text="Чек"
+                   Style="{StaticResource TitleLabel}"/>
+        </Grid>
+    </Shell.TitleView>
+    
+    <ContentPage.Content>
+        <Grid>
+            <magic:GradientView>
+                <magic:GradientView.GradientSource>
+                    <magic:CssGradientSource Stylesheet="{StaticResource PageGradient}"/>
+                </magic:GradientView.GradientSource>
+            </magic:GradientView>
+
+            <Grid Margin="10" x:DataType="checks:FriendCheckViewModel">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="3*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                
+                <Label Grid.Row="0"
+                       Grid.ColumnSpan="2"
+                       Text="{Binding TitlePage}"
+                       FontAttributes="Bold"
+                       HorizontalOptions="Center"/>
+                
+                <Label Grid.Row="1"
+                       Grid.Column="0"
+                       Text="Сумма"
+                       FontAttributes="Bold"/>
+                <Label Grid.Row="1"
+                       Grid.Column="1"
+                       Text="{Binding TotalSumRub, StringFormat='{0:C2}'}"
+                       FontAttributes="Bold"
+                       HorizontalOptions="End"/>
+
+                <ListView x:Name="checkItems"
+                          Grid.Row="2"
+                          Grid.ColumnSpan="2"
+                          ItemsSource="{Binding Items}"
+                          HasUnevenRows="True"
+                          SelectionMode="None"
+                          BackgroundColor="Transparent">
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="checks:CheckItemViewModel">
+                            <ViewCell>
+                                <ViewCell.View>
+                                    <Grid RowSpacing="0">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*"/>
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="110"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <Label Grid.Column="0"
+                                               Text="{Binding Name}"
+                                               LineBreakMode="CharacterWrap"
+                                               VerticalOptions="Center"/>
+
+                                        <StackLayout Grid.Column="1" HorizontalOptions="End" VerticalOptions="Center" Spacing="0">
+                                            <Label x:Name="sum"
+                                                   Text="{Binding SumRub, StringFormat='{0:C2}'}"
+                                                   FontSize="Small"
+                                                   HorizontalOptions="End"
+                                                   VerticalOptions="Center"/>
+                                            <StackLayout Orientation="Horizontal" HorizontalOptions="End" VerticalOptions="Center">
+                                                <Label x:Name="price"
+                                                       Text="{Binding PriceRub, StringFormat='{0:C2}'}"
+                                                       FontSize="Micro"/>
+                                                <Label Text="x"
+                                                       FontSize="Micro"/>
+                                                <Label x:Name="quantity"
+                                                       Text="{Binding Quantity}"
+                                                       FontSize="Micro"/>
+                                            </StackLayout>
+                                        </StackLayout>
+                                    </Grid>
+                                </ViewCell.View>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </Grid>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

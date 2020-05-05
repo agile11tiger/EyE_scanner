@@ -2,7 +2,6 @@
 using Ninject.Modules;
 using Ninject.Parameters;
 using Scanner.Models;
-using Scanner.Models.Iterfaces;
 using Scanner.Services;
 using Scanner.Services.Interfaces;
 using Scanner.ViewModels;
@@ -19,7 +18,6 @@ using Scanner.Views.Scanner.QRCodes;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Threading;
 using System.Threading.Tasks;
 using ZXing;
 
@@ -43,9 +41,9 @@ namespace Scanner
             Bind<CheckTabbedPage>().ToSelf();
             Bind<WaitingChecksPage>().ToSelf().InSingletonScope();
             Bind<FriendsPage>().ToSelf().InSingletonScope();
+            Bind<Lazy<FriendsPage>>().ToMethod(context => new Lazy<FriendsPage>(() => Kernel.Get<FriendsPage>()));
             Bind<FriendPage>().ToSelf();
             Bind<ManualScanPage>().ToSelf();
-            Bind<Func<ManualScanPage>>().ToMethod(context => () => Kernel.Get<ManualScanPage>());
             Bind<ScannerPage>().ToSelf().InSingletonScope();
             Bind<ScannerSettingsPage>().ToSelf().InSingletonScope();
             Bind<CodeGenerationPage>().ToSelf().InSingletonScope();
@@ -80,22 +78,9 @@ namespace Scanner
         private readonly List<BarcodeFormat> barcodeFormats = new List<BarcodeFormat>()
         {
             BarcodeFormat.QR_CODE,
-            //TODO: Какие обрабатывать форматы?
-            //BarcodeFormat.AZTEC,
-            //BarcodeFormat.DATA_MATRIX
         };
-
         private const string ASYNC_DATABASE_NAME = "asyncObjects.db";
         private IAsyncDatabase asyncDatabase;
-
-        //private const string DATABASE_NAME = "objects.db";
-        //private IDatabase database;
-        //private void setUpDataBase()
-        //{
-        //    var pathToBD = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), DATABASE_NAME);
-        //    database = new SQLiteDataBase(pathToBD);
-        //    App.Container.Bind<IDatabase>().ToConstant(database).InSingletonScope();
-        //}
 
         private void SetUpAsyncDataBase()
         {

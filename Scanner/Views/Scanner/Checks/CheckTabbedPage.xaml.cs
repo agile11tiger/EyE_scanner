@@ -1,8 +1,4 @@
-﻿using Scanner.Extensions.Interfaces;
-using Scanner.ViewModels.Scanner.Checks;
-using System;
-using System.Collections.ObjectModel;
-using System.Threading.Tasks;
+﻿using Scanner.ViewModels.Scanner.Checks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -11,18 +7,20 @@ namespace Scanner.Views.Scanner.Checks
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class CheckTabbedPage : TabbedPage
     {
-        private readonly FriendsChecksViewModel viewModel;
+        private readonly CheckEditorViewModel viewModel;
 
-        public CheckTabbedPage(FriendsChecksViewModel vm)
+        public CheckTabbedPage(CheckEditorViewModel vm)
         {
             InitializeComponent();
             vm.CurrentPage = this;
-            vm.SetCommonCheck();
-
-            foreach (var check in vm.FriendsChecks)
-                check.CurrentPage = this;
 
             BindingContext = viewModel = vm;
+        }
+
+        protected override void OnDisappearing()
+        {
+            viewModel.OnDisappearing();
+            base.OnDisappearing();
         }
 
         private void ListView_ItemSelected(object sender, SelectedItemChangedEventArgs e)
